@@ -1,12 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 import { App } from './app';
+import { routes } from './app.routes';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-    })
-      .compileComponents();
+      providers: [provideRouter(routes)],
+    }).compileComponents();
   });
 
   it('should create the app', () => {
@@ -15,10 +17,27 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should render router-outlet', () => {
     const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
+    fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, kodipoint-ng-frontend');
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
+  });
+
+  it('should navigate to dashboard and render shell with dashboard content', async () => {
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    await router.navigate(['/dashboard']);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-shell')).toBeTruthy();
+    expect(compiled.querySelector('app-dashboard')).toBeTruthy();
+    expect(compiled.querySelector('app-summary-card')).toBeTruthy();
+    expect(compiled.querySelector('app-financial-chart')).toBeTruthy();
+    expect(compiled.querySelector('app-invoice-table')).toBeTruthy();
   });
 });
