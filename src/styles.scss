@@ -8,7 +8,16 @@ html, body {
   width: 100%;
 }
 
-.properties-container .search-input-wrapper .mdc-text-field--outlined {
+.mat-mdc-form-field {
+  --mat-form-field-container-height: 42px;
+  --mat-form-field-container-vertical-padding: 10px;
+  --mat-form-field-outlined-container-shape: 10px;
+  --mat-form-field-outlined-outline-color: #e2e8f0;
+  --mat-form-field-outlined-hover-outline-color: #cbd5e1;
+  --mat-form-field-outlined-focus-outline-color: #4f46e5;
+}
+
+.mat-mdc-form-field .mdc-text-field--outlined {
   height: 42px;
 }
 

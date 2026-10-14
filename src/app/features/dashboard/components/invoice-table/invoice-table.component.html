@@ -6,16 +6,21 @@
     </div>
 
     <div class="header-filters">
-      <div class="search-input-wrapper">
-        <mat-icon class="search-icon">search</mat-icon>
+      <mat-form-field
+        class="search-input-wrapper"
+        appearance="outline"
+        subscriptSizing="dynamic"
+      >
+        <mat-icon matPrefix class="search-icon">search</mat-icon>
         <input
+          matInput
           type="text"
           class="search-input"
           placeholder="Search tenant or unit..."
           (input)="applyFilter($event)"
           aria-label="Search tenant or unit"
         />
-      </div>
+      </mat-form-field>
 
       <button mat-stroked-button class="date-filter-btn" type="button">
         <mat-icon class="calendar-icon">calendar_today</mat-icon>

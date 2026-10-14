@@ -49,21 +49,8 @@
 }
 
 .search-input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 38px;
-  padding: 0 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background-color: #ffffff;
   width: 240px;
-  transition: all 0.15s ease;
-}
-
-.search-input-wrapper:focus-within {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.12);
+  margin: 0;
 }
 
 .search-icon {
@@ -74,17 +61,8 @@
 }
 
 .search-input {
-  border: none;
-  outline: none;
   font-size: 13px;
   color: #1e293b;
-  background: transparent;
-  width: 100%;
-  font-family: inherit;
-}
-
-.search-input::placeholder {
-  color: #94a3b8;
 }
 
 .date-filter-btn {
