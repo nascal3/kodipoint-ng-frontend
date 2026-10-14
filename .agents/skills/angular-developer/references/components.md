@@ -6,18 +6,13 @@ Angular components are the fundamental building blocks of an application. Each c
 
 Use the `@Component` decorator to define a component's metadata.
 
+**Default approach:** Always use external files for templates and styles to maintain separation of concerns and improve maintainability.
+
 ```ts
 @Component({
   selector: 'app-profile',
-  template: `
-    <img src="profile.jpg" alt="Profile photo" />
-    <button (click)="save()">Save</button>
-  `,
-  styles: `
-    img {
-      border-radius: 50%;
-    }
-  `,
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css',
 })
 export class Profile {
   save() {
@@ -26,13 +21,26 @@ export class Profile {
 }
 ```
 
+**profile.component.html:**
+```html
+<img src="profile.jpg" alt="Profile photo" />
+<button (click)="save()">Save</button>
+```
+
+**profile.component.css:**
+```css
+img {
+  border-radius: 50%;
+}
+```
+
 ## Metadata Options
 
 - `selector`: The CSS selector that identifies this component in templates.
-- `template`: Inline HTML template (preferred for small templates).
-- `templateUrl`: Path to an external HTML file.
-- `styles`: Inline CSS styles.
-- `styleUrl` / `styleUrls`: Path(s) to external CSS file(s).
+- `templateUrl`: Path to an external HTML file (default approach).
+- `styleUrl` / `styleUrls`: Path(s) to external CSS file(s) (default approach).
+- `template`: Inline HTML template (use only for very small, simple templates).
+- `styles`: Inline CSS styles (use only for very small, simple styles).
 - `imports`: Lists the components, directives, or pipes used in this component's template.
 
 ## Using Components

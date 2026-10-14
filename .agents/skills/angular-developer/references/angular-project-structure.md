@@ -67,11 +67,12 @@ src/
 
 ### A. Component Authoring Standards
 1. **Always Standalone:** Every `@Component` must be standalone. Do not create or reference `NgModule` files.
-2. **Signal Inputs & Outputs:**
+2. **External Templates & Styles:** Always use `templateUrl` and `styleUrl`/`styleUrls` for external HTML and CSS files. Use inline `template` and `styles` only for very small, simple components.
+3. **Signal Inputs & Outputs:**
    * Use `input()`, `input.required()`, and `output()` signals for component communication instead of legacy `@Input()` and `@Output()` decorators.
-3. **Signal State:**
+4. **Signal State:**
    * Component state **must** use `signal()`, `computed()`, and `linkedSignal()`. Avoid unnecessary local mutable variables.
-4. **OnPush Change Detection:**
+5. **OnPush Change Detection:**
    * Set `changeDetection: ChangeDetectionStrategy.OnPush` on all components.
 
 ```typescript
@@ -82,7 +83,8 @@ import { Component, ChangeDetectionStrategy, input, computed } from '@angular/co
   selector: 'app-status-badge',
   standalone: true,
   imports: [],
-  template: `<span [class]="badgeClass()">{{ text() }}</span>`,
+  templateUrl: './status-badge.component.html',
+  styleUrl: './status-badge.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusBadgeComponent {
@@ -91,6 +93,11 @@ export class StatusBadgeComponent {
 
   readonly badgeClass = computed(() => `badge badge--${this.status()}`);
 }
+```
+
+**status-badge.component.html:**
+```html
+<span [class]="badgeClass()">{{ text() }}</span>
 ```
 
 ---

@@ -10,28 +10,32 @@ Angular Material v22 delivers components styled with Material Design 3 (M3) spec
    - Utilize Material 3 CSS variables (`--mat-sys-*` tokens) for consistent color, surface, typography, and elevation styling.
    - Never hardcode color hex codes or arbitrary borders when system tokens (`--mat-sys-outline`, `--mat-sys-surface-container`, `--mat-sys-primary`) are available.
 
-2. **Standalone Component Imports**:
+2. **External Templates & Styles**:
+   - Always use `templateUrl` and `styleUrl`/`styleUrls` for external HTML and CSS files.
+   - Use inline `template` and `styles` only for very small, simple components.
+
+3. **Standalone Component Imports**:
    - Import standalone Angular Material components or modules directly in component `imports: [...]`.
    - Prefer granular imports (`MatButton`, `MatIcon`, `MatCard`, `MatFormField`, `MatInput`) or component modules (`MatTableModule`, `MatDialogModule`) depending on component complexity.
 
-3. **Reactivity & Change Detection**:
+4. **Reactivity & Change Detection**:
    - Always enforce `changeDetection: ChangeDetectionStrategy.OnPush` on all components using Angular Material.
    - Bind component state using Angular Signals (`signal()`, `computed()`, `model()`, `input()`, `output()`).
 
-4. **Modern Signal Forms Integration**:
+5. **Modern Signal Forms Integration**:
    - In Angular v22, connect Material form controls directly to Signal Forms using `[formField]="myForm.field"` and `FormField` from `@angular/forms/signals`.
    - Place `<mat-error>` inside `<mat-form-field>` to display validation errors dynamically.
 
-5. **Accessibility (a11y)**:
+6. **Accessibility (a11y)**:
    - Provide `<mat-label>` for all form fields, or supply `aria-label` / `aria-labelledby` when visible labels are omitted.
    - Always specify `aria-label` for icon-only buttons (`button[mat-icon-button]`, `button[mat-fab]`).
    - Use standard `<mat-icon>` ligatures or font symbols configured in `index.html` (e.g. `Material Symbols Outlined`).
 
-6. **Styling & Overrides (Zero `::ng-deep`)**:
+7. **Styling & Overrides (Zero `::ng-deep`)**:
    - **Never use `::ng-deep`**.
    - Customize appearance through Material 3 Design Tokens, CSS Custom Properties (`--mat-form-field-*`, `--mat-card-*`, `--mat-sys-*`), or Sass mixins (`@include mat.theme-overrides(...)`).
 
-7. **Component Test Harnesses**:
+8. **Component Test Harnesses**:
    - Test Material components using official CDK/Material Harnesses (`MatButtonHarness`, `MatInputHarness`, `MatTableHarness`, `MatDialogHarness`) for reliable, selector-independent tests.
 
 ---
@@ -109,34 +113,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-action-bar',
   imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  templateUrl: './action-bar.component.html',
+  styleUrl: './action-bar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="actions">
-      <button mat-flat-button (click)="save()" [disabled]="isLoading()">
-        @if (isLoading()) {
-          <mat-spinner diameter="18" />
-        } @else {
-          <mat-icon>save</mat-icon>
-        }
-        Save Changes
-      </button>
-
-      <button mat-stroked-button (click)="cancel()">
-        Cancel
-      </button>
-
-      <button mat-icon-button aria-label="Open settings" (click)="openSettings()">
-        <mat-icon>settings</mat-icon>
-      </button>
-    </div>
-  `,
-  styles: `
-    .actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-  `,
 })
 export class ActionBar {
   protected readonly isLoading = signal(false);
@@ -148,6 +127,37 @@ export class ActionBar {
 
   cancel(): void {}
   openSettings(): void {}
+}
+```
+
+**action-bar.component.html:**
+```html
+<div class="actions">
+  <button mat-flat-button (click)="save()" [disabled]="isLoading()">
+    @if (isLoading()) {
+      <mat-spinner diameter="18" />
+    } @else {
+      <mat-icon>save</mat-icon>
+    }
+    Save Changes
+  </button>
+
+  <button mat-stroked-button (click)="cancel()">
+    Cancel
+  </button>
+
+  <button mat-icon-button aria-label="Open settings" (click)="openSettings()">
+    <mat-icon>settings</mat-icon>
+  </button>
+</div>
+```
+
+**action-bar.component.css:**
+```css
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 ```
 
@@ -185,71 +195,9 @@ interface ProfileData {
     MatButtonModule,
     MatIconModule,
   ],
+  templateUrl: './user-profile-form.component.html',
+  styleUrl: './user-profile-form.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <form (submit)="onSubmit($event)" class="profile-form">
-      <mat-form-field appearance="outline">
-        <mat-label>Full Name</mat-label>
-        <input matInput [formField]="profileForm.fullName" placeholder="Jane Doe" />
-        <mat-icon matSuffix>person</mat-icon>
-        @if (profileForm.fullName().errors(); as errors) {
-          <mat-error>{{ errors[0]?.message }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Email Address</mat-label>
-        <input matInput type="email" [formField]="profileForm.emailAddress" placeholder="jane@example.com" />
-        <mat-icon matSuffix>email</mat-icon>
-        @if (profileForm.emailAddress().errors(); as errors) {
-          <mat-error>{{ errors[0]?.message }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Role</mat-label>
-        <mat-select [formField]="profileForm.role">
-          @for (role of availableRoles(); track role.id) {
-            <mat-option [value]="role.id">{{ role.label }}</mat-option>
-          }
-        </mat-select>
-        @if (profileForm.role().errors(); as errors) {
-          <mat-error>{{ errors[0]?.message }}</mat-error>
-        }
-      </mat-form-field>
-
-      <div class="checkbox-row">
-        <mat-checkbox [formField]="profileForm.subscribeNewsletter">
-          Receive product updates and newsletters
-        </mat-checkbox>
-      </div>
-
-      <div class="form-actions">
-        <button mat-flat-button type="submit" [disabled]="profileForm().invalid()">
-          Submit Profile
-        </button>
-      </div>
-    </form>
-  `,
-  styles: `
-    .profile-form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      max-width: 480px;
-      padding: 24px;
-      background-color: var(--mat-sys-surface-container);
-      border-radius: 12px;
-      border: 1px solid var(--mat-sys-outline-variant);
-    }
-    .checkbox-row {
-      margin-bottom: 8px;
-    }
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-    }
-  `,
 })
 export class UserProfileForm {
   protected readonly availableRoles = signal([
@@ -283,6 +231,74 @@ export class UserProfileForm {
 }
 ```
 
+**user-profile-form.component.html:**
+```html
+<form (submit)="onSubmit($event)" class="profile-form">
+  <mat-form-field appearance="outline">
+    <mat-label>Full Name</mat-label>
+    <input matInput [formField]="profileForm.fullName" placeholder="Jane Doe" />
+    <mat-icon matSuffix>person</mat-icon>
+    @if (profileForm.fullName().errors(); as errors) {
+      <mat-error>{{ errors[0]?.message }}</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Email Address</mat-label>
+    <input matInput type="email" [formField]="profileForm.emailAddress" placeholder="jane@example.com" />
+    <mat-icon matSuffix>email</mat-icon>
+    @if (profileForm.emailAddress().errors(); as errors) {
+      <mat-error>{{ errors[0]?.message }}</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Role</mat-label>
+    <mat-select [formField]="profileForm.role">
+      @for (role of availableRoles(); track role.id) {
+        <mat-option [value]="role.id">{{ role.label }}</mat-option>
+      }
+    </mat-select>
+    @if (profileForm.role().errors(); as errors) {
+      <mat-error>{{ errors[0]?.message }}</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="checkbox-row">
+    <mat-checkbox [formField]="profileForm.subscribeNewsletter">
+      Receive product updates and newsletters
+    </mat-checkbox>
+  </div>
+
+  <div class="form-actions">
+    <button mat-flat-button type="submit" [disabled]="profileForm().invalid()">
+      Submit Profile
+    </button>
+  </div>
+</form>
+```
+
+**user-profile-form.component.css:**
+```css
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  padding: 24px;
+  background-color: var(--mat-sys-surface-container);
+  border-radius: 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
+}
+.checkbox-row {
+  margin-bottom: 8px;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+```
+
 ---
 
 ### 3.3 Cards & Content Presentation
@@ -299,47 +315,53 @@ import { MatChipsModule } from '@angular/material/chips';
 @Component({
   selector: 'app-item-card',
   imports: [MatCardModule, MatButtonModule, MatIconModule, MatChipsModule],
+  templateUrl: './item-card.component.html',
+  styleUrl: './item-card.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <mat-card appearance="outlined" class="item-card">
-      <mat-card-header>
-        <mat-icon mat-card-avatar>inventory_2</mat-icon>
-        <mat-card-title>{{ title() }}</mat-card-title>
-        <mat-card-subtitle>{{ category() }}</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <p>{{ description() }}</p>
-        <mat-chip-set aria-label="Tags">
-          @for (tag of tags(); track tag) {
-            <mat-chip>{{ tag }}</mat-chip>
-          }
-        </mat-chip-set>
-      </mat-card-content>
-
-      <mat-card-actions align="end">
-        <button mat-button>Details</button>
-        <button mat-flat-button>Action</button>
-      </mat-card-actions>
-    </mat-card>
-  `,
-  styles: `
-    .item-card {
-      background-color: var(--mat-sys-surface-container);
-      border-color: var(--mat-sys-outline-variant);
-      border-radius: 16px;
-    }
-    mat-card-content {
-      margin-top: 12px;
-      color: var(--mat-sys-on-surface-variant);
-    }
-  `,
 })
 export class ItemCard {
   readonly title = input.required<string>();
   readonly category = input<string>('General');
   readonly description = input<string>('');
   readonly tags = input<string[]>([]);
+}
+```
+
+**item-card.component.html:**
+```html
+<mat-card appearance="outlined" class="item-card">
+  <mat-card-header>
+    <mat-icon mat-card-avatar>inventory_2</mat-icon>
+    <mat-card-title>{{ title() }}</mat-card-title>
+    <mat-card-subtitle>{{ category() }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p>{{ description() }}</p>
+    <mat-chip-set aria-label="Tags">
+      @for (tag of tags(); track tag) {
+        <mat-chip>{{ tag }}</mat-chip>
+      }
+    </mat-chip-set>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-button>Details</button>
+    <button mat-flat-button>Action</button>
+  </mat-card-actions>
+</mat-card>
+```
+
+**item-card.component.css:**
+```css
+.item-card {
+  background-color: var(--mat-sys-surface-container);
+  border-color: var(--mat-sys-outline-variant);
+  border-radius: 16px;
+}
+mat-card-content {
+  margin-top: 12px;
+  color: var(--mat-sys-on-surface-variant);
 }
 ```
 
@@ -383,88 +405,9 @@ export interface UserRecord {
     MatIconModule,
     MatButtonModule,
   ],
+  templateUrl: './users-table.component.html',
+  styleUrl: './users-table.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="table-container">
-      <div class="table-header">
-        <mat-form-field appearance="outline" class="filter-field">
-          <mat-label>Filter users</mat-label>
-          <input matInput (input)="applyFilter($event)" placeholder="Search by name, email..." />
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-      </div>
-
-      <table mat-table [dataSource]="dataSource()" matSort class="mat-elevation-z1">
-        <!-- ID Column -->
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-          <td mat-cell *matCellDef="let user">{{ user.id }}</td>
-        </ng-container>
-
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-          <td mat-cell *matCellDef="let user">{{ user.name }}</td>
-        </ng-container>
-
-        <!-- Email Column -->
-        <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
-          <td mat-cell *matCellDef="let user">{{ user.email }}</td>
-        </ng-container>
-
-        <!-- Status Column -->
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-          <td mat-cell *matCellDef="let user">
-            <span class="status-badge" [class.active]="user.status === 'Active'">
-              {{ user.status }}
-            </span>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell empty-cell" [attr.colspan]="displayedColumns.length">
-            No matching users found.
-          </td>
-        </tr>
-      </table>
-
-      <mat-paginator [pageSizeOptions]="[5, 10, 25]" pageSize="10" showFirstLastButtons />
-    </div>
-  `,
-  styles: `
-    .table-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      background: var(--mat-sys-surface);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .filter-field {
-      max-width: 320px;
-    }
-    .status-badge {
-      padding: 4px 8px;
-      border-radius: 9999px;
-      font-size: 12px;
-      background-color: var(--mat-sys-surface-variant);
-      color: var(--mat-sys-on-surface-variant);
-    }
-    .status-badge.active {
-      background-color: var(--mat-sys-primary-container);
-      color: var(--mat-sys-on-primary-container);
-    }
-    .empty-cell {
-      padding: 24px;
-      text-align: center;
-      color: var(--mat-sys-on-surface-variant);
-    }
-  `,
 })
 export class UsersTable {
   readonly paginator = viewChild(MatPaginator);
@@ -492,6 +435,91 @@ export class UsersTable {
     const ds = this.dataSource();
     ds.filter = filterValue.trim().toLowerCase();
   }
+}
+```
+
+**users-table.component.html:**
+```html
+<div class="table-container">
+  <div class="table-header">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Filter users</mat-label>
+      <input matInput (input)="applyFilter($event)" placeholder="Search by name, email..." />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <table mat-table [dataSource]="dataSource()" matSort class="mat-elevation-z1">
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+      <td mat-cell *matCellDef="let user">{{ user.id }}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+      <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+      <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+    </ng-container>
+
+    <!-- Status Column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+      <td mat-cell *matCellDef="let user">
+        <span class="status-badge" [class.active]="user.status === 'Active'">
+          {{ user.status }}
+        </span>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell empty-cell" [attr.colspan]="displayedColumns.length">
+        No matching users found.
+      </td>
+    </tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25]" pageSize="10" showFirstLastButtons />
+</div>
+```
+
+**users-table.component.css:**
+```css
+.table-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--mat-sys-surface);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.filter-field {
+  max-width: 320px;
+}
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  background-color: var(--mat-sys-surface-variant);
+  color: var(--mat-sys-on-surface-variant);
+}
+.status-badge.active {
+  background-color: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+.empty-cell {
+  padding: 24px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
 }
 ```
 
@@ -644,93 +672,99 @@ import { MatMenuModule } from '@angular/material/menu';
     MatButtonModule,
     MatMenuModule,
   ],
+  templateUrl: './main-layout.component.html',
+  styleUrl: './main-layout.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="layout-container">
-      <mat-toolbar class="app-toolbar">
-        <button
-          mat-icon-button
-          aria-label="Toggle navigation drawer"
-          (click)="sidenavOpen.set(!sidenavOpen())"
-        >
-          <mat-icon>menu</mat-icon>
-        </button>
-        <span class="app-title">KodiPoint</span>
-        <span class="spacer"></span>
-
-        <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User account menu">
-          <mat-icon>account_circle</mat-icon>
-        </button>
-        <mat-menu #userMenu="matMenu">
-          <button mat-menu-item>
-            <mat-icon>person</mat-icon>
-            <span>Profile</span>
-          </button>
-          <button mat-menu-item>
-            <mat-icon>logout</mat-icon>
-            <span>Sign Out</span>
-          </button>
-        </mat-menu>
-      </mat-toolbar>
-
-      <mat-sidenav-container class="sidenav-container">
-        <mat-sidenav [opened]="sidenavOpen()" mode="side" class="app-sidenav">
-          <mat-nav-list>
-            <a mat-list-item routerLink="/dashboard">
-              <mat-icon matListItemIcon>dashboard</mat-icon>
-              <span matListItemTitle>Dashboard</span>
-            </a>
-            <a mat-list-item routerLink="/users">
-              <mat-icon matListItemIcon>people</mat-icon>
-              <span matListItemTitle>Users</span>
-            </a>
-            <a mat-list-item routerLink="/settings">
-              <mat-icon matListItemIcon>settings</mat-icon>
-              <span matListItemTitle>Settings</span>
-            </a>
-          </mat-nav-list>
-        </mat-sidenav>
-
-        <mat-sidenav-content class="main-content">
-          <router-outlet />
-        </mat-sidenav-content>
-      </mat-sidenav-container>
-    </div>
-  `,
-  styles: `
-    .layout-container {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
-    .app-toolbar {
-      background-color: var(--mat-sys-surface-container);
-      color: var(--mat-sys-on-surface);
-      border-bottom: 1px solid var(--mat-sys-outline-variant);
-    }
-    .app-title {
-      margin-left: 8px;
-      font-weight: 500;
-    }
-    .spacer {
-      flex: 1 1 auto;
-    }
-    .sidenav-container {
-      flex: 1;
-    }
-    .app-sidenav {
-      width: 240px;
-      background-color: var(--mat-sys-surface);
-      border-right: 1px solid var(--mat-sys-outline-variant);
-    }
-    .main-content {
-      padding: 24px;
-      background-color: var(--mat-sys-surface);
-    }
-  `,
 })
 export class MainLayout {
   protected readonly sidenavOpen = signal(true);
+}
+```
+
+**main-layout.component.html:**
+```html
+<div class="layout-container">
+  <mat-toolbar class="app-toolbar">
+    <button
+      mat-icon-button
+      aria-label="Toggle navigation drawer"
+      (click)="sidenavOpen.set(!sidenavOpen())"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="app-title">KodiPoint</span>
+    <span class="spacer"></span>
+
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User account menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>logout</mat-icon>
+        <span>Sign Out</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav [opened]="sidenavOpen()" mode="side" class="app-sidenav">
+      <mat-nav-list>
+        <a mat-list-item routerLink="/dashboard">
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Dashboard</span>
+        </a>
+        <a mat-list-item routerLink="/users">
+          <mat-icon matListItemIcon>people</mat-icon>
+          <span matListItemTitle>Users</span>
+        </a>
+        <a mat-list-item routerLink="/settings">
+          <mat-icon matListItemIcon>settings</mat-icon>
+          <span matListItemTitle>Settings</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="main-content">
+      <router-outlet />
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+```
+
+**main-layout.component.css:**
+```css
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.app-toolbar {
+  background-color: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+.app-title {
+  margin-left: 8px;
+  font-weight: 500;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+.sidenav-container {
+  flex: 1;
+}
+.app-sidenav {
+  width: 240px;
+  background-color: var(--mat-sys-surface);
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+.main-content {
+  padding: 24px;
+  background-color: var(--mat-sys-surface);
 }
 ```
 
@@ -783,6 +817,7 @@ describe('UserProfileForm with Material Harnesses', () => {
 
 | Do | Don't |
 | :--- | :--- |
+| Use `templateUrl` and `styleUrl`/`styleUrls` for external HTML and CSS files by default. | Don't use inline `template` and `styles` except for very small, simple components. |
 | Use `[formField]="myForm.fieldName"` with `@angular/forms/signals` for v22 forms. | Don't mix deprecated legacy forms without purpose. |
 | Use Material 3 CSS variables (`--mat-sys-*`) for styling and backgrounds. | Don't use hardcoded colors or pixel values that break themes. |
 | Always set `changeDetection: ChangeDetectionStrategy.OnPush`. | Don't leave default change detection on Material components. |
