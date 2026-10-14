@@ -119,26 +119,31 @@
         </mat-select>
       </div>
 
-      <div class="view-toggle-group">
-        <button
-          type="button"
+      <mat-button-toggle-group
+        class="view-toggle-group"
+        [value]="currentView()"
+        (change)="setView($event.value)"
+        aria-label="Property display mode"
+      >
+        <mat-button-toggle
           class="view-toggle-btn"
+          value="grid"
           [class.active]="currentView() === 'grid'"
-          (click)="setView('grid')"
+          matTooltip="Grid view"
           aria-label="Grid view"
         >
           <mat-icon class="view-icon">grid_view</mat-icon>
-        </button>
-        <button
-          type="button"
+        </mat-button-toggle>
+        <mat-button-toggle
           class="view-toggle-btn"
+          value="list"
           [class.active]="currentView() === 'list'"
-          (click)="setView('list')"
+          matTooltip="List view"
           aria-label="List view"
         >
           <mat-icon class="view-icon">format_list_bulleted</mat-icon>
-        </button>
-      </div>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
 
       <button type="button" class="btn-add-property">
         <mat-icon class="add-icon">add</mat-icon>
