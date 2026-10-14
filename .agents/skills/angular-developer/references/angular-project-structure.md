@@ -98,12 +98,6 @@ export class StatusBadgeComponent {
 ### B. Angular Material & UI Integration Rules
 1. **Material Import Standard:**
    * When creating shared components, import specific Angular Material primitives or reference `MATERIAL_MODULES` from `src/app/shared/material.imports.ts`.
-2. **Domain-Specific Visual Tokens:**
-   * **Currencies:** Always format financial figures using standard `KES` formatters (e.g., `KES 1,420,000` or `KES 14.82M`).
-   * **Payment Status Badges:**
-     * `Fully Paid` $\rightarrow$ Green badge (`#E6F4EA` / `#137333`)
-     * `Partially Paid` $\rightarrow$ Amber badge (`#FEF7E0` / `#B06000`)
-     * `Overdue` $\rightarrow$ Red badge (`#FCE8E6` / `#C5221F`)
 
 ---
 

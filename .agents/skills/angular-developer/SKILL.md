@@ -41,6 +41,12 @@ When asked to create a new Angular project, you must determine the correct execu
 - **IF** no specific version is requested AND the `ng version` command fails (indicating no Angular installation exists), you must use `npx` to fetch the latest version.
 - **Command:** `npx @angular/cli@latest new <project-name>`
 
+## Project Structure
+
+When working with this Angular project, consult the following references based on the task:
+
+- **Project structure**: This is the structure of the project file and folder structure used and the structure of the component file and folder structure used. Read [angular-project-structure.md](references/angular-project-structure.md)
+
 ## Components
 
 When working with Angular components, consult the following references based on the task:
