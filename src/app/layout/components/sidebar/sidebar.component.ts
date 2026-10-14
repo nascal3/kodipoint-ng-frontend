@@ -25,7 +25,7 @@ export interface NavSection {
     '[class.collapsed]': 'collapsed()',
   },
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css',
+  styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
   readonly collapsed = model(false);

@@ -9,7 +9,7 @@ import { SummaryCardComponent, type SummaryCardData } from './components/summary
   imports: [SummaryCardComponent, FinancialChartComponent, InvoiceTableComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
   readonly summaryCards = signal<SummaryCardData[]>([

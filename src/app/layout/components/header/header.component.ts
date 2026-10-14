@@ -10,7 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
   imports: [MatIconModule, MatButtonModule, MatMenuModule, MatDividerModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
   readonly pageTitle = input<string | undefined>(undefined);

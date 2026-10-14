@@ -9,11 +9,11 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   imports: [RouterOutlet, HeaderComponent, SidebarComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shell.component.html',
-  styleUrl: './shell.component.css',
+  styleUrl: './shell.component.scss',
 })
 export class ShellComponent {
   readonly pageTitle = signal('');
-  readonly sidebarCollapsed = signal(false);
+  sidebarCollapsed = signal(false);
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update((value) => !value);

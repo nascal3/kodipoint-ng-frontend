@@ -28,7 +28,7 @@ export type { InvoiceRecord };
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './invoice-table.component.html',
-  styleUrl: './invoice-table.component.css',
+  styleUrl: './invoice-table.component.scss',
 })
 export class InvoiceTableComponent {
   readonly paginator = viewChild(MatPaginator);

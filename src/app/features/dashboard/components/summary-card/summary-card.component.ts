@@ -11,7 +11,7 @@ export type { SummaryCardData };
   imports: [MatCardModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './summary-card.component.html',
-  styleUrl: './summary-card.component.css',
+  styleUrl: './summary-card.component.scss',
 })
 export class SummaryCardComponent {
   readonly data = input.required<SummaryCardData>();

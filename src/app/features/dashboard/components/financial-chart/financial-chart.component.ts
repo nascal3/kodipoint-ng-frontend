@@ -19,7 +19,7 @@ import * as echarts from 'echarts';
   imports: [MatCardModule, MatIconModule, MatButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './financial-chart.component.html',
-  styleUrl: './financial-chart.component.css',
+  styleUrl: './financial-chart.component.scss',
 })
 export class FinancialChartComponent {
   private readonly destroyRef = inject(DestroyRef);
