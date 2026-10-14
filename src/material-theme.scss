@@ -1,38 +1,92 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
-html {
-  height: 100%;
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$magenta-palette,
-        tertiary: mat.$violet-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    )
-  );
-}
+// Custom palettes mapped strictly to DESIGN.md tokens
+$kodipoint-primary-palette: (
+  50: #e2dfff,
+  100: #c3c0ff,
+  200: #a39eff,
+  300: #847dff,
+  400: #645cf0,
+  500: #4f46e5,
+  600: #3525cd,
+  700: #2b1da7,
+  800: #211582,
+  900: #170e5c,
+  contrast: (
+    50: #0f0069,
+    100: #0f0069,
+    200: #ffffff,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  )
+);
 
+$kodipoint-accent-palette: (
+  50: #e8f5e9,
+  100: #c8e6c9,
+  200: #a5d6a7,
+  300: #81c784,
+  400: #66bb6a,
+  500: #4caf50,
+  600: #43a047,
+  700: #388e3c,
+  800: #2e7d32,
+  900: #1b5e20,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  )
+);
+
+$kodipoint-warn-palette: (
+  50: #ffebee,
+  100: #ffcdd2,
+  200: #ef9a9a,
+  300: #e57373,
+  400: #ef5350,
+  500: #f44336,
+  600: #e53935,
+  700: #d32f2f,
+  800: #c62828,
+  900: #b71c1c,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  )
+);
+
+$kodipoint-primary: mat.m2-define-palette($kodipoint-primary-palette, 600, 500, 700);
+$kodipoint-accent: mat.m2-define-palette($kodipoint-accent-palette, 500);
+$kodipoint-warn: mat.m2-define-palette($kodipoint-warn-palette, 500);
+
+$kodipoint-theme: mat.m2-define-light-theme($kodipoint-primary, $kodipoint-accent, $kodipoint-warn);
+
+@include mat.all-component-themes($kodipoint-theme);
+
+// Global Surface & Canvas Styling
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
-  margin: 0;
-  height: 100%;
+  background-color: #faf8ff;
+  color: #131b2e;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
