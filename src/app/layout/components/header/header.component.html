@@ -8,7 +8,9 @@
         aria-label="Expand sidebar"
         type="button"
       >
-        <mat-icon class="toggle-icon">segment</mat-icon>
+        <svg class="toggle-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 6h18v2H3zM3 11h12v2H3zM3 16h18v2H3z" fill="currentColor" />
+        </svg>
       </button>
     }
 
@@ -21,7 +23,16 @@
 
   <div class="header-actions">
     <button mat-icon-button class="notification-btn" aria-label="Notifications" type="button">
-      <mat-icon class="bell-icon">notifications_none</mat-icon>
+      <svg class="bell-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
       <span class="notification-dot" aria-hidden="true"></span>
     </button>
 
