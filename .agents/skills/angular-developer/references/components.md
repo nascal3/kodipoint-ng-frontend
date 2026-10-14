@@ -1,6 +1,6 @@
 # Components
 
-Angular components are the fundamental building blocks of an application. Each component consists of a TypeScript class with behaviors, an HTML template, and a CSS selector.
+Angular components are the fundamental building blocks of an application. Each component consists of a TypeScript class with behaviors, an HTML template, and a CSS/SCSS selector.
 
 ## Component Definition
 
@@ -12,7 +12,7 @@ Use the `@Component` decorator to define a component's metadata.
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css',
+  styleUrl: './profile.component.scss',
 })
 export class Profile {
   save() {
@@ -27,8 +27,8 @@ export class Profile {
 <button (click)="save()">Save</button>
 ```
 
-**profile.component.css:**
-```css
+**profile.component.scss:**
+```scss
 img {
   border-radius: 50%;
 }
@@ -38,9 +38,9 @@ img {
 
 - `selector`: The CSS selector that identifies this component in templates.
 - `templateUrl`: Path to an external HTML file (default approach).
-- `styleUrl` / `styleUrls`: Path(s) to external CSS file(s) (default approach).
+- `styleUrl` / `styleUrls`: Path(s) to external SCSS file(s) (default approach).
 - `template`: Inline HTML template (use only for very small, simple templates).
-- `styles`: Inline CSS styles (use only for very small, simple styles).
+- `styles`: Inline SCSS/CSS styles (use only for very small, simple styles).
 - `imports`: Lists the components, directives, or pipes used in this component's template.
 
 ## Using Components

@@ -23,7 +23,7 @@ This skill enforces Angular naming conventions for components, services, directi
 - **Unified Filenames**: If using split template or style files, keep names identical to the main TypeScript file:
   - `product-list.ts`
   - `product-list.html`
-  - `product-list.css`
+  - `product-list.scss`
 - **Test Files**: Continue to use the same base name with the `.spec.ts` suffix (e.g., `product-list.spec.ts` for `product-list.ts`).
 
 ### 2. Core Directory (Application Foundation)

@@ -16,7 +16,7 @@ Styles can be defined inline or in separate files.
     }
   `,
   // OR external file
-  styleUrl: 'photo.component.css',
+  styleUrl: 'photo.component.scss',
 })
 export class Photo {}
 ```
@@ -50,7 +50,7 @@ export class GlobalStyled {}
 
 Targets the component's host element (the element matching the component's selector).
 
-```css
+```scss
 :host {
   display: block;
   border: 1px solid black;
@@ -61,7 +61,7 @@ Targets the component's host element (the element matching the component's selec
 
 Targets the host element based on some condition in its ancestry.
 
-```css
+```scss
 /* Apply styles if any ancestor has the 'theme-dark' class */
 :host-context(.theme-dark) {
   background-color: #333;
@@ -88,4 +88,4 @@ You can use `<style>` elements directly in a component's template. View encapsul
 
 ## External Styles
 
-Using `<link>` or `@import` in CSS is treated as external styles. **External styles are not affected by emulated view encapsulation.**
+Using `<link>` or `@use`/`@import` in SCSS/CSS is treated as external styles. **External styles are not affected by emulated view encapsulation.**

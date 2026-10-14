@@ -67,7 +67,7 @@ src/
 
 ### A. Component Authoring Standards
 1. **Always Standalone:** Every `@Component` must be standalone. Do not create or reference `NgModule` files.
-2. **External Templates & Styles:** Always use `templateUrl` and `styleUrl`/`styleUrls` for external HTML and CSS files. Use inline `template` and `styles` only for very small, simple components.
+2. **External Templates & Styles:** Always use `templateUrl` and `styleUrl`/`styleUrls` for external HTML and SCSS files. Use inline `template` and `styles` only for very small, simple components.
 3. **Signal Inputs & Outputs:**
    * Use `input()`, `input.required()`, and `output()` signals for component communication instead of legacy `@Input()` and `@Output()` decorators.
 4. **Signal State:**
@@ -84,7 +84,7 @@ import { Component, ChangeDetectionStrategy, input, computed } from '@angular/co
   standalone: true,
   imports: [],
   templateUrl: './status-badge.component.html',
-  styleUrl: './status-badge.component.css',
+  styleUrl: './status-badge.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusBadgeComponent {

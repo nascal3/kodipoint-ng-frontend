@@ -2,13 +2,13 @@
 
 Angular Aria (`@angular/aria`) is a collection of headless, accessible directives that implement common WAI-ARIA patterns. These directives handle keyboard interactions, ARIA attributes, focus management, and screen reader support.
 
-**As an AI Agent, your role is to provide the HTML structure and CSS styling**, while the directives handle the complex accessibility logic.
+**As an AI Agent, your role is to provide the HTML structure and SCSS styling**, while the directives handle the complex accessibility logic.
 
 ## Styling Headless Components
 
-Because Angular Aria components are headless, they do not come with default styles. You **must** use CSS to style different states based on the ARIA attributes or structural classes the directives automatically apply.
+Because Angular Aria components are headless, they do not come with default styles. You **must** use SCSS to style different states based on the ARIA attributes or structural classes the directives automatically apply.
 
-Common ARIA attributes to target in CSS:
+Common ARIA attributes to target in SCSS:
 
 - `[aria-expanded="true"]` / `[aria-expanded="false"]`
 - `[aria-selected="true"]`
@@ -60,7 +60,7 @@ export class App {
 **Styling Strategy:**
 Target the `[aria-expanded]` attribute on the trigger to rotate icons, and style the panel visibility.
 
-```css
+```scss
 .accordion-header[aria-expanded='true'] .icon {
   transform: rotate(180deg);
 }
@@ -107,18 +107,20 @@ export class App {
 **Styling Strategy:**
 Target `[aria-selected="true"]` for selected state and `:focus-visible` or `[data-active]` for the focused item (Angular Aria uses roving tabindex or activedescendant).
 
-```css
+```scss
 .option {
   padding: 8px;
   cursor: pointer;
-}
-.option[aria-selected='true'] {
-  background: #e0f7fa;
-  font-weight: bold;
-}
-/* Focus state managed by aria */
-.option:focus-visible {
-  outline: 2px solid blue;
+
+  &[aria-selected='true'] {
+    background: #e0f7fa;
+    font-weight: bold;
+  }
+
+  /* Focus state managed by aria */
+  &:focus-visible {
+    outline: 2px solid blue;
+  }
 }
 ```
 
@@ -194,7 +196,7 @@ import {Listbox, Option} from '@angular/aria/listbox';
 **Styling Strategy:**
 Style the popup container to look like a dropdown floating above content (often paired with CDK Overlay).
 
-```css
+```scss
 .select-trigger {
   width: 200px;
   padding: 8px;
@@ -247,7 +249,7 @@ For actions, commands, and context menus (not for form selection).
 **Styling Strategy:**
 Use flexbox for the menubar. Hide/show submenus based on the trigger's state.
 
-```css
+```scss
 .menubar {
   display: flex;
   gap: 10px;
@@ -258,10 +260,11 @@ Use flexbox for the menubar. Hide/show submenus based on the trigger's state.
   background: white;
   border: 1px solid #ccc;
   padding: 5px 0;
-}
-.menu li {
-  padding: 5px 15px;
-  cursor: pointer;
+
+  li {
+    padding: 5px 15px;
+    cursor: pointer;
+  }
 }
 ```
 
@@ -296,7 +299,7 @@ Layered content sections where only one panel is visible.
 **Styling Strategy:**
 Target `[aria-selected="true"]` on the tab buttons.
 
-```css
+```scss
 .tab-list {
   display: flex;
   border-bottom: 2px solid #ccc;
@@ -307,10 +310,11 @@ Target `[aria-selected="true"]` on the tab buttons.
   padding: 10px 20px;
   cursor: pointer;
   border-bottom: 2px solid transparent;
-}
-.tab-btn[aria-selected='true'] {
-  border-bottom-color: blue;
-  font-weight: bold;
+
+  &[aria-selected='true'] {
+    border-bottom-color: blue;
+    font-weight: bold;
+  }
 }
 .tab-panel {
   padding: 20px;
@@ -357,7 +361,7 @@ Groups related controls (like text formatting).
 **Styling Strategy:**
 Target `[aria-pressed="true"]` (for toggle buttons) or `[aria-checked="true"]` (for radio groups) within the toolbar.
 
-```css
+```scss
 .toolbar {
   display: flex;
   gap: 5px;
@@ -367,10 +371,11 @@ Target `[aria-pressed="true"]` (for toggle buttons) or `[aria-checked="true"]` (
 .tool-btn {
   padding: 5px 10px;
   border: 1px solid #ccc;
-}
-.tool-btn[aria-pressed='true'],
-.tool-btn[aria-checked='true'] {
-  background: #ddd;
+
+  &[aria-pressed='true'],
+  &[aria-checked='true'] {
+    background: #ddd;
+  }
 }
 ```
 
@@ -403,7 +408,7 @@ Displays hierarchical data (file systems, nested nav).
 **Styling Strategy:**
 Target `[aria-expanded]` to show/hide children or rotate chevron icons. Use `padding-left` on nested groups to show hierarchy.
 
-```css
+```scss
 .tree,
 .tree-group {
   list-style: none;
@@ -444,21 +449,23 @@ A two-dimensional interactive collection of cells enabling navigation via arrow 
 **Styling Strategy:**
 Target `[aria-selected="true"]` for selected cells and `:focus-visible` for the active cell (roving tabindex) or `[aria-activedescendant]` on the container.
 
-```css
+```scss
 .grid-table {
   border-collapse: collapse;
 }
 [ngGridCell] {
   padding: 8px;
   border: 1px solid #ddd;
-}
-[ngGridCell][aria-selected='true'] {
-  background: #e3f2fd;
-}
-/* Focus state managed by roving tabindex */
-[ngGridCell]:focus-visible {
-  outline: 2px solid #2196f3;
-  outline-offset: -2px;
+
+  &[aria-selected='true'] {
+    background: #e3f2fd;
+  }
+
+  /* Focus state managed by roving tabindex */
+  &:focus-visible {
+    outline: 2px solid #2196f3;
+    outline-offset: -2px;
+  }
 }
 ```
 
@@ -609,5 +616,5 @@ You can bind a multi-selectable Listbox directly to a form array:
 ## General Rules for Agents
 
 1. **Never use native HTML elements like `<select>`** when asked to implement these specific Aria patterns. Use the `ng*` directives.
-2. **Handle CSS manually**: Remember that `Angular Aria` does NOT provide styles. You must write the CSS, targeting the native ARIA attributes (`aria-expanded`, `aria-selected`, etc.) that the directives automatically toggle.
+2. **Handle SCSS styling manually**: Remember that `Angular Aria` does NOT provide styles. You must write the SCSS, targeting the native ARIA attributes (`aria-expanded`, `aria-selected`, etc.) that the directives automatically toggle.
 3. **Lazy Loading**: Always use the provided structural directives (`ngAccordionContent`, `ngTabContent`, `ngMenuContent`, `ngComboboxPopup`, `ngTreeItemGroup`) inside `ng-template` for heavy content panels or nested groups to ensure they are lazily rendered.

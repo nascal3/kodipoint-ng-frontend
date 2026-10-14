@@ -11,7 +11,7 @@ Angular Material v22 delivers components styled with Material Design 3 (M3) spec
    - Never hardcode color hex codes or arbitrary borders when system tokens (`--mat-sys-outline`, `--mat-sys-surface-container`, `--mat-sys-primary`) are available.
 
 2. **External Templates & Styles**:
-   - Always use `templateUrl` and `styleUrl`/`styleUrls` for external HTML and CSS files.
+   - Always use `templateUrl` and `styleUrl`/`styleUrls` for external HTML and SCSS files.
    - Use inline `template` and `styles` only for very small, simple components.
 
 3. **Standalone Component Imports**:
@@ -114,7 +114,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   selector: 'app-action-bar',
   imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './action-bar.component.html',
-  styleUrl: './action-bar.component.css',
+  styleUrl: './action-bar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActionBar {
@@ -152,8 +152,8 @@ export class ActionBar {
 </div>
 ```
 
-**action-bar.component.css:**
-```css
+**action-bar.component.scss:**
+```scss
 .actions {
   display: flex;
   align-items: center;
@@ -196,7 +196,7 @@ interface ProfileData {
     MatIconModule,
   ],
   templateUrl: './user-profile-form.component.html',
-  styleUrl: './user-profile-form.component.css',
+  styleUrl: './user-profile-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfileForm {
@@ -278,8 +278,8 @@ export class UserProfileForm {
 </form>
 ```
 
-**user-profile-form.component.css:**
-```css
+**user-profile-form.component.scss:**
+```scss
 .profile-form {
   display: flex;
   flex-direction: column;
@@ -316,7 +316,7 @@ import { MatChipsModule } from '@angular/material/chips';
   selector: 'app-item-card',
   imports: [MatCardModule, MatButtonModule, MatIconModule, MatChipsModule],
   templateUrl: './item-card.component.html',
-  styleUrl: './item-card.component.css',
+  styleUrl: './item-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemCard {
@@ -352,8 +352,8 @@ export class ItemCard {
 </mat-card>
 ```
 
-**item-card.component.css:**
-```css
+**item-card.component.scss:**
+```scss
 .item-card {
   background-color: var(--mat-sys-surface-container);
   border-color: var(--mat-sys-outline-variant);
@@ -406,7 +406,7 @@ export interface UserRecord {
     MatButtonModule,
   ],
   templateUrl: './users-table.component.html',
-  styleUrl: './users-table.component.css',
+  styleUrl: './users-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersTable {
@@ -492,8 +492,8 @@ export class UsersTable {
 </div>
 ```
 
-**users-table.component.css:**
-```css
+**users-table.component.scss:**
+```scss
 .table-container {
   display: flex;
   flex-direction: column;
@@ -673,7 +673,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatMenuModule,
   ],
   templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.css',
+  styleUrl: './main-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayout {
@@ -735,8 +735,8 @@ export class MainLayout {
 </div>
 ```
 
-**main-layout.component.css:**
-```css
+**main-layout.component.scss:**
+```scss
 .layout-container {
   display: flex;
   flex-direction: column;
@@ -817,7 +817,7 @@ describe('UserProfileForm with Material Harnesses', () => {
 
 | Do | Don't |
 | :--- | :--- |
-| Use `templateUrl` and `styleUrl`/`styleUrls` for external HTML and CSS files by default. | Don't use inline `template` and `styles` except for very small, simple components. |
+| Use `templateUrl` and `styleUrl`/`styleUrls` for external HTML and SCSS files by default. | Don't use inline `template` and `styles` except for very small, simple components. |
 | Use `[formField]="myForm.fieldName"` with `@angular/forms/signals` for v22 forms. | Don't mix deprecated legacy forms without purpose. |
 | Use Material 3 CSS variables (`--mat-sys-*`) for styling and backgrounds. | Don't use hardcoded colors or pixel values that break themes. |
 | Always set `changeDetection: ChangeDetectionStrategy.OnPush`. | Don't leave default change detection on Material components. |

@@ -1,15 +1,15 @@
 # Angular Animations
 
 When animating elements in Angular, **first analyze the project's Angular version** in `package.json`.
-For modern applications (**Angular v20.2 and above**), prefer using native CSS with `animate.enter` and `animate.leave`. For older applications, you may need to use the deprecated `@angular/animations` package.
+For modern applications (**Angular v20.2 and above**), prefer using native SCSS/CSS with `animate.enter` and `animate.leave`. For older applications, you may need to use the deprecated `@angular/animations` package.
 
-## 1. Native CSS Animations (v20.2+ Recommended)
+## 1. Native SCSS/CSS Animations (v20.2+ Recommended)
 
-Modern Angular provides `animate.enter` and `animate.leave` to animate elements as they enter or leave the DOM. They apply CSS classes at the appropriate times.
+Modern Angular provides `animate.enter` and `animate.leave` to animate elements as they enter or leave the DOM. They apply SCSS/CSS classes at the appropriate times.
 
 ### `animate.enter` and `animate.leave`
 
-Use these directly on elements to apply CSS classes during the enter or leave phase. Angular automatically removes the enter classes when the animation completes. For `animate.leave`, Angular waits for the animation to finish before removing the element from the DOM.
+Use these directly on elements to apply SCSS/CSS classes during the enter or leave phase. Angular automatically removes the enter classes when the animation completes. For `animate.leave`, Angular waits for the animation to finish before removing the element from the DOM.
 
 `animate.enter` example:
 
@@ -21,7 +21,7 @@ Use these directly on elements to apply CSS classes during the enter or leave ph
 }
 ```
 
-```css
+```scss
 /* Ensure you have a starting style if using transitions instead of keyframes */
 .enter-container {
   border: 1px solid #dddddd;
@@ -29,13 +29,16 @@ Use these directly on elements to apply CSS classes during the enter or leave ph
   padding: 20px;
   font-weight: bold;
   font-size: 20px;
+
+  p {
+    margin: 0;
+  }
 }
-.enter-container p {
-  margin: 0;
-}
+
 .enter-animation {
   animation: slide-fade 1s;
 }
+
 @keyframes slide-fade {
   from {
     opacity: 0;
@@ -70,9 +73,9 @@ onLeave(event: AnimationCallbackEvent) {
 }
 ```
 
-## 2. Advanced CSS Animations
+## 2. Advanced SCSS Animations
 
-CSS offers robust tools for advanced animation sequences.
+SCSS offers robust tools for advanced animation sequences.
 
 ### Animating State and Styles
 
@@ -82,31 +85,34 @@ Toggle CSS classes on elements using property binding to trigger transitions.
 <div [class.open]="isOpen">...</div>
 ```
 
-```css
+```scss
 div {
   transition: height 0.3s ease-out;
   height: 100px;
-}
-div.open {
-  height: 200px;
+
+  &.open {
+    height: 200px;
+  }
 }
 ```
 
 ### Animating Auto Height
 
-You can use `css-grid` to animate to auto height.
+You can use CSS grid in SCSS to animate to auto height.
 
-```css
+```scss
 .container {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows 0.3s;
-}
-.container.open {
-  grid-template-rows: 1fr;
-}
-.container > div {
-  overflow: hidden;
+
+  &.open {
+    grid-template-rows: 1fr;
+  }
+
+  > div {
+    overflow: hidden;
+  }
 }
 ```
 

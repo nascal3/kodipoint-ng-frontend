@@ -71,9 +71,9 @@ Angular automatically applies CSS classes to controls and forms based on their s
 | Value is Valid | `ng-valid`                        | `ng-invalid`   |
 | Form Submitted | `ng-submitted` (on `<form>` only) | -              |
 
-You can use these classes to provide visual feedback in your CSS:
+You can use these classes to provide visual feedback in your SCSS:
 
-```css
+```scss
 .ng-valid[required],
 .ng-valid.required {
   border-left: 5px solid #42a948; /* green */

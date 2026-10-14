@@ -46,13 +46,13 @@ _(Do NOT create a `tailwind.config.js` file! Configuration in v4 is handled thro
 
 ### 3. Import Tailwind CSS
 
-In your global styles file (e.g., `src/styles.css`), add the standard v4 import:
+In your global styles file (e.g., `src/styles.scss`), add the standard v4 import:
 
-```css
-@import 'tailwindcss';
+```scss
+@use 'tailwindcss';
 ```
 
-_(If using SCSS, use `@use 'tailwindcss';` instead)._
+_(If using standard CSS, use `@import 'tailwindcss';` instead)._
 
 ### 4. Use Utility Classes
 

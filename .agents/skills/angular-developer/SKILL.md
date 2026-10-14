@@ -1,6 +1,6 @@
 ---
 name: angular-developer
-description: Generates Angular code and provides architectural guidance. Trigger when creating projects, components, services, or HTTP communication, or for best practices on reactivity (signals, linkedSignal, resource, httpResource), queries and content projection, forms, dependency injection, routing, SSR, accessibility (ARIA), Angular Material v22, animations, styling (component styles, Tailwind CSS), testing, naming conventions, or CLI tooling.
+description: Generates Angular code and provides architectural guidance. Trigger when creating projects, components, services, or HTTP communication, or for best practices on reactivity (signals, linkedSignal, resource, httpResource), queries and content projection, forms, dependency injection, routing, SSR, accessibility (ARIA), Angular Material v22, animations, styling (component styles with SCSS, Tailwind CSS), testing, naming conventions, or CLI tooling.
 license: MIT
 metadata:
   author: Copyright 2026 Google LLC
@@ -21,6 +21,7 @@ If no guidelines are provided by the user, here are some default rules to follow
 
 1. Use the latest stable version of Angular unless the user specifies otherwise.
 2. Use Signal Forms for form management in new projects (stable in Angular v22 and newer) [Find out more](references/signal-forms.md).
+3. Use SCSS for styling by default unless the user specifies otherwise.
 
 **Execution Rules for `ng new`:**
 When asked to create a new Angular project, you must determine the correct execution command by following these strict steps:
@@ -28,18 +29,18 @@ When asked to create a new Angular project, you must determine the correct execu
 **Step 1: Check for an explicit user version.**
 
 - **IF** the user requests a specific version (e.g., Angular 15), bypass local installations and strictly use `npx`.
-- **Command:** `npx @angular/cli@<requested_version> new <project-name>`
+- **Command:** `npx @angular/cli@<requested_version> new <project-name> --style=scss`
 
 **Step 2: Check for an existing Angular installation.**
 
 - **IF** no specific version is requested, run `ng version` in the terminal to check if the Angular CLI is already installed on the system.
 - **IF** the command succeeds and returns an installed version, use the local/global installation directly.
-- **Command:** `ng new <project-name>`
+- **Command:** `ng new <project-name> --style=scss`
 
 **Step 3: Fallback to Latest.**
 
 - **IF** no specific version is requested AND the `ng version` command fails (indicating no Angular installation exists), you must use `npx` to fetch the latest version.
-- **Command:** `npx @angular/cli@latest new <project-name>`
+- **Command:** `npx @angular/cli@latest new <project-name> --style=scss`
 
 ## Project Structure
 
@@ -135,8 +136,8 @@ If you require deeper documentation or more context, visit the [official Angular
 When implementing styling and animations in Angular, consult the following references:
 
 - **Using Tailwind CSS with Angular**: Integrating Tailwind CSS into Angular projects. Read [tailwind-css.md](references/tailwind-css.md)
-- **Angular Animations**: Using native CSS (recommended) or the legacy DSL for dynamic effects. Read [angular-animations.md](references/angular-animations.md)
-- **Styling components**: Best practices for component styles and encapsulation. Read [component-styling.md](references/component-styling.md)
+- **Angular Animations**: Using native SCSS/CSS (recommended) or the legacy DSL for dynamic effects. Read [angular-animations.md](references/angular-animations.md)
+- **Styling components**: Best practices for component styles with SCSS and encapsulation. Read [component-styling.md](references/component-styling.md)
 
 ## Testing
 

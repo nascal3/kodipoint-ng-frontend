@@ -19,13 +19,13 @@ This is a **progressive enhancement**. In browsers that don't support the API, t
 3. Browser takes a screenshot of the new state.
 4. Browser animates between the two states.
 
-## Customizing with CSS
+## Customizing with SCSS
 
-Transitions are customized in **global CSS files** (not component-scoped CSS).
+Transitions are customized in **global SCSS files** (not component-scoped SCSS).
 
 Use the `::view-transition-old()` and `::view-transition-new()` pseudo-elements.
 
-```css
+```scss
 /* Example: Cross-fade + Slide */
 ::view-transition-old(root) {
   animation: 90ms cubic-bezier(0.4, 0, 1, 1) both fade-out;
@@ -52,5 +52,5 @@ withViewTransitions({
 
 ## Best Practices
 
-- **Global Styles**: Always define transition animations in `styles.css` to avoid view encapsulation issues.
+- **Global Styles**: Always define transition animations in `styles.scss` to avoid view encapsulation issues.
 - **View Transition Names**: Assign unique `view-transition-name` to elements that should transition smoothly across routes (e.g., a header image).
