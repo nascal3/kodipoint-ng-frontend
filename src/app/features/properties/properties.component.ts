@@ -197,13 +197,13 @@ export class PropertiesComponent {
     },
   ]);
 
-  readonly selectedCounty = signal('All Counties (Nairobi, Kiambu, Mombasa)');
+  readonly selectedCounty = signal('All Counties');
   readonly selectedStatus = signal('Status: All Statuses');
   readonly searchQuery = signal('');
   readonly currentView = signal<'grid' | 'list'>('grid');
 
   readonly counties = [
-    'All Counties (Nairobi, Kiambu, Mombasa)',
+    'All Counties',
     'Nairobi',
     'Kiambu',
     'Mombasa',

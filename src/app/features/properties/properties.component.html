@@ -96,29 +96,27 @@
       </div>
 
       <div class="dropdown-wrapper">
-        <select
+        <mat-select
           class="custom-select"
           [ngModel]="selectedCounty()"
           (ngModelChange)="selectedCounty.set($event)"
         >
           @for (county of counties; track county) {
-            <option [value]="county">{{ county }}</option>
+            <mat-option [value]="county">{{ county }}</mat-option>
           }
-        </select>
-        <mat-icon class="select-chevron">keyboard_arrow_down</mat-icon>
+        </mat-select>
       </div>
 
       <div class="dropdown-wrapper">
-        <select
+        <mat-select
           class="custom-select"
           [ngModel]="selectedStatus()"
           (ngModelChange)="selectedStatus.set($event)"
         >
           @for (status of statuses; track status) {
-            <option [value]="status">{{ status }}</option>
+            <mat-option [value]="status">{{ status }}</mat-option>
           }
-        </select>
-        <mat-icon class="select-chevron">keyboard_arrow_down</mat-icon>
+        </mat-select>
       </div>
 
       <div class="view-toggle-group">
