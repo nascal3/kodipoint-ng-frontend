@@ -83,69 +83,70 @@
 
   <!-- Search, Filter & Actions Section -->
   <section class="controls-toolbar" aria-label="Search and Filter Properties">
-    <div class="search-input-wrapper">
-      <mat-icon class="search-icon">search</mat-icon>
-      <input
-        type="text"
-        class="search-input"
-        placeholder="Search properties"
-        [ngModel]="searchQuery()"
-        (ngModelChange)="searchQuery.set($event)"
-      />
-      <span class="shortcut-badge">⌘K</span>
-    </div>
+    <div class="controls-card">
+      <div class="search-input-wrapper">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search properties"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
 
-    <div class="dropdown-wrapper">
-      <select
-        class="custom-select"
-        [ngModel]="selectedCounty()"
-        (ngModelChange)="selectedCounty.set($event)"
-      >
-        @for (county of counties; track county) {
-          <option [value]="county">{{ county }}</option>
-        }
-      </select>
-      <mat-icon class="select-chevron">keyboard_arrow_down</mat-icon>
-    </div>
+      <div class="dropdown-wrapper">
+        <select
+          class="custom-select"
+          [ngModel]="selectedCounty()"
+          (ngModelChange)="selectedCounty.set($event)"
+        >
+          @for (county of counties; track county) {
+            <option [value]="county">{{ county }}</option>
+          }
+        </select>
+        <mat-icon class="select-chevron">keyboard_arrow_down</mat-icon>
+      </div>
 
-    <div class="dropdown-wrapper">
-      <select
-        class="custom-select"
-        [ngModel]="selectedStatus()"
-        (ngModelChange)="selectedStatus.set($event)"
-      >
-        @for (status of statuses; track status) {
-          <option [value]="status">{{ status }}</option>
-        }
-      </select>
-      <mat-icon class="select-chevron">keyboard_arrow_down</mat-icon>
-    </div>
+      <div class="dropdown-wrapper">
+        <select
+          class="custom-select"
+          [ngModel]="selectedStatus()"
+          (ngModelChange)="selectedStatus.set($event)"
+        >
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ status }}</option>
+          }
+        </select>
+        <mat-icon class="select-chevron">keyboard_arrow_down</mat-icon>
+      </div>
 
-    <div class="view-toggle-group">
-      <button
-        type="button"
-        class="view-toggle-btn"
-        [class.active]="currentView() === 'grid'"
-        (click)="setView('grid')"
-        aria-label="Grid view"
-      >
-        <mat-icon class="view-icon">grid_view</mat-icon>
+      <div class="view-toggle-group">
+        <button
+          type="button"
+          class="view-toggle-btn"
+          [class.active]="currentView() === 'grid'"
+          (click)="setView('grid')"
+          aria-label="Grid view"
+        >
+          <mat-icon class="view-icon">grid_view</mat-icon>
+        </button>
+        <button
+          type="button"
+          class="view-toggle-btn"
+          [class.active]="currentView() === 'list'"
+          (click)="setView('list')"
+          aria-label="List view"
+        >
+          <mat-icon class="view-icon">format_list_bulleted</mat-icon>
+        </button>
+      </div>
+
+      <button type="button" class="btn-add-property">
+        <mat-icon class="add-icon">add</mat-icon>
+        <span>Add Property</span>
       </button>
-      <button
-        type="button"
-        class="view-toggle-btn"
-        [class.active]="currentView() === 'list'"
-        (click)="setView('list')"
-        aria-label="List view"
-      >
-        <mat-icon class="view-icon">format_list_bulleted</mat-icon>
-      </button>
     </div>
-
-    <button type="button" class="btn-add-property">
-      <mat-icon class="add-icon">add</mat-icon>
-      <span>Add Property</span>
-    </button>
   </section>
 
   <!-- Properties Grid Section (3 Columns) -->
