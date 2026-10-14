@@ -198,49 +198,22 @@
 }
 
 .search-input-wrapper {
-  display: flex;
-  align-items: center;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 0 12px;
-  height: 42px;
+  --mat-form-field-container-height: 42px;
+  --mat-form-field-container-vertical-padding: 10px;
+  --mat-form-field-outlined-container-shape: 10px;
+  --mat-form-field-outlined-outline-color: #e2e8f0;
+  --mat-form-field-outlined-hover-outline-color: #cbd5e1;
+
   min-width: 250px;
   flex: 1;
   max-width: 320px;
-  box-sizing: border-box;
+  margin: 0;
 
   .search-icon {
     color: #94a3b8;
     font-size: 20px;
     width: 20px;
     height: 20px;
-    margin-right: 8px;
-  }
-
-  .search-input {
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 13.5px;
-    color: #0f172a;
-    width: 100%;
-    font-family: inherit;
-
-    &::placeholder { color: #94a3b8; }
-  }
-
-  .shortcut-badge {
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 11px;
-    font-weight: 600;
-    color: #64748b;
-    user-select: none;
-    margin-left: 8px;
-    white-space: nowrap;
   }
 }
 

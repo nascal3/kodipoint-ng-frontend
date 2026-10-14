@@ -84,16 +84,22 @@
   <!-- Search, Filter & Actions Section -->
   <section class="controls-toolbar" aria-label="Search and Filter Properties">
     <div class="controls-card">
-      <div class="search-input-wrapper">
-        <mat-icon class="search-icon">search</mat-icon>
+      <mat-form-field
+        class="search-input-wrapper"
+        appearance="outline"
+        subscriptSizing="dynamic"
+      >
+        <mat-icon matPrefix class="search-icon">search</mat-icon>
         <input
+          matInput
           type="text"
           class="search-input"
           placeholder="Search properties"
+          aria-label="Search properties"
           [ngModel]="searchQuery()"
           (ngModelChange)="searchQuery.set($event)"
         />
-      </div>
+      </mat-form-field>
 
       <div class="dropdown-wrapper">
         <mat-select

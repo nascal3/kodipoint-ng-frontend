@@ -8,6 +8,10 @@ html, body {
   width: 100%;
 }
 
+.properties-container .search-input-wrapper .mdc-text-field--outlined {
+  height: 42px;
+}
+
 /* User Profile Menu Styling */
 .user-profile-menu-panel.mat-mdc-menu-panel {
   --mat-menu-container-shape: 14px;

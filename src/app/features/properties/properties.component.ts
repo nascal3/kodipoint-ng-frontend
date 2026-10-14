@@ -10,6 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 export interface PropertyItem {
   id: number;
@@ -47,6 +48,7 @@ export interface PropertyItem {
     MatCardModule,
     MatChipsModule,
     MatDividerModule,
+    MatFormFieldModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './properties.component.html',
