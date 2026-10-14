@@ -1,45 +1,79 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { HeaderComponent } from '../header/header.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, MatSidenavModule, HeaderComponent, SidebarComponent],
+  imports: [RouterOutlet, HeaderComponent, SidebarComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="shell-container">
-      <app-header [pageTitle]="pageTitle" />
-      <mat-sidenav-container class="sidenav-container">
-        <app-sidebar />
-        <mat-sidenav-content class="main-content">
+    <div class="shell-layout">
+      <app-sidebar class="shell-sidebar" [(collapsed)]="sidebarCollapsed" />
+      <div class="shell-main">
+        <app-header
+          [pageTitle]="pageTitle"
+          [sidebarCollapsed]="sidebarCollapsed()"
+          (toggleSidebar)="toggleSidebar()"
+        />
+        <main class="shell-content">
           <router-outlet />
-        </mat-sidenav-content>
-      </mat-sidenav-container>
+        </main>
+      </div>
     </div>
   `,
   styles: `
-    .shell-container {
+    :host {
+      display: block;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    .shell-layout {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+      background-color: #faf8ff;
+      overflow: hidden;
+    }
+
+    .shell-sidebar {
+      flex-shrink: 0;
+      height: 100vh;
+      z-index: 20;
+    }
+
+    .shell-main {
+      flex: 1;
       display: flex;
       flex-direction: column;
       height: 100vh;
-      background-color: var(--mat-sys-surface);
+      min-width: 0;
+      overflow: hidden;
     }
 
-    .sidenav-container {
+    .shell-content {
       flex: 1;
-      height: calc(100vh - 64px);
+      padding: 24px 32px;
+      overflow-y: auto;
+      background-color: #faf8ff;
+      box-sizing: border-box;
     }
 
-    .main-content {
-      padding: 24px;
-      background-color: var(--mat-sys-surface);
-      overflow-y: auto;
+    @media (max-width: 768px) {
+      .shell-content {
+        padding: 16px;
+      }
     }
   `,
 })
 export class ShellComponent {
   pageTitle = '';
+  readonly sidebarCollapsed = signal(false);
+
+  toggleSidebar(): void {
+    this.sidebarCollapsed.update((v) => !v);
+  }
 }
