@@ -1,0 +1,292 @@
+<div class="properties-container">
+  <!-- Top KPI Summary Cards -->
+  <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
+    <!-- Card 1: Projected Monthly Rent -->
+    <div class="kpi-card">
+      <div class="kpi-card-header">
+        <span class="kpi-title">{{ projectedRent().title }}</span>
+        <div class="kpi-icon-bubble bubble-purple">
+          <mat-icon class="kpi-icon">account_balance_wallet</mat-icon>
+        </div>
+      </div>
+      <div class="kpi-main-val">
+        <span class="currency-prefix">{{ projectedRent().currency }}</span>
+        <span class="amount-val">{{ projectedRent().amount }}</span>
+      </div>
+      <div class="kpi-sub-text">
+        <span class="sub-label">{{ projectedRent().subtitleLabel }}</span>
+        <span class="sub-bold">{{ projectedRent().valuation }}</span>
+      </div>
+    </div>
+
+    <!-- Card 2: Portfolio Occupancy -->
+    <div class="kpi-card">
+      <div class="kpi-card-header">
+        <span class="kpi-title">{{ occupancyKpi().title }}</span>
+        <div class="kpi-icon-bubble bubble-green">
+          <mat-icon class="kpi-icon">apartment</mat-icon>
+        </div>
+      </div>
+      <div class="kpi-flex-row">
+        <span class="amount-val">{{ occupancyKpi().percentage }}</span>
+        <span class="kpi-unit-ratio">{{ occupancyKpi().unitRatio }}</span>
+      </div>
+      <div class="kpi-progress-track">
+        <div
+          class="kpi-progress-fill fill-purple"
+          [style.width.%]="occupancyKpi().progress"
+        ></div>
+      </div>
+      <div class="kpi-dot-row">
+        <span class="kpi-status-dot dot-success"></span>
+        <span class="kpi-status-label">{{ occupancyKpi().vacantText }}</span>
+      </div>
+    </div>
+
+    <!-- Card 3: Total Collected vs. Owed -->
+    <div class="kpi-card">
+      <div class="kpi-card-header">
+        <span class="kpi-title">{{ collectedVsOwed().title }}</span>
+        <div class="kpi-icon-bubble bubble-lavender">
+          <mat-icon class="kpi-icon">donut_large</mat-icon>
+        </div>
+      </div>
+      <div class="kpi-split-stats">
+        <div class="stat-col stat-collected">
+          <span class="stat-label">{{ collectedVsOwed().collectedLabel }}</span>
+          <div class="stat-amount">
+            <span class="stat-curr">{{ collectedVsOwed().collectedCurrency }}</span>
+            <span class="stat-num">{{ collectedVsOwed().collectedAmount }}</span>
+          </div>
+        </div>
+        <div class="stat-col stat-owed">
+          <span class="stat-label">{{ collectedVsOwed().owedLabel }}</span>
+          <div class="stat-amount owed-color">
+            <span class="stat-curr">{{ collectedVsOwed().owedCurrency }}</span>
+            <span class="stat-num">{{ collectedVsOwed().owedAmount }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="kpi-segmented-progress">
+        <div
+          class="segment-collected"
+          [style.width.%]="collectedVsOwed().collectedPercent"
+        ></div>
+        <div
+          class="segment-owed"
+          [style.width.%]="collectedVsOwed().owedPercent"
+        ></div>
+      </div>
+      <div class="kpi-period-note">{{ collectedVsOwed().periodNote }}</div>
+    </div>
+  </section>
+
+  <!-- Search, Filter & Actions Section -->
+  <section class="controls-toolbar" aria-label="Search and Filter Properties">
+    <div class="search-input-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search properties"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+      <span class="shortcut-badge">⌘K</span>
+    </div>
+
+    <div class="dropdown-wrapper">
+      <select
+        class="custom-select"
+        [ngModel]="selectedCounty()"
+        (ngModelChange)="selectedCounty.set($event)"
+      >
+        @for (county of counties; track county) {
+          <option [value]="county">{{ county }}</option>
+        }
+      </select>
+      <mat-icon class="select-chevron">keyboard_arrow_down</mat-icon>
+    </div>
+
+    <div class="dropdown-wrapper">
+      <select
+        class="custom-select"
+        [ngModel]="selectedStatus()"
+        (ngModelChange)="selectedStatus.set($event)"
+      >
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ status }}</option>
+        }
+      </select>
+      <mat-icon class="select-chevron">keyboard_arrow_down</mat-icon>
+    </div>
+
+    <div class="view-toggle-group">
+      <button
+        type="button"
+        class="view-toggle-btn"
+        [class.active]="currentView() === 'grid'"
+        (click)="setView('grid')"
+        aria-label="Grid view"
+      >
+        <mat-icon class="view-icon">grid_view</mat-icon>
+      </button>
+      <button
+        type="button"
+        class="view-toggle-btn"
+        [class.active]="currentView() === 'list'"
+        (click)="setView('list')"
+        aria-label="List view"
+      >
+        <mat-icon class="view-icon">format_list_bulleted</mat-icon>
+      </button>
+    </div>
+
+    <button type="button" class="btn-add-property">
+      <mat-icon class="add-icon">add</mat-icon>
+      <span>Add Property</span>
+    </button>
+  </section>
+
+  <!-- Properties Grid Section (3 Columns) -->
+  <section class="properties-grid" aria-label="Properties Catalog">
+    @for (property of properties(); track property.id) {
+      <div class="property-card">
+        <!-- Top Image Area -->
+        <div class="property-image-container">
+          <img
+            [src]="property.image"
+            [alt]="property.name"
+            class="property-image"
+            loading="lazy"
+          />
+
+          <!-- Floating Occupancy Badge -->
+          <div class="occupancy-badge">
+            <span
+              class="badge-dot"
+              [class]="'dot-' + property.occupancyStatus"
+            ></span>
+            <span class="badge-text">{{ property.occupancy }}</span>
+          </div>
+
+          <!-- Floating Bookmark Button -->
+          <button
+            type="button"
+            class="bookmark-btn"
+            aria-label="Bookmark property"
+          >
+            <mat-icon class="bookmark-icon">bookmark_border</mat-icon>
+          </button>
+
+          <!-- Location Overlay -->
+          <div class="location-overlay">
+            <span class="location-text">{{ property.location }}</span>
+          </div>
+        </div>
+
+        <!-- Property Card Body -->
+        <div class="property-card-body">
+          <div class="title-price-row">
+            <h3 class="property-name">{{ property.name }}</h3>
+            <div class="property-rent">
+              <span class="rent-amount">{{ property.rentRange }}</span>
+              <span class="rent-period">{{ property.rentPeriod }}</span>
+            </div>
+          </div>
+
+          <p class="property-subtitle">{{ property.subtitle }}</p>
+
+          <!-- Allocation Metric Box -->
+          <div class="allocation-box">
+            <div class="alloc-row-top">
+              <span class="alloc-label">{{ property.allocationLabel }}</span>
+              <span class="alloc-fraction">{{ property.allocationDisplay }}</span>
+            </div>
+
+            <div class="alloc-track">
+              <div
+                class="alloc-fill"
+                [style.width.%]="
+                  (property.allocatedUnits / property.totalUnits) * 100
+                "
+              ></div>
+            </div>
+
+            <div class="alloc-row-bottom">
+              <span
+                class="vacant-status"
+                [class]="'vacant-' + property.vacantType"
+              >
+                {{ property.vacantDisplay }}
+              </span>
+              <span class="yield-tag">Yield: {{ property.yield }}</span>
+            </div>
+          </div>
+
+          <!-- Tenant Avatar Stack -->
+          <div class="tenant-stack-row">
+            <div class="avatar-stack">
+              @for (avatar of property.tenantAvatars; track $index) {
+                <img
+                  [src]="avatar"
+                  alt="Tenant"
+                  class="tenant-avatar"
+                  loading="lazy"
+                />
+              }
+              <div class="avatar-counter">{{ property.additionalTenants }}</div>
+            </div>
+          </div>
+
+          <!-- Card Actions Footer -->
+          <div class="card-footer">
+            <button type="button" class="btn-assign">
+              <mat-icon class="action-btn-icon">person_add</mat-icon>
+              <span>Assign</span>
+            </button>
+
+            <button
+              type="button"
+              class="btn-icon-square"
+              aria-label="View document"
+            >
+              <mat-icon class="action-btn-icon">description</mat-icon>
+            </button>
+
+            <button
+              type="button"
+              class="btn-icon-square btn-settings-icon"
+              aria-label="Property settings"
+            >
+              <mat-icon class="action-btn-icon">settings</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- 6th Item in Grid: Register New Property Card -->
+    <div class="property-card register-new-card">
+      <div class="register-icon-wrapper">
+        <mat-icon class="register-icon">home_work</mat-icon>
+      </div>
+
+      <h3 class="register-card-title">Register New Property</h3>
+      <p class="register-card-desc">
+        Onboard new multi-unit commercial or residential complexes into
+        KodiPoint.
+      </p>
+
+      <button type="button" class="btn-launch-wizard">
+        <mat-icon class="btn-icon">play_arrow</mat-icon>
+        <span>LAUNCH SETUP WIZARD</span>
+      </button>
+
+      <button type="button" class="btn-import-csv">
+        <mat-icon class="btn-icon">upload</mat-icon>
+        <span>Import CSV Ledger</span>
+      </button>
+    </div>
+  </section>
+</div>
