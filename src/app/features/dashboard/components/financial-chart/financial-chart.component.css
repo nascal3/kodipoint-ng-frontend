@@ -1,0 +1,157 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.chart-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  padding: 6px 0;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 18px 24px 0;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chart-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.chart-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.legend-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid transparent;
+  outline: none;
+  user-select: none;
+}
+
+.legend-pill.active-collected {
+  background-color: #e0e7ff;
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.25);
+  box-shadow: 0 1px 2px rgba(79, 70, 229, 0.08);
+}
+
+.legend-pill.active-overdue {
+  background-color: #fee2e2;
+  color: #e11d48;
+  border-color: rgba(225, 29, 72, 0.25);
+  box-shadow: 0 1px 2px rgba(225, 29, 72, 0.08);
+}
+
+.legend-pill.inactive {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  border-color: #e2e8f0;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+
+.dot-collected {
+  background-color: #4f46e5;
+}
+
+.dot-overdue {
+  background-color: #f43f5e;
+}
+
+.legend-pill.inactive .legend-dot {
+  opacity: 0.35;
+}
+
+.legend-label.struck {
+  text-decoration: line-through;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.date-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.date-filter-btn:hover {
+  border-color: #4f46e5;
+  background-color: #f8faff;
+}
+
+.calendar-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #4f46e5;
+}
+
+.dropdown-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #64748b;
+  margin-left: -2px;
+}
+
+.chart-content {
+  padding: 16px 20px 20px;
+}
+
+.echarts-container {
+  width: 100%;
+  height: 300px;
+  min-height: 280px;
+}

@@ -1,0 +1,62 @@
+<header class="app-header">
+  <div class="header-left">
+    @if (sidebarCollapsed()) {
+      <button
+        mat-icon-button
+        class="toggle-btn"
+        (click)="toggleSidebar.emit()"
+        aria-label="Expand sidebar"
+        type="button"
+      >
+        <mat-icon class="toggle-icon">segment</mat-icon>
+      </button>
+    }
+
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <span class="breadcrumb-root">KodiPoint</span>
+      <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+      <span class="breadcrumb-current">{{ pageTitle() || 'Dashboard' }}</span>
+    </nav>
+  </div>
+
+  <div class="header-actions">
+    <button mat-icon-button class="notification-btn" aria-label="Notifications" type="button">
+      <mat-icon class="bell-icon">notifications_none</mat-icon>
+      <span class="notification-dot" aria-hidden="true"></span>
+    </button>
+
+    <button
+      type="button"
+      class="user-profile-trigger"
+      [matMenuTriggerFor]="profileMenu"
+      aria-label="User profile menu"
+    >
+      <div class="user-avatar-bubble">
+        <span class="avatar-initials">{{ userInitials() }}</span>
+      </div>
+      <span class="user-name">{{ userName() }}</span>
+      <mat-icon class="chevron-icon">keyboard_arrow_down</mat-icon>
+    </button>
+
+    <mat-menu #profileMenu="matMenu" class="user-profile-menu-panel" xPosition="before">
+      <div class="profile-menu-header" (click)="$event.stopPropagation()">
+        <div class="header-name">{{ userName() }}</div>
+        <div class="header-email">{{ userEmail() }}</div>
+      </div>
+      <mat-divider class="menu-divider" />
+      <button mat-menu-item class="profile-menu-item" (click)="profileSelected.emit()">
+        <mat-icon>person_outline</mat-icon>
+        <span>Profile</span>
+      </button>
+      <button mat-menu-item class="profile-menu-item" (click)="settingsSelected.emit()">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+      <mat-divider class="menu-divider" />
+      <button mat-menu-item class="profile-menu-item logout-item" (click)="logout.emit()">
+        <mat-icon>logout</mat-icon>
+        <span class="logout-text">Logout</span>
+      </button>
+    </mat-menu>
+  </div>
+</header>

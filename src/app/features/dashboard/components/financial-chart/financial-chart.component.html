@@ -1,0 +1,48 @@
+<mat-card appearance="outlined" class="chart-card">
+  <mat-card-header class="chart-header">
+    <div class="header-titles">
+      <mat-card-title class="chart-title">Financial Activity & Rent Streams</mat-card-title>
+      <p class="chart-subtitle">
+        Monthly collection performance across all portfolio units in Nairobi
+      </p>
+
+      <div class="legend-container">
+        <button
+          type="button"
+          class="legend-pill"
+          [class.active-collected]="showCollected()"
+          [class.inactive]="!showCollected()"
+          [attr.aria-pressed]="showCollected()"
+          (click)="toggleCollected()"
+        >
+          <span class="legend-dot dot-collected"></span>
+          <span class="legend-label" [class.struck]="!showCollected()">Collected</span>
+        </button>
+
+        <button
+          type="button"
+          class="legend-pill"
+          [class.active-overdue]="showOverdue()"
+          [class.inactive]="!showOverdue()"
+          [attr.aria-pressed]="showOverdue()"
+          (click)="toggleOverdue()"
+        >
+          <span class="legend-dot dot-overdue"></span>
+          <span class="legend-label" [class.struck]="!showOverdue()">Overdue</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button mat-stroked-button class="date-filter-btn" type="button">
+        <mat-icon class="calendar-icon">calendar_today</mat-icon>
+        <span class="date-text">{{ dateRange() }}</span>
+        <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content class="chart-content">
+    <div #chartContainer class="echarts-container"></div>
+  </mat-card-content>
+</mat-card>

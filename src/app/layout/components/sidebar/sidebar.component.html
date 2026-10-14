@@ -1,0 +1,92 @@
+<aside class="sidebar" [class.is-collapsed]="collapsed()" aria-label="Main Navigation">
+  <div class="sidebar-header">
+    @if (!collapsed()) {
+      <a routerLink="/dashboard" class="brand-link" aria-label="KodiPoint Home">
+        <svg
+          class="brand-logo"
+          width="28"
+          height="28"
+          viewBox="0 0 28 28"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path d="M14 2L24 7.5V18.5L14 24L4 18.5V7.5L14 2Z" fill="#EEF2FF" />
+          <path d="M14 2L24 7.5L14 13L4 7.5L14 2Z" fill="#6366F1" />
+          <path d="M4 7.5L14 13V24L4 18.5V7.5Z" fill="#4338CA" />
+          <path d="M24 7.5L14 13V24L24 18.5V7.5Z" fill="#4F46E5" />
+        </svg>
+        <span class="brand-name">kodipoint</span>
+      </a>
+
+      <button
+        mat-icon-button
+        class="toggle-btn"
+        (click)="toggleCollapse()"
+        aria-label="Collapse sidebar"
+        type="button"
+      >
+        <mat-icon class="toggle-icon">segment</mat-icon>
+      </button>
+    } @else {
+      <a
+        routerLink="/dashboard"
+        class="brand-logo-collapsed"
+        aria-label="KodiPoint Home"
+        matTooltip="KodiPoint"
+        matTooltipPosition="right"
+      >
+        <div class="logo-box">
+          <svg
+            class="brand-logo-white"
+            width="22"
+            height="22"
+            viewBox="0 0 28 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M14 2L24 7.5V18.5L14 24L4 18.5V7.5L14 2Z"
+              fill="#EEF2FF"
+              fill-opacity="0.3"
+            />
+            <path d="M14 2L24 7.5L14 13L4 7.5L14 2Z" fill="#FFFFFF" fill-opacity="0.95" />
+            <path d="M4 7.5L14 13V24L4 18.5V7.5Z" fill="#FFFFFF" fill-opacity="0.8" />
+            <path d="M24 7.5L14 13V24L24 18.5V7.5Z" fill="#FFFFFF" />
+          </svg>
+        </div>
+      </a>
+    }
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (section of navSections(); track section.title) {
+      <div class="nav-section">
+        @if (!collapsed()) {
+          <h2 class="section-title">{{ section.title }}</h2>
+        }
+        <ul class="nav-list">
+          @for (item of section.items; track item.path) {
+            <li class="nav-list-item">
+              <a
+                [routerLink]="item.path"
+                [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+                routerLinkActive="active"
+                class="nav-link"
+                [matTooltip]="item.label"
+                [matTooltipDisabled]="!collapsed()"
+                matTooltipPosition="right"
+              >
+                <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
+                @if (!collapsed()) {
+                  <span class="nav-label">{{ item.label }}</span>
+                }
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </nav>
+</aside>

@@ -1,0 +1,158 @@
+<mat-card appearance="outlined" class="table-card">
+  <div class="table-header-container">
+    <div class="header-titles">
+      <h2 class="table-title">Tenant Invoice Payments & Remittances</h2>
+      <p class="table-subtitle">Tenant invoice settlements & payment allocations</p>
+    </div>
+
+    <div class="header-filters">
+      <div class="search-input-wrapper">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search tenant or unit..."
+          (input)="applyFilter($event)"
+          aria-label="Search tenant or unit"
+        />
+      </div>
+
+      <button mat-stroked-button class="date-filter-btn" type="button">
+        <mat-icon class="calendar-icon">calendar_today</mat-icon>
+        <span class="date-text">Oct 01 - Oct 31, 2024</span>
+        <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="table-responsive-wrapper">
+    <table mat-table [dataSource]="dataSource()" matSort class="invoices-table">
+      <ng-container matColumnDef="invoice">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Invoice & Tenant</th>
+        <td mat-cell *matCellDef="let record">
+          <div class="tenant-cell">
+            <div class="avatar-bubble" [class]="'avatar-' + record.avatarVariant">
+              {{ record.initials }}
+            </div>
+            <div class="tenant-details">
+              <div class="tenant-primary-line">
+                <span class="invoice-number">{{ record.invoiceNumber }}</span>
+                <span class="bullet-dot">•</span>
+                <span class="tenant-name">{{ record.tenant }}</span>
+              </div>
+              <span class="unit-location">{{ record.propertyUnit }}</span>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amounts">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Invoice Total & Amount Paid</th>
+        <td mat-cell *matCellDef="let record">
+          <div class="amount-cell">
+            <span class="total-amount">KES {{ record.total | number: '1.0-0' }}</span>
+            <span
+              class="paid-amount"
+              [class.paid-success]="record.status === 'fully-paid'"
+              [class.paid-warning]="record.status === 'partially-paid'"
+            >
+              Paid: KES {{ record.amountPaid | number: '1.0-0' }}
+            </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment Status</th>
+        <td mat-cell *matCellDef="let record">
+          <div class="status-cell">
+            @if (record.status === 'fully-paid') {
+              <span class="status-chip chip-fully-paid">
+                <span class="chip-dot dot-fully-paid"></span>
+                <span>Fully Paid</span>
+              </span>
+            } @else if (record.status === 'partially-paid') {
+              <span class="status-chip chip-partially-paid">
+                <span class="chip-dot dot-partially-paid"></span>
+                <span>Partially Paid</span>
+              </span>
+              @if (record.balance > 0) {
+                <span class="balance-text" [class.balance-high]="record.balance > 50000">
+                  KES {{ record.balance | number: '1.0-0' }} balance
+                </span>
+              }
+            } @else {
+              <span class="status-chip chip-overdue">
+                <span class="chip-dot dot-overdue"></span>
+                <span>Overdue</span>
+              </span>
+            }
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="payment">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment Method & Ref</th>
+        <td mat-cell *matCellDef="let record">
+          <div class="payment-cell">
+            <div class="method-line">
+              <span class="method-dot" [class]="'method-dot-' + record.methodVariant"></span>
+              <span class="method-name">{{ record.paymentMethod }}</span>
+            </div>
+            <span class="reference-code">{{ record.reference }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date & Time</th>
+        <td mat-cell *matCellDef="let record">
+          <span class="date-time-text">{{ record.dateTime }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef class="text-right">Action</th>
+        <td mat-cell *matCellDef="let record" class="text-right">
+          <div class="action-buttons">
+            <button
+              mat-icon-button
+              class="action-btn"
+              aria-label="Download receipt"
+              title="Download Receipt"
+              type="button"
+            >
+              <mat-icon class="action-icon">download</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              class="action-btn"
+              aria-label="More options"
+              title="More actions"
+              type="button"
+            >
+              <mat-icon class="action-icon">more_horiz</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="table-data-row"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell empty-cell" [attr.colspan]="displayedColumns.length">
+          No matching invoices found.
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <mat-paginator
+    [pageSizeOptions]="[5, 10, 25]"
+    [pageSize]="5"
+    [length]="totalRecords()"
+    showFirstLastButtons
+    class="custom-paginator"
+  />
+</mat-card>
