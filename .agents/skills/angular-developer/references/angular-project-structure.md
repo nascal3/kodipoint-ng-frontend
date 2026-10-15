@@ -42,6 +42,7 @@ src/
 │   │   │   └── shell/                 # Shell container with <router-outlet>
 │   │
 │   ├── features/                      # Lazy-loaded feature modules
+│   │   ├── auth/                      # Login, Sign Up, Password Recovery page components & template
 │   │   ├── dashboard/                 # Overview KPIs, Financial Bar Chart, Recent Settlements
 │   │   ├── properties/                # Property & Unit management
 │   │   ├── tenants/                   # Tenant directory & lease profiles
