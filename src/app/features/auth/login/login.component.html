@@ -35,7 +35,7 @@
 
     <div class="divider" aria-hidden="true"><span>OR SIGN IN WITH EMAIL</span></div>
 
-    <form class="login-form" (submit)="$event.preventDefault(); showUnavailableMessage()">
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <mat-form-field class="login-input" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Email address</mat-label>
         <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
@@ -45,12 +45,16 @@
         <input
           matInput
           id="email"
-          name="email"
+          formControlName="email"
           type="email"
           placeholder="manager@example.com"
           autocomplete="username"
-          required
         />
+        @if (loginForm.controls.email.hasError('required') && loginForm.controls.email.touched) {
+          <mat-error>Email address is required.</mat-error>
+        } @else if (loginForm.controls.email.hasError('email') && loginForm.controls.email.touched) {
+          <mat-error>Enter a valid email address.</mat-error>
+        }
       </mat-form-field>
       <p class="field-help">Use your organization registered administrator email</p>
 
@@ -67,12 +71,14 @@
         <input
           matInput
           id="password"
-          name="password"
+          formControlName="password"
           [type]="passwordVisible() ? 'text' : 'password'"
           placeholder="Enter your password"
           autocomplete="current-password"
-          required
         />
+        @if (loginForm.controls.password.hasError('required') && loginForm.controls.password.touched) {
+          <mat-error>Password is required.</mat-error>
+        }
         <button
           matSuffix
           class="visibility-toggle"
