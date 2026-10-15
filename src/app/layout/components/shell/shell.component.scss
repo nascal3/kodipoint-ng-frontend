@@ -29,12 +29,24 @@
 }
 
 .shell-content {
+  position: relative;
   flex: 1;
   padding: 24px 32px;
   overflow-y: auto;
   overflow-x: hidden;
-  background-color: #faf8ff;
+  isolation: isolate;
+  background: transparent;
   box-sizing: border-box;
+}
+
+.shell-content::before {
+  position: absolute;
+  z-index: -1;
+  inset: -8px;
+  background: url('/screen.webp') center / 100% 100% no-repeat;
+  filter: blur(5px);
+  content: '';
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
