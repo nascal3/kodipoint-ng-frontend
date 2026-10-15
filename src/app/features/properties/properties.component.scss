@@ -295,6 +295,115 @@
   gap: 20px;
 }
 
+.properties-grid.list-view {
+  grid-template-columns: 1fr;
+
+  .property-card:not(.register-new-card) {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .property-image-container {
+    flex: 0 0 20%;
+    width: 20%;
+    height: auto;
+    min-height: 150px;
+  }
+
+  .property-card-body {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(190px, 225px) minmax(260px, auto);
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
+  }
+
+  .property-details {
+    min-width: 0;
+  }
+
+  .title-price-row {
+    display: block;
+  }
+
+  .property-name {
+    margin-bottom: 4px;
+  }
+
+  .property-rent {
+    margin-top: 8px;
+  }
+
+  .property-subtitle {
+    margin-bottom: 0;
+  }
+
+  .allocation-box {
+    margin-bottom: 0;
+  }
+
+  .property-card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .tenant-stack-row {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .card-footer {
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+
+  .register-new-card {
+    display: grid;
+    grid-template-columns: 48px minmax(220px, 1fr) minmax(180px, 240px);
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 16px;
+    row-gap: 6px;
+    text-align: left;
+
+    .register-icon-wrapper {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      margin: 0;
+    }
+
+    .register-card-title {
+      grid-column: 2;
+      grid-row: 1;
+      margin: 0;
+    }
+
+    .register-card-desc {
+      grid-column: 2;
+      grid-row: 2;
+      max-width: none;
+      margin: 0;
+    }
+
+    .btn-launch-wizard,
+    .btn-import-csv {
+      grid-column: 3;
+      margin: 0;
+    }
+
+    .btn-launch-wizard {
+      grid-row: 1;
+    }
+
+    .btn-import-csv {
+      grid-row: 2;
+    }
+  }
+}
+
 .load-more-btn {
   grid-column: 1 / -1;
   justify-self: center;
@@ -538,6 +647,12 @@
   }
 }
 
+.property-card-actions {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
 .card-footer {
   display: flex;
   align-items: center;
@@ -685,6 +800,22 @@
   .kpi-cards-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .properties-grid.list-view {
+    grid-template-columns: 1fr;
+
+    .property-card-body {
+      grid-template-columns: minmax(130px, 1fr) minmax(145px, 180px) minmax(190px, auto);
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .property-card-actions {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+  }
 }
 
 @media (max-width: 720px) {
@@ -692,6 +823,55 @@
   .properties-grid,
   .kpi-cards-grid {
     grid-template-columns: 1fr;
+  }
+
+  .properties-grid.list-view {
+    .property-card:not(.register-new-card) {
+      flex-direction: column;
+    }
+
+    .property-image-container {
+      flex: none;
+      width: 100%;
+      height: 180px;
+      min-height: 0;
+    }
+
+    .property-card-body {
+      grid-template-columns: 1fr;
+    }
+
+    .property-card-actions {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .register-new-card {
+      grid-template-columns: 48px minmax(0, 1fr);
+
+      .register-icon-wrapper {
+        grid-row: 1 / span 2;
+      }
+
+      .register-card-title,
+      .register-card-desc {
+        grid-column: 2;
+      }
+
+      .btn-launch-wizard,
+      .btn-import-csv {
+        grid-column: 1 / -1;
+      }
+
+      .btn-launch-wizard {
+        grid-row: 3;
+      }
+
+      .btn-import-csv {
+        grid-row: 4;
+      }
+    }
   }
 
   .controls-toolbar {

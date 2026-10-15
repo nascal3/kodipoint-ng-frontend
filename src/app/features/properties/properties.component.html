@@ -159,7 +159,11 @@
   </section>
 
   <!-- Properties Grid Section (3 Columns) -->
-  <section class="properties-grid" aria-label="Properties Catalog">
+  <section
+    class="properties-grid"
+    [class.list-view]="currentView() === 'list'"
+    aria-label="Properties Catalog"
+  >
     @for (property of properties(); track property.id) {
       <div class="property-card">
         <!-- Top Image Area -->
@@ -197,15 +201,17 @@
 
         <!-- Property Card Body -->
         <div class="property-card-body">
-          <div class="title-price-row">
-            <h3 class="property-name">{{ property.name }}</h3>
-            <div class="property-rent">
-              <span class="rent-amount">{{ property.rentRange }}</span>
-              <span class="rent-period">{{ property.rentPeriod }}</span>
+          <div class="property-details">
+            <div class="title-price-row">
+              <h3 class="property-name">{{ property.name }}</h3>
+              <div class="property-rent">
+                <span class="rent-amount">{{ property.rentRange }}</span>
+                <span class="rent-period">{{ property.rentPeriod }}</span>
+              </div>
             </div>
-          </div>
 
-          <p class="property-subtitle">{{ property.subtitle }}</p>
+            <p class="property-subtitle">{{ property.subtitle }}</p>
+          </div>
 
           <!-- Allocation Metric Box -->
           <div class="allocation-box">
@@ -234,43 +240,45 @@
             </div>
           </div>
 
-          <!-- Tenant Avatar Stack -->
-          <div class="tenant-stack-row">
-            <div class="avatar-stack">
-              @for (avatar of property.tenantAvatars; track $index) {
-                <img
-                  [src]="avatar"
-                  alt="Tenant"
-                  class="tenant-avatar"
-                  loading="lazy"
-                />
-              }
-              <div class="avatar-counter">{{ property.additionalTenants }}</div>
+          <div class="property-card-actions">
+            <!-- Tenant Avatar Stack -->
+            <div class="tenant-stack-row">
+              <div class="avatar-stack">
+                @for (avatar of property.tenantAvatars; track $index) {
+                  <img
+                    [src]="avatar"
+                    alt="Tenant"
+                    class="tenant-avatar"
+                    loading="lazy"
+                  />
+                }
+                <div class="avatar-counter">{{ property.additionalTenants }}</div>
+              </div>
             </div>
-          </div>
 
-          <!-- Card Actions Footer -->
-          <div class="card-footer">
-            <button type="button" class="btn-assign">
-              <mat-icon class="action-btn-icon">person_add</mat-icon>
-              <span>Assign</span>
-            </button>
+            <!-- Card Actions Footer -->
+            <div class="card-footer">
+              <button type="button" class="btn-assign">
+                <mat-icon class="action-btn-icon">person_add</mat-icon>
+                <span>Assign</span>
+              </button>
 
-            <button
-              type="button"
-              class="btn-icon-square"
-              aria-label="View document"
-            >
-              <mat-icon class="action-btn-icon">description</mat-icon>
-            </button>
+              <button
+                type="button"
+                class="btn-icon-square"
+                aria-label="View document"
+              >
+                <mat-icon class="action-btn-icon">description</mat-icon>
+              </button>
 
-            <button
-              type="button"
-              class="btn-icon-square btn-settings-icon"
-              aria-label="Property settings"
-            >
-              <mat-icon class="action-btn-icon">settings</mat-icon>
-            </button>
+              <button
+                type="button"
+                class="btn-icon-square btn-settings-icon"
+                aria-label="Property settings"
+              >
+                <mat-icon class="action-btn-icon">settings</mat-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>
