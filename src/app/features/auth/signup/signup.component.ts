@@ -40,6 +40,7 @@ const passwordsMatchValidator: ValidatorFn = (
 })
 export class SignupComponent {
   readonly passwordVisible = signal(false);
+  readonly confirmPasswordVisible = signal(false);
   readonly signupMessage = signal('');
   readonly signupForm = new FormGroup(
     {
@@ -73,6 +74,10 @@ export class SignupComponent {
 
   togglePasswordVisibility(): void {
     this.passwordVisible.update((visible) => !visible);
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.confirmPasswordVisible.update((visible) => !visible);
   }
 
   onSubmit(): void {

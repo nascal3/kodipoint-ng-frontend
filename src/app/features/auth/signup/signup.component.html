@@ -187,7 +187,7 @@
           matInput
           id="signup-confirm-password"
           formControlName="confirmPassword"
-          type="password"
+          [type]="confirmPasswordVisible() ? 'text' : 'password'"
           placeholder="Re-enter password"
           autocomplete="new-password"
         />
@@ -201,6 +201,26 @@
         ) {
           <mat-error>Passwords do not match.</mat-error>
         }
+        <button
+          matSuffix
+          class="visibility-toggle"
+          type="button"
+          [attr.aria-label]="confirmPasswordVisible() ? 'Hide password' : 'Show password'"
+          (click)="toggleConfirmPasswordVisibility()"
+        >
+          @if (confirmPasswordVisible()) {
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
+              <circle cx="10" cy="10" r="2.2" />
+            </svg>
+          } @else {
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
+              <circle cx="10" cy="10" r="2.2" />
+              <path d="m3 3 14 14" />
+            </svg>
+          }
+        </button>
       </mat-form-field>
 
       <mat-checkbox class="terms-row" formControlName="terms">
