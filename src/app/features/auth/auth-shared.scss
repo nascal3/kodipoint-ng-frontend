@@ -197,6 +197,7 @@
   justify-content: center;
   gap: 10px;
   border-radius: 24px;
+  font-weight: 700;
   --mat-button-filled-container-color: #3425d6;
   --mat-button-filled-container-shape: 24px;
   --mat-button-filled-label-text-color: #fff;
@@ -208,9 +209,19 @@
   cursor: pointer;
 }
 
+.submit-button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  line-height: 1;
+}
+
 .submit-button svg {
+  display: block;
   width: 16px;
   height: 16px;
+  flex: none;
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
