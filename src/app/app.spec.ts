@@ -55,4 +55,19 @@ describe('App', () => {
     expect(compiled.querySelector('app-shell')).toBeNull();
     expect(compiled.querySelector('#login-title')?.textContent).toContain('Welcome back');
   });
+
+  it('should navigate to signup and render the authentication page outside the shell', async () => {
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    await router.navigate(['/signup']);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-signup')).toBeTruthy();
+    expect(compiled.querySelector('app-shell')).toBeNull();
+    expect(compiled.querySelector('#signup-title')?.textContent).toContain('Create your account');
+  });
 });
