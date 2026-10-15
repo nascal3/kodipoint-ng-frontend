@@ -40,4 +40,19 @@ describe('App', () => {
     expect(compiled.querySelector('app-financial-chart')).toBeTruthy();
     expect(compiled.querySelector('app-invoice-table')).toBeTruthy();
   });
+
+  it('should navigate to login and render the authentication page outside the shell', async () => {
+    const router = TestBed.inject(Router);
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    await router.navigate(['/login']);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-login')).toBeTruthy();
+    expect(compiled.querySelector('app-shell')).toBeNull();
+    expect(compiled.querySelector('#login-title')?.textContent).toContain('Welcome back');
+  });
 });

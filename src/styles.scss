@@ -18,7 +18,7 @@ html, body {
 }
 
 .mat-mdc-form-field .mdc-text-field--outlined {
-  height: 42px;
+  height: var(--mat-form-field-container-height, 42px);
 }
 
 /* User Profile Menu Styling */
