@@ -1,10 +1,27 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
+
+const passwordsMatchValidator: ValidatorFn = (
+  control: AbstractControl,
+): ValidationErrors | null => {
+  const password = control.get('password')?.value;
+  const confirmPassword = control.get('confirmPassword')?.value;
+
+  return !confirmPassword || password === confirmPassword ? null : { passwordMismatch: true };
+};
 
 @Component({
   selector: 'app-signup',
@@ -24,28 +41,35 @@ import { RouterLink } from '@angular/router';
 export class SignupComponent {
   readonly passwordVisible = signal(false);
   readonly signupMessage = signal('');
-  readonly signupForm = new FormGroup({
-    firstName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    lastName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    email: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.email],
-    }),
-    phone: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    address: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    password: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(8),
-        Validators.pattern(/(?=.*\d)(?=.*[^A-Za-z0-9])/),
-      ],
-    }),
-    terms: new FormControl(false, {
-      nonNullable: true,
-      validators: [Validators.requiredTrue],
-    }),
-  });
+  readonly signupForm = new FormGroup(
+    {
+      firstName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      lastName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      email: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.email],
+      }),
+      phone: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      address: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/(?=.*\d)(?=.*[^A-Za-z0-9])/),
+        ],
+      }),
+      confirmPassword: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      terms: new FormControl(false, {
+        nonNullable: true,
+        validators: [Validators.requiredTrue],
+      }),
+    },
+    { validators: passwordsMatchValidator },
+  );
 
   togglePasswordVisibility(): void {
     this.passwordVisible.update((visible) => !visible);

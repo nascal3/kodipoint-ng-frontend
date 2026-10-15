@@ -38,7 +38,7 @@
     <form class="auth-form signup-form" [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
       <div class="name-fields">
         <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-          <mat-label>First Name *</mat-label>
+          <mat-label>First Name</mat-label>
           <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
             <circle cx="10" cy="6" r="3" />
             <path d="M4 17v-1.5a6 6 0 0 1 12 0V17H4Z" />
@@ -55,7 +55,7 @@
           }
         </mat-form-field>
         <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Last Name *</mat-label>
+          <mat-label>Last Name</mat-label>
           <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
             <circle cx="10" cy="6" r="3" />
             <path d="M4 17v-1.5a6 6 0 0 1 12 0V17H4Z" />
@@ -74,7 +74,7 @@
       </div>
 
       <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Email Address *</mat-label>
+        <mat-label>Email Address</mat-label>
         <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
           <rect x="2.5" y="4" width="15" height="12" rx="1.5" />
           <path d="m3.5 5 6.5 5 6.5-5" />
@@ -96,7 +96,7 @@
       <p class="field-help">Use your organizational or business email</p>
 
       <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Phone Number *</mat-label>
+        <mat-label>Phone Number</mat-label>
         <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
           <path d="M5 2.5h3l1.2 3.2-1.8 1.8a12 12 0 0 0 4.1 4.1l1.8-1.8 3.2 1.2v3c0 .8-.7 1.5-1.5 1.5A13 13 0 0 1 3.5 4c0-.8.7-1.5 1.5-1.5Z" />
         </svg>
@@ -114,7 +114,7 @@
       </mat-form-field>
 
       <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Physical / Office Address *</mat-label>
+        <mat-label>Physical / Office Address</mat-label>
         <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
           <path d="M16 8.5c0 4.2-6 9-6 9s-6-4.8-6-9a6 6 0 1 1 12 0Z" />
           <circle cx="10" cy="8.5" r="2" />
@@ -132,7 +132,7 @@
       </mat-form-field>
 
       <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Password *</mat-label>
+        <mat-label>Password</mat-label>
         <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
           <rect x="4" y="8" width="12" height="10" rx="1.5" />
           <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
@@ -175,6 +175,33 @@
         </button>
       </mat-form-field>
       <p class="field-help password-help">Minimum 8 characters with numbers and symbols</p>
+
+      <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Confirm Password</mat-label>
+        <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
+          <rect x="4" y="8" width="12" height="10" rx="1.5" />
+          <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
+          <circle cx="10" cy="12" r=".7" />
+        </svg>
+        <input
+          matInput
+          id="signup-confirm-password"
+          formControlName="confirmPassword"
+          type="password"
+          placeholder="Re-enter password"
+          autocomplete="new-password"
+        />
+        @if (
+          signupForm.controls.confirmPassword.hasError('required') &&
+          signupForm.controls.confirmPassword.touched
+        ) {
+          <mat-error>Please confirm your password.</mat-error>
+        } @else if (
+          signupForm.hasError('passwordMismatch') && signupForm.controls.confirmPassword.touched
+        ) {
+          <mat-error>Passwords do not match.</mat-error>
+        }
+      </mat-form-field>
 
       <mat-checkbox class="terms-row" formControlName="terms">
         I agree to the <a href="#" (click)="$event.preventDefault()">Terms of Service</a> and
