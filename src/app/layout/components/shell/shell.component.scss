@@ -43,7 +43,9 @@
   position: absolute;
   z-index: -1;
   inset: -8px;
-  background: url('/screen.webp') center / 100% 100% no-repeat;
+  background:
+    linear-gradient(rgba(250, 249, 255, 0.5), rgba(250, 249, 255, 0.62)),
+    url('/screen.webp') center / cover no-repeat;
   filter: blur(5px);
   content: '';
   pointer-events: none;
