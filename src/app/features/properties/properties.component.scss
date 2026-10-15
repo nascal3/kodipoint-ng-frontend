@@ -306,7 +306,7 @@
   .property-image-container {
     flex: 0 0 20%;
     width: 20%;
-    height: auto;
+    height: 150px;
     min-height: 150px;
   }
 
@@ -833,8 +833,8 @@
     .property-image-container {
       flex: none;
       width: 100%;
-      height: 180px;
-      min-height: 0;
+      height: 150px;
+      min-height: 150px;
     }
 
     .property-card-body {
