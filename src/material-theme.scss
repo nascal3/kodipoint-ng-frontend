@@ -80,7 +80,15 @@ $kodipoint-primary: mat.m2-define-palette($kodipoint-primary-palette, 600, 500, 
 $kodipoint-accent: mat.m2-define-palette($kodipoint-accent-palette, 500);
 $kodipoint-warn: mat.m2-define-palette($kodipoint-warn-palette, 500);
 
-$kodipoint-theme: mat.m2-define-light-theme($kodipoint-primary, $kodipoint-accent, $kodipoint-warn);
+$kodipoint-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $kodipoint-primary,
+    accent: $kodipoint-accent,
+    warn: $kodipoint-warn,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
 
 @include mat.all-component-themes($kodipoint-theme);
 
