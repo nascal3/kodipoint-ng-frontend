@@ -169,7 +169,13 @@
           <ng-container matColumnDef="ledgerBalance">
             <th mat-header-cell *matHeaderCellDef>Ledger Balance</th>
             <td mat-cell *matCellDef="let tenant">
-              <div class="ledger-balance" [ngClass]="getBalanceClass(tenant.balanceStatus)">
+              <div
+                class="ledger-balance"
+                [ngClass]="getBalanceClass(tenant.ledgerBalance, tenant.balanceStatus)"
+              >
+                <mat-icon class="ledger-balance-icon">
+                  {{ getBalanceIcon(tenant.ledgerBalance, tenant.balanceStatus) }}
+                </mat-icon>
                 {{ getBalanceStatus(tenant.ledgerBalance, tenant.balanceStatus) }}
               </div>
             </td>

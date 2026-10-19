@@ -442,28 +442,42 @@
 }
 
 .ledger-balance {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   max-width: 100%;
   overflow: hidden;
   padding: 4px 7px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 
   &.balance-overdue {
-    color: #dc2626;
+    color: #b91c1c;
     background: #fee2e2;
   }
   &.balance-settled {
     color: #047857;
-    background: #d1fae5;
+    background: #a7f3d0;
   }
   &.balance-credit {
     color: #4f46e5;
     background: #e0e7ff;
   }
+  &.balance-escrow {
+    color: #64748b;
+    background: #e0e7ff;
+  }
+}
+
+.ledger-balance-icon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  font-size: 15px;
+  line-height: 15px;
 }
 
 .tenancy-status {

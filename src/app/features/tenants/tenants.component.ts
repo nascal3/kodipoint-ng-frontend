@@ -204,9 +204,17 @@ export class TenantsComponent {
   ];
 
   getBalanceStatus(balance: string, status: 'overdue' | 'settled' | 'credit'): string {
+    if (balance === 'Escrow Deposit') return balance;
     if (status === 'overdue') return `KES ${balance} Overdue`;
     if (status === 'credit') return `KES ${balance} Credit`;
     return `KES ${balance} Settled`;
+  }
+
+  getBalanceIcon(balance: string, status: 'overdue' | 'settled' | 'credit'): string {
+    if (balance === 'Escrow Deposit') return 'account_balance_wallet';
+    if (status === 'overdue') return 'priority_high';
+    if (status === 'credit') return 'add_circle';
+    return 'check_circle';
   }
 
   getTenancyStatusClass(status: 'active' | 'notice' | 'pending'): string {
@@ -235,7 +243,8 @@ export class TenantsComponent {
     }
   }
 
-  getBalanceClass(status: 'overdue' | 'settled' | 'credit'): string {
+  getBalanceClass(balance: string, status: 'overdue' | 'settled' | 'credit'): string {
+    if (balance === 'Escrow Deposit') return 'balance-escrow';
     switch (status) {
       case 'overdue':
         return 'balance-overdue';
