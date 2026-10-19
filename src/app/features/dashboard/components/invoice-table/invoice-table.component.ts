@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import type { InvoiceRecord } from '../../models/dashboard.model';
 
 export type { InvoiceRecord };
@@ -25,7 +27,9 @@ export type { InvoiceRecord };
     MatIconModule,
     MatButtonModule,
     MatCardModule,
+    MatDatepickerModule,
   ],
+  providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './invoice-table.component.html',
   styleUrl: './invoice-table.component.scss',
@@ -33,6 +37,9 @@ export type { InvoiceRecord };
 export class InvoiceTableComponent {
   readonly paginator = viewChild(MatPaginator);
   readonly sort = viewChild(MatSort);
+  readonly maxDate = new Date();
+  readonly dateRangeStart = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), 1);
+  readonly dateRangeEnd = this.maxDate;
 
   readonly displayedColumns: string[] = ['invoice', 'amounts', 'status', 'payment', 'date', 'action'];
 

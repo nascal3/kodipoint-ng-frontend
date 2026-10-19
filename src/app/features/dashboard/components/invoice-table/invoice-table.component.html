@@ -22,11 +22,32 @@
         />
       </mat-form-field>
 
-      <button mat-stroked-button class="date-filter-btn" type="button">
-        <mat-icon class="calendar-icon">calendar_today</mat-icon>
-        <span class="date-text">Oct 01 - Oct 31, 2024</span>
-        <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
-      </button>
+      <mat-form-field
+        class="date-filter-field"
+        appearance="outline"
+        subscriptSizing="dynamic"
+      >
+        <mat-date-range-input [rangePicker]="datePicker" [max]="maxDate">
+          <input
+            matStartDate
+            [value]="dateRangeStart"
+            placeholder="Start date"
+            aria-label="Start date"
+            readonly
+          />
+          <input
+            matEndDate
+            [value]="dateRangeEnd"
+            placeholder="End date"
+            aria-label="End date"
+            readonly
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconPrefix [for]="datePicker">
+          <mat-icon matDatepickerToggleIcon class="calendar-icon">calendar_today</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-date-range-picker #datePicker />
+      </mat-form-field>
     </div>
   </div>
 

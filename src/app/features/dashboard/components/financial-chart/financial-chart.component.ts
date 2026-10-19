@@ -10,13 +10,25 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import * as echarts from 'echarts';
 
 @Component({
   selector: 'app-financial-chart',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, MatButtonModule],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
+  providers: [provideNativeDateAdapter()],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './financial-chart.component.html',
   styleUrl: './financial-chart.component.scss',
@@ -27,7 +39,9 @@ export class FinancialChartComponent {
 
   private chartInstance: echarts.ECharts | null = null;
 
-  readonly dateRange = signal('Jul 01 - Dec 31, 2026');
+  readonly maxDate = new Date();
+  readonly dateRangeStart = signal<Date | null>(new Date(this.maxDate.getFullYear(), 6, 1));
+  readonly dateRangeEnd = signal<Date | null>(this.maxDate);
   readonly showCollected = signal(true);
   readonly showOverdue = signal(true);
 
