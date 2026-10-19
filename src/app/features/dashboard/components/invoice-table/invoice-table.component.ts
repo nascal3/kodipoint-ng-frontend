@@ -9,8 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import type { InvoiceRecord } from '../../models/dashboard.model';
+import { DATE_RANGE_DATE_PROVIDERS } from '../date-range-date-adapter';
 
 export type { InvoiceRecord };
 
@@ -29,7 +29,7 @@ export type { InvoiceRecord };
     MatCardModule,
     MatDatepickerModule,
   ],
-  providers: [provideNativeDateAdapter()],
+  providers: DATE_RANGE_DATE_PROVIDERS,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './invoice-table.component.html',
   styleUrl: './invoice-table.component.scss',

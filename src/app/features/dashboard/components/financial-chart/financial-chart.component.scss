@@ -20,6 +20,10 @@
   gap: 16px;
 }
 
+:host ::ng-deep .chart-header .mat-mdc-card-header-text {
+  display: none !important;
+}
+
 .header-titles {
   display: flex;
   flex-direction: column;

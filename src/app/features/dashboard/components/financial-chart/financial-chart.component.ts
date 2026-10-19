@@ -11,11 +11,11 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import * as echarts from 'echarts';
+import { DATE_RANGE_DATE_PROVIDERS } from '../date-range-date-adapter';
 
 @Component({
   selector: 'app-financial-chart',
@@ -28,7 +28,7 @@ import * as echarts from 'echarts';
     MatFormFieldModule,
     MatInputModule,
   ],
-  providers: [provideNativeDateAdapter()],
+  providers: DATE_RANGE_DATE_PROVIDERS,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './financial-chart.component.html',
   styleUrl: './financial-chart.component.scss',
