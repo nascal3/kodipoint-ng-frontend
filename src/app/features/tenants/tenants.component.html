@@ -1,0 +1,234 @@
+<div class="tenants-container">
+  <!-- Top KPI Summary Cards -->
+  <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
+    <!-- Card 1: Active Leasehold Rate -->
+    <div class="kpi-card">
+      <div class="kpi-card-header">
+        <span class="kpi-title">{{ activeLeaseholdRate().title }}</span>
+        <div class="kpi-icon-bubble bubble-purple">
+          <mat-icon class="kpi-icon">home</mat-icon>
+        </div>
+      </div>
+      <div class="kpi-flex-row">
+        <span class="amount-val">{{ activeLeaseholdRate().percentage }}</span>
+      </div>
+      <div class="kpi-detail">
+        <span>{{ activeLeaseholdRate().unitLabel }}</span>
+        <strong>{{ activeLeaseholdRate().unitRatio }}</strong>
+      </div>
+    </div>
+
+    <!-- Card 2: Contracted Rent / Mo -->
+    <div class="kpi-card">
+      <div class="kpi-card-header">
+        <span class="kpi-title">{{ contractedRent().title }}</span>
+        <div class="kpi-icon-bubble bubble-green">
+          <mat-icon class="kpi-icon">payments</mat-icon>
+        </div>
+      </div>
+      <div class="kpi-main-val">
+        <span class="currency-prefix">{{ contractedRent().currency }}</span>
+        <span class="amount-val">{{ contractedRent().amount }}</span>
+      </div>
+      <div class="kpi-detail">
+        <span>{{ contractedRent().collectionLabel }}</span>
+        <strong>{{ contractedRent().collectedLabel }}</strong>
+      </div>
+    </div>
+
+    <!-- Card 3: Expiring in 30 Days -->
+    <div class="kpi-card">
+      <div class="kpi-card-header">
+        <span class="kpi-title">{{ expiringLeases().title }}</span>
+        <div class="kpi-icon-bubble bubble-orange">
+          <mat-icon class="kpi-icon">schedule</mat-icon>
+        </div>
+      </div>
+      <div class="kpi-flex-row">
+        <span class="amount-val">{{ expiringLeases().leasesCount }}</span>
+      </div>
+      <div class="kpi-detail">
+        <span>{{ expiringLeases().dispatchLabel }}</span>
+        <strong>{{ expiringLeases().pendingReview }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search, Filter & Actions Section -->
+  <section class="table-section" aria-label="Tenants List">
+    <div class="table-card">
+      <div class="controls-toolbar" aria-label="Search and Filter Tenants">
+        <mat-form-field
+          class="ledger-select-wrapper"
+          appearance="outline"
+          subscriptSizing="dynamic"
+        >
+          <mat-select
+            [ngModel]="selectedLedger()"
+            (ngModelChange)="selectedLedger.set($event)"
+            aria-label="Filter by ledger status"
+          >
+            <mat-select-trigger>
+              <span class="ledger-select-trigger">
+                <mat-icon class="ledger-filter-icon">tune</mat-icon>
+                <span class="ledger-select-copy">
+                  <span class="ledger-select-label">TENANCY STATUS / LEDGER</span>
+                  <span class="ledger-select-value">{{ selectedLedger() }}</span>
+                </span>
+              </span>
+            </mat-select-trigger>
+            @for (option of ledgerOptions; track option) {
+              <mat-option [value]="option">{{ option }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="search-input-wrapper" appearance="outline" subscriptSizing="dynamic">
+          <mat-icon matPrefix class="search-icon">search</mat-icon>
+          <input
+            matInput
+            type="text"
+            class="search-input"
+            placeholder="tenant name, phone, unit..."
+            aria-label="Search tenants"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+          />
+        </mat-form-field>
+
+        <button
+          mat-icon-button
+          class="download-btn"
+          aria-label="Download CSV"
+          matTooltip="Download CSV"
+        >
+          <mat-icon>download</mat-icon>
+        </button>
+
+        <button mat-raised-button class="register-btn" color="primary">
+          <mat-icon class="btn-icon">person_add</mat-icon>
+          Register New Tenant
+        </button>
+      </div>
+
+      <div class="table-scroll">
+        <table mat-table [dataSource]="tenants()" class="tenants-table">
+          <!-- Tenant Profile Column -->
+          <ng-container matColumnDef="tenantProfile">
+            <th mat-header-cell *matHeaderCellDef>Tenant Profile</th>
+            <td mat-cell *matCellDef="let tenant">
+              <div class="tenant-profile">
+                <img [src]="tenant.avatar" [alt]="tenant.name" class="tenant-avatar" />
+                <div class="tenant-info">
+                  <div class="tenant-name">{{ tenant.name }}</div>
+                  <div class="tenant-contact">{{ tenant.phone }}</div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Premises & Unit Column -->
+          <ng-container matColumnDef="premisesUnit">
+            <th mat-header-cell *matHeaderCellDef>Premises & Unit</th>
+            <td mat-cell *matCellDef="let tenant">
+              <div class="premises-unit">
+                <div class="premises-name">{{ tenant.premises }}</div>
+                <div class="unit-detail">
+                  {{ tenant.unit }}
+                  @if (tenant.unitType) {
+                    <span class="unit-type">• {{ tenant.unitType }}</span>
+                  }
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Tenure Column -->
+          <ng-container matColumnDef="tenure">
+            <th mat-header-cell *matHeaderCellDef>Tenure</th>
+            <td mat-cell *matCellDef="let tenant">
+              <div class="tenure-info">
+                <div class="start-date">{{ tenant.startDate }}</div>
+                <div class="tenure-type">({{ tenant.tenure }})</div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Contract Rent Column -->
+          <ng-container matColumnDef="contractRent">
+            <th mat-header-cell *matHeaderCellDef>Contract Rent</th>
+            <td mat-cell *matCellDef="let tenant">
+              <div class="contract-rent">
+                <span class="rent-amount">KES {{ tenant.contractRent }}</span>
+                <span class="rent-period">{{ tenant.rentPeriod }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Ledger Balance Column -->
+          <ng-container matColumnDef="ledgerBalance">
+            <th mat-header-cell *matHeaderCellDef>Ledger Balance</th>
+            <td mat-cell *matCellDef="let tenant">
+              <div class="ledger-balance" [ngClass]="getBalanceClass(tenant.balanceStatus)">
+                {{ getBalanceStatus(tenant.ledgerBalance, tenant.balanceStatus) }}
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Emergency Column -->
+          <ng-container matColumnDef="emergency">
+            <th mat-header-cell *matHeaderCellDef>Emergency</th>
+            <td mat-cell *matCellDef="let tenant">
+              <div class="emergency-contact">
+                <div class="emergency-name">{{ tenant.emergencyContact }}</div>
+                <div class="emergency-phone">{{ tenant.emergencyPhone }}</div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Tenancy Status Column -->
+          <ng-container matColumnDef="tenancyStatus">
+            <th mat-header-cell *matHeaderCellDef>Tenancy Status</th>
+            <td mat-cell *matCellDef="let tenant">
+              <div class="tenancy-status">
+                <span class="status-badge" [ngClass]="getTenancyStatusClass(tenant.tenancyStatus)">
+                  {{ getTenancyStatusLabel(tenant.tenancyStatus) }}
+                </span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let tenant">
+              <button mat-icon-button class="action-btn" aria-label="View tenant ledger">
+                <mat-icon>receipt_long</mat-icon>
+              </button>
+              <button mat-icon-button class="action-btn" aria-label="Message tenant">
+                <mat-icon>chat_bubble_outline</mat-icon>
+              </button>
+              <button mat-icon-button class="action-btn" aria-label="More options">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="table-pagination">
+        <mat-paginator
+          [length]="142"
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          showFirstLastButtons
+          aria-label="Select page"
+        ></mat-paginator>
+      </div>
+    </div>
+  </section>
+</div>

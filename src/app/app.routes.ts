@@ -26,6 +26,10 @@ export const routes: Routes = [
         path: 'properties',
         loadChildren: () => import('./features/properties/properties.routes').then(m => m.PROPERTIES_ROUTES)
       },
+      {
+        path: 'tenants',
+        loadChildren: () => import('./features/tenants/tenants.routes').then(m => m.TENANTS_ROUTES)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
