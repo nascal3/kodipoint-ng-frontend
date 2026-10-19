@@ -28,6 +28,8 @@ export class ShellComponent {
       this.pageTitle.set('Properties');
     } else if (url.includes('/dashboard')) {
       this.pageTitle.set('Dashboard');
+    }else if (url.includes('/tenants')) {
+      this.pageTitle.set('Tenants');
     } else {
       this.pageTitle.set('');
     }

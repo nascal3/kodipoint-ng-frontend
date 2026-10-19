@@ -181,15 +181,15 @@ export class TenantsComponent {
     },
   ]);
 
-  readonly selectedLedger = signal('All Ledgers 142');
+  readonly selectedLedger = signal('All Tenants');
   readonly searchQuery = signal('');
 
   readonly ledgerOptions = [
-    'All Ledgers 142',
-    'Active Tenancies 139',
-    'Notice Period 8',
-    'Pending Lease 5',
-    'Overdue Balance 12',
+    'All Tenants',
+    'Active Tenancies',
+    'Notice Period',
+    'Pending Lease',
+    'Overdue Balance',
   ];
 
   displayedColumns: string[] = [

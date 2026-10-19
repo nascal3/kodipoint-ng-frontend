@@ -5,8 +5,6 @@
 
 .tenants-container {
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
   box-sizing: border-box;
 }
 
@@ -133,6 +131,7 @@
 .table-card {
   overflow: hidden;
   border: 1px solid #eef2f6;
+  padding: 20px 24px;
   border-radius: 13px;
   background: #fff;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
@@ -143,8 +142,8 @@
   min-height: 62px;
   align-items: center;
   gap: 8px;
-  padding: 10px 12px;
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
 .ledger-select-wrapper,
@@ -264,7 +263,7 @@
 
 .download-btn {
   display: inline-flex;
-  width: 30px;
+  width: 45px;
   height: 42px;
   flex: 0 0 30px;
   align-items: center;
@@ -311,6 +310,8 @@
   overscroll-behavior-x: contain;
   scrollbar-color: #cbd5e1 transparent;
   scrollbar-width: thin;
+  border: 1px solid #eef2f6;
+  border-radius: 13px;
 }
 
 .tenants-table {
@@ -524,6 +525,7 @@
   justify-content: flex-end;
   padding: 4px 12px;
   border-top: 1px solid #f1f5f9;
+  margin-top: 12px;
 
   ::ng-deep .mat-mdc-paginator {
     background: transparent;
