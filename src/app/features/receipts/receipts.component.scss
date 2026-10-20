@@ -24,48 +24,36 @@
   .mat-mdc-form-field {
     margin: 0;
   }
+}
+
+.payment-filter {
+  width: 185px;
+  flex: 0 0 185px;
+
+  --mat-form-field-container-height: 42px;
+  --mat-form-field-container-vertical-padding: 10px;
 
   ::ng-deep .mat-mdc-form-field-subscript-wrapper {
     display: none;
   }
-
-  ::ng-deep .mat-mdc-form-field-infix {
-    display: flex;
-    align-items: center;
-    min-height: 38px;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
   ::ng-deep .mat-mdc-form-field-flex,
   ::ng-deep .mat-mdc-text-field-wrapper,
   ::ng-deep .mdc-text-field--outlined {
-    height: 40px;
+    height: 42px;
   }
-
-  ::ng-deep .mat-mdc-form-field-icon-prefix {
-    display: inline-flex;
+  ::ng-deep .mat-mdc-form-field-infix {
+    display: flex;
+    min-height: 42px;
     align-items: center;
-    padding-right: 8px;
+    padding: 0;
   }
 
   ::ng-deep .mat-mdc-form-field-icon-prefix > .mat-icon {
     width: 14px;
     height: 14px;
-    color: #64748b;
     font-size: 14px;
+    color: #4338ca;
   }
-
-  ::ng-deep .mat-mdc-select-value,
-  input {
-    color: #334155;
-    font-size: 12px;
-  }
-}
-
-.payment-filter {
-  width: 220px;
-  flex: 0 0 220px;
 }
 
 .toolbar-spacer {
@@ -73,28 +61,78 @@
 }
 
 .receipt-search {
-  width: min(320px, 35%);
-  flex: 0 1 320px;
+  min-width: 240px;
+  max-width: 320px;
+  flex: 1 1 240px;
 
-  input {
-    min-width: 0;
+  --mat-form-field-container-height: 42px;
+  --mat-form-field-container-vertical-padding: 10px;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+  ::ng-deep .mat-mdc-form-field-flex,
+  ::ng-deep .mat-mdc-text-field-wrapper,
+  ::ng-deep .mdc-text-field--outlined {
+    height: 42px;
+  }
+  ::ng-deep .mat-mdc-form-field-infix {
+    display: flex;
+    min-height: 42px;
+    align-items: center;
+    padding: 0;
+  }
+  ::ng-deep .mat-mdc-form-field-icon-prefix {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  ::ng-deep .mat-mdc-form-field-icon-prefix > .mat-icon {
+    display: block;
+    color: #64748b;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
   }
 
-  kbd {
-    flex: 0 0 auto;
-    margin-left: 8px;
-    padding: 2px 5px;
-    border: 1px solid #d8d5e6;
-    border-radius: 5px;
-    color: #64748b;
-    font-size: 10px;
-    line-height: 16px;
+  input {
+    color: #1e293b;
+    font-size: 13px;
+
+    &::placeholder {
+      font-size: 16px;
+    }
   }
 }
 
 .month-filter {
-  width: 195px;
-  flex: 0 0 195px;
+  width: 185px;
+  flex: 0 0 185px;
+
+  --mat-form-field-container-height: 42px;
+  --mat-form-field-container-vertical-padding: 10px;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+  ::ng-deep .mat-mdc-form-field-flex,
+  ::ng-deep .mat-mdc-text-field-wrapper,
+  ::ng-deep .mdc-text-field--outlined {
+    height: 42px;
+  }
+  ::ng-deep .mat-mdc-form-field-infix {
+    display: flex;
+    min-height: 42px;
+    align-items: center;
+    padding: 0;
+  }
+
+  ::ng-deep .mat-mdc-form-field-icon-prefix > .mat-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
+    color: #4338ca;
+  }
 }
 
 .receipts-content {
