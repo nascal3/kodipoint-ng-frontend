@@ -1,47 +1,43 @@
 <div class="receipts-page">
   <section class="receipts-toolbar" aria-label="Filter payment receipts">
-    <mat-form-field appearance="outline" class="payment-filter">
-      <mat-icon matPrefix>filter_list</mat-icon>
-      <mat-select [value]="selectedFilter()" (selectionChange)="selectedFilter.set($event.value); applyFilters()">
-        <mat-select-trigger>{{ allocationFilterLabel }}</mat-select-trigger>
-        @for (option of filterOptions; track option.value) {
-          <mat-option [value]="option.value">{{ option.label }} ({{ countForFilter(option.value) }})</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
     <div class="toolbar-spacer"></div>
-
-    <mat-form-field appearance="outline" class="receipt-search">
-      <mat-icon matPrefix>search</mat-icon>
-      <input
-        matInput
-        placeholder="Search tenant, ref (e.g. QHX4910LK7)"
-        [ngModel]="searchQuery()"
-        (ngModelChange)="searchQuery.set($event); applyFilters()"
-        aria-label="Search payments by tenant, receipt, or reference">
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="month-filter">
-      <mat-icon matPrefix>calendar_month</mat-icon>
-      <mat-select [value]="selectedMonth()" (selectionChange)="selectedMonth.set($event.value); applyFilters()">
-        @for (month of monthOptions; track month.value) {
-          <mat-option [value]="month.value">{{ month.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <button mat-flat-button class="record-payment-button" routerLink="/invoice">
+      <mat-icon>add</mat-icon>
+      <span>Record Payment</span>
+    </button>
   </section>
 
   <main class="receipts-content">
     <section class="transactions-card" aria-labelledby="transactions-title">
       <header class="transactions-header">
-        <h1 id="transactions-title">Payment Transactions</h1>
+        <mat-form-field appearance="outline" class="payment-filter">
+          <mat-icon matPrefix>filter_list</mat-icon>
+          <mat-select [value]="selectedFilter()" (selectionChange)="selectedFilter.set($event.value); applyFilters()">
+            <mat-select-trigger>{{ allocationFilterLabel }}</mat-select-trigger>
+            @for (option of filterOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }} ({{ countForFilter(option.value) }})</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="receipt-search">
+          <mat-icon matPrefix>search</mat-icon>
+          <input
+            matInput
+            placeholder="Search tenant, ref (e.g. QHX4910LK7)"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event); applyFilters()"
+            aria-label="Search payments by tenant, receipt, or reference">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="month-filter">
+          <mat-icon matPrefix>calendar_month</mat-icon>
+          <mat-select [value]="selectedMonth()" (selectionChange)="selectedMonth.set($event.value); applyFilters()">
+            @for (month of monthOptions; track month.value) {
+              <mat-option [value]="month.value">{{ month.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
         <button mat-icon-button class="refresh-button" aria-label="Refresh payments" (click)="applyFilters()">
           <mat-icon>refresh</mat-icon>
-        </button>
-        <button mat-flat-button class="record-payment-button" routerLink="/invoice">
-          <mat-icon>add</mat-icon>
-          <span>Record Payment</span>
         </button>
       </header>
 
