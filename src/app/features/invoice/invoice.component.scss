@@ -186,10 +186,10 @@
 }
 
 .operations-icon {
-  width: 14px;
-  height: 14px;
+  width: 22px;
+  height: 22px;
   color: #4338ca;
-  font-size: 14px;
+  font-size: 22px;
 }
 
 .operations-title {
@@ -243,9 +243,9 @@
   }
 
   ::ng-deep .mat-icon {
-    width: 13px;
-    height: 13px;
-    font-size: 13px;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
   }
 }
 
@@ -415,15 +415,15 @@
 }
 
 .header-invoice-id {
-  width: 84px;
+  max-width: 30px;
 }
 
 .header-tenant-property {
-  width: 210px;
+  max-width: 30px;
 }
 
 .header-due-date {
-  width: 80px;
+  max-width: 30px;
 }
 
 .header-breakdown {
@@ -431,23 +431,23 @@
 }
 
 .header-amount {
-  width: 105px;
+  max-width: 30px;
 }
 
 .header-status {
-  width: 82px;
+  max-width: 30px;
 }
 
 .header-delivery {
-  width: 90px;
+  max-width: 30px;
 }
 
 .header-actions {
-  width: 40px;
+  max-width: 40px;
 }
 
 .cell-invoice-id {
-  width: 84px;
+  max-width: 60px;
 }
 
 .invoice-number-cell {
@@ -467,7 +467,7 @@
 }
 
 .cell-tenant-property {
-  width: 210px;
+  max-width: 30px;
 }
 
 .tenant-property-content {
@@ -476,7 +476,7 @@
 }
 
 .cell-due-date {
-  width: 80px;
+  max-width: 30px;
 }
 
 .due-date-content {
@@ -580,14 +580,14 @@
 }
 
 .cell-amount {
-  width: 105px;
+  width: 30px;
   font-size: 12px;
   font-weight: 700;
   color: #0f172a;
 }
 
 .cell-status {
-  width: 82px;
+  width: 30px;
 }
 
 .ledger-balance {
@@ -658,7 +658,7 @@
 }
 
 .cell-delivery {
-  width: 90px;
+  width: 30px;
   white-space: nowrap;
 
   .delivery-action-btn {

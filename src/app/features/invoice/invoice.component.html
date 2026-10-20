@@ -68,7 +68,7 @@
       </div>
       <div class="operations-buttons">
         <button mat-button class="operation-btn primary" (click)="createInvoice()">
-          <mat-icon>add_circle</mat-icon>
+          <mat-icon>post_add</mat-icon>
           <span>Create Invoice</span>
         </button>
         <button mat-button class="operation-btn secondary" (click)="batchSend()">
@@ -139,19 +139,6 @@
                 <div class="days-info" [class.overdue]="invoice.status === 'overdue'">
                   {{ invoice.daysInfo }}
                 </div>
-              </div>
-            </td>
-          </ng-container>
-
-          <!-- Breakdown Column -->
-          <ng-container matColumnDef="breakdown">
-            <th mat-header-cell *matHeaderCellDef class="header-breakdown">BREAKDOWN</th>
-            <td mat-cell *matCellDef="let invoice" class="cell-breakdown">
-              <div class="breakdown-amounts">
-                <span>{{ formatCurrency(invoice.breakdown.baseRent) }}</span>
-                @if (invoice.breakdown.additionalCharges > 0) {
-                  <span>+ {{ formatCurrency(invoice.breakdown.additionalCharges) }} svc</span>
-                }
               </div>
             </td>
           </ng-container>

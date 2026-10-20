@@ -58,7 +58,6 @@ export class InvoiceComponent {
     'invoiceNumber',
     'tenantProperty',
     'dueDate',
-    'breakdown',
     'amount',
     'status',
     'delivery',
