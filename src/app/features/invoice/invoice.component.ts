@@ -101,6 +101,21 @@ export class InvoiceComponent {
     }
   }
 
+  getStatusIcon(status: string): string {
+    switch (status) {
+      case 'paid':
+        return 'check_circle';
+      case 'overdue':
+        return 'priority_high';
+      case 'sent':
+        return 'send';
+      case 'draft':
+        return 'edit';
+      default:
+        return 'help_outline';
+    }
+  }
+
   createInvoice(): void {
     this.invoiceService.createInvoice();
   }

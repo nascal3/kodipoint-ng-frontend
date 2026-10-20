@@ -101,9 +101,19 @@
 .amount-val {
   font-size: 28px;
   font-weight: 800;
-  color: #0f172a;
   line-height: 1;
   letter-spacing: -0.02em;
+
+  &-default {
+    color: #0f172a;
+  }
+
+  &-red {
+    color: #DD61A7;
+  }
+  &-green {
+    color: #059669;
+  }
 }
 
 .kpi-detail {
@@ -479,7 +489,7 @@
 
 .tenant-info {
   display: flex;
-  align-items: center;
+  align-items: start;
   gap: 6px;
 }
 
@@ -532,32 +542,40 @@
   width: 82px;
 }
 
-.table-status-chip {
+.ledger-balance {
   display: inline-flex;
-  min-height: 0;
-  height: auto;
   align-items: center;
-  padding: 4px 8px;
-  border: 0;
+  gap: 4px;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 4px 7px;
   border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &.status-overdue {
+    color: #b91c1c;
+    background: #fee2e2;
+  }
+  &.status-paid {
+    color: #047857;
+    background: #a7f3d0;
+  }
+  &.status-sent,
+  &.status-draft {
+    color: #4f46e5;
+    background: #e0e7ff;
+  }
 }
 
-.status-paid {
-  background: #6ee7b7 !important;
-  color: #064e3b !important;
-}
-
-.status-overdue {
-  background: #fee2e2 !important;
-  color: #b91c1c !important;
-}
-
-.status-sent,
-.status-draft {
-  background: #e0e7ff !important;
-  color: #3730a3 !important;
+.ledger-balance-icon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  font-size: 15px;
+  line-height: 15px;
 }
 
 .cell-delivery {
