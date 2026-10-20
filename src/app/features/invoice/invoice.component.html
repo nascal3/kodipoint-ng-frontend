@@ -2,38 +2,59 @@
   <!-- Top Invoice KPI Summary Cards -->
   <div class="summary-section">
     <section class="summary-cards" aria-label="Invoice Key Performance Indicators">
-      @for (card of summaryData(); track card.title) {
-        <div class="kpi-card">
-          <div class="kpi-card-header">
-            <span class="kpi-title">{{ card.title }}</span>
-            <div
-              class="kpi-icon-bubble"
-              [class.bubble-purple]="card.iconClass === 'receipt_long'"
-              [class.bubble-green]="card.iconClass === 'check_circle'"
-              [class.bubble-lavender]="card.iconClass === 'priority_high'">
-              <mat-icon class="kpi-icon">{{ card.iconClass }}</mat-icon>
-            </div>
+      <!-- Card 1: Total Invoiced -->
+      <div class="kpi-card">
+        <div class="kpi-card-header">
+          <span class="kpi-title">Total Invoiced (This Month)</span>
+          <div class="kpi-icon-bubble bubble-purple">
+            <mat-icon class="kpi-icon">receipt_long</mat-icon>
           </div>
-          <div class="kpi-main-val">
-            <span class="currency-prefix">KES</span>
-            <span class="amount-val">{{ card.value }}</span>
-          </div>
-
-          @if (card.progress !== undefined) {
-            <div class="kpi-progress-track">
-              <div
-                class="kpi-progress-fill fill-purple"
-                [style.width.%]="card.progress">
-              </div>
-            </div>
-          }
-          @if (card.subtitle) {
-            <div class="kpi-detail">
-              <span>{{ card.subtitle }}</span>
-            </div>
-          }
         </div>
-      }
+        <div class="kpi-main-val">
+          <span class="currency-prefix default">KES</span>
+          <span class="amount-val default">16,240,000</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Collected -->
+      <div class="kpi-card">
+        <div class="kpi-card-header">
+          <span class="kpi-title">Collected (This Month)</span>
+          <div class="kpi-icon-bubble bubble-green">
+            <mat-icon class="kpi-icon">check_circle</mat-icon>
+          </div>
+        </div>
+        <div class="kpi-main-val">
+          <span class="currency-prefix">KES</span>
+          <span class="amount-val green">14,820,000</span>
+        </div>
+        <div class="kpi-progress-track">
+          <div class="kpi-progress-fill fill-green" [style.width.%]="89.2"></div>
+        </div>
+        <div class="kpi-detail">
+          <span class="green">89.2% Settled</span>  •  142 paid units
+        </div>
+      </div>
+
+      <!-- Card 3: Unpaid -->
+      <div class="kpi-card">
+        <div class="kpi-card-header">
+          <span class="kpi-title">Unpaid (This Month)</span>
+          <div class="kpi-icon-bubble bubble-red">
+            <mat-icon class="kpi-icon">priority_high</mat-icon>
+          </div>
+        </div>
+        <div class="kpi-main-val">
+          <span class="currency-prefix">KES</span>
+          <span class="amount-val red">1,420,000</span>
+        </div>
+        <div class="kpi-progress-track">
+          <div class="kpi-progress-fill fill-red" [style.width.%]="10.8"></div>
+        </div>
+        <div class="kpi-detail">
+          <span>18 tenancies</span>
+        </div>
+      </div>
     </section>
 
     <!-- Billing Operations -->

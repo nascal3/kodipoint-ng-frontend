@@ -78,6 +78,11 @@
     color: #6366f1;
   }
 
+  &.bubble-red {
+    background: #FEE2E2;
+    color: #BA1A1A;
+  }
+
   .kpi-icon {
     font-size: 22px;
     width: 22px;
@@ -104,14 +109,14 @@
   line-height: 1;
   letter-spacing: -0.02em;
 
-  &-default {
+  &.default {
     color: #0f172a;
   }
 
-  &-red {
-    color: #DD61A7;
+  &.red {
+    color: #BA1A1A;
   }
-  &-green {
+  &.green {
     color: #059669;
   }
 }
@@ -121,6 +126,15 @@
   border-top: 1px solid #f1f5f9;
   font-size: 12.5px;
   color: #64748b;
+
+  span {
+    &.red {
+      color: #BA1A1A;
+    }
+    &.green {
+      color: #059669;
+    }
+  }
 }
 
 .kpi-progress-track {
@@ -137,6 +151,14 @@
 
   &.fill-purple {
     background: #312e81;
+  }
+
+  &.fill-red {
+    background: #BA1A1A;
+  }
+
+  &.fill-green {
+    background: #059669;
   }
 }
 
@@ -548,7 +570,7 @@
   gap: 4px;
   max-width: 100%;
   overflow: hidden;
-  padding: 4px 7px;
+  padding: 5px 10px;
   border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
@@ -563,10 +585,13 @@
     color: #047857;
     background: #a7f3d0;
   }
-  &.status-sent,
-  &.status-draft {
+  &.status-sent {
     color: #4f46e5;
     background: #e0e7ff;
+  }
+  &.status-draft {
+    color: #64748B;
+    background: #E0E7FF;
   }
 }
 

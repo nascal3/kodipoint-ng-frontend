@@ -39,7 +39,6 @@ export class InvoiceComponent {
   private readonly invoiceService = inject(InvoiceService);
 
   readonly invoices = this.invoiceService.getInvoices;
-  readonly summaryData = this.invoiceService.getSummaryData;
 
   readonly selectedInvoice = signal<InvoiceDetails | null>(
     this.invoiceService.getInvoiceById(this.invoices()[0]?.id ?? '') ?? null,
