@@ -1,30 +1,39 @@
 <div class="invoice-container">
-  <!-- Summary Cards Section -->
+  <!-- Top Invoice KPI Summary Cards -->
   <div class="summary-section">
-    <div class="summary-cards">
+    <section class="summary-cards" aria-label="Invoice Key Performance Indicators">
       @for (card of summaryData(); track card.title) {
-        <mat-card
-          class="summary-card"
-          [class.collected-card]="card.iconClass === 'check_circle'"
-          [class.unpaid-card]="card.iconClass === 'priority_high'">
-          <div class="card-header">
-            <span class="card-title">{{ card.title }}</span>
-            <mat-icon class="card-icon">{{ card.iconClass }}</mat-icon>
+        <div class="kpi-card">
+          <div class="kpi-card-header">
+            <span class="kpi-title">{{ card.title }}</span>
+            <div
+              class="kpi-icon-bubble"
+              [class.bubble-purple]="card.iconClass === 'receipt_long'"
+              [class.bubble-green]="card.iconClass === 'check_circle'"
+              [class.bubble-lavender]="card.iconClass === 'priority_high'">
+              <mat-icon class="kpi-icon">{{ card.iconClass }}</mat-icon>
+            </div>
           </div>
-          <div class="card-value"><span class="currency-prefix">KES</span>{{ card.value }}</div>
+          <div class="kpi-main-val">
+            <span class="currency-prefix">KES</span>
+            <span class="amount-val">{{ card.value }}</span>
+          </div>
 
-          @if (card.progress !== undefined) {
-            <div class="card-progress">
-              <mat-progress-bar mode="determinate" [value]="card.progress"></mat-progress-bar>
+          @if (card.subtitle) {
+            <div class="kpi-detail">
+              <span>{{ card.subtitle }}</span>
+              @if (card.progress !== undefined) {
+                <mat-progress-bar
+                  class="kpi-progress"
+                  mode="determinate"
+                  [value]="card.progress">
+                </mat-progress-bar>
+              }
             </div>
           }
-          @if (card.subtitle) {
-            <div class="card-subtitle">{{ card.subtitle }}</div>
-          }
-
-        </mat-card>
+        </div>
       }
-    </div>
+    </section>
 
     <!-- Billing Operations -->
     <div class="billing-operations">

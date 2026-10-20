@@ -27,17 +27,11 @@
 
 .summary-cards {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
 }
 
-@media (min-width: 768px) {
-  .summary-cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.summary-card {
+.kpi-card {
   min-width: 0;
   min-height: 140px;
   padding: 20px 22px;
@@ -51,83 +45,93 @@
   box-sizing: border-box;
 }
 
-.card-header {
+.kpi-card-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 8px;
 }
 
-.card-title {
+.kpi-title {
   font-size: 13.5px;
   font-weight: 500;
   color: #64748b;
 }
 
-.card-icon {
-  width: 22px;
-  height: 22px;
-  font-size: 22px;
-  color: #4338ca;
+.kpi-icon-bubble {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &.bubble-green {
+    background: #d1fae5;
+    color: #059669;
+  }
+  &.bubble-purple {
+    background: #ede9fe;
+    color: #4f46e5;
+  }
+  &.bubble-lavender {
+    background: #ede9fe;
+    color: #6366f1;
+  }
+
+  .kpi-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
 }
 
-.card-value {
+.kpi-main-val {
   display: flex;
   align-items: baseline;
   gap: 6px;
-  font-size: 28px;
-  font-weight: 800;
-  color: #0f172a;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  margin: 4px 0 10px;
-  white-space: nowrap;
+  margin: 4px 0 10px 0;
 }
 
 .currency-prefix {
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0;
+  color: #1e293b;
 }
 
-.card-subtitle {
+.amount-val {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.kpi-detail {
   padding-top: 12px;
   border-top: 1px solid #f1f5f9;
   font-size: 12.5px;
   color: #64748b;
 }
 
-.card-progress {
-  margin-top: auto;
-}
-
-.card-progress ::ng-deep .mat-mdc-progress-bar {
-  height: 8px;
+.kpi-progress {
+  display: block;
+  height: 6px;
+  margin-top: 8px;
   border-radius: 4px;
   overflow: hidden;
 }
 
-.card-progress ::ng-deep .mat-mdc-progress-bar-buffer {
+.kpi-progress ::ng-deep .mat-mdc-progress-bar-buffer {
   background: #e6e9ff;
 }
 
-.card-progress ::ng-deep .mat-mdc-progress-bar-fill {
+.kpi-progress ::ng-deep .mat-mdc-progress-bar-fill {
   background: #047857;
 }
 
-.collected-card .card-icon {
-  color: #047857;
-}
-
-.unpaid-card .card-icon {
-  color: #dc2626;
-}
-
-.unpaid-card .card-value {
-  color: #c81e1e;
-}
-
-.unpaid-card .card-progress ::ng-deep .mat-mdc-progress-bar-fill {
+.kpi-card:nth-child(3) .kpi-progress ::ng-deep .mat-mdc-progress-bar-fill {
   background: #c81e1e;
 }
 
@@ -937,7 +941,13 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
+  .summary-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
   .summary-section {
     grid-template-columns: 1fr;
   }
@@ -945,7 +955,9 @@
   .summary-cards {
     grid-template-columns: 1fr;
   }
+}
 
+@media (max-width: 768px) {
   .filter-section {
     flex-direction: column;
   }

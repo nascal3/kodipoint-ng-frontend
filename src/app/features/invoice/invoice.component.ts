@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,7 +26,6 @@ import type { Invoice, InvoiceDetails } from './models/invoice.model';
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
-    MatCardModule,
     MatChipsModule,
     MatDividerModule,
     MatFormFieldModule,
