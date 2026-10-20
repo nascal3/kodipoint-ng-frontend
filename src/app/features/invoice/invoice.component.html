@@ -1,0 +1,278 @@
+<div class="invoice-container">
+  <!-- Summary Cards Section -->
+  <div class="summary-section">
+    <div class="summary-cards">
+      @for (card of summaryData(); track card.title) {
+        <mat-card
+          class="summary-card"
+          [class.collected-card]="card.iconClass === 'check_circle'"
+          [class.unpaid-card]="card.iconClass === 'priority_high'">
+          <div class="card-header">
+            <span class="card-title">{{ card.title }}</span>
+            <mat-icon class="card-icon">{{ card.iconClass }}</mat-icon>
+          </div>
+          <div class="card-value"><span class="currency-prefix">KES</span>{{ card.value }}</div>
+          @if (card.subtitle) {
+            <div class="card-subtitle">{{ card.subtitle }}</div>
+          }
+          @if (card.progress !== undefined) {
+            <div class="card-progress">
+              <mat-progress-bar mode="determinate" [value]="card.progress"></mat-progress-bar>
+            </div>
+          }
+        </mat-card>
+      }
+    </div>
+
+    <!-- Billing Operations -->
+    <div class="billing-operations">
+      <div class="operations-header">
+        <div class="operations-heading">
+          <span class="operations-title">Billing Operations</span>
+          <span class="operations-subtitle">Dispatch & Issue</span>
+        </div>
+        <mat-icon class="operations-icon">bolt</mat-icon>
+      </div>
+      <div class="operations-buttons">
+        <button mat-button class="operation-btn primary" (click)="createInvoice()">
+          <mat-icon>add_circle</mat-icon>
+          <span>Create Invoice</span>
+        </button>
+        <button mat-button class="operation-btn secondary" (click)="batchSend()">
+          <mat-icon>send</mat-icon>
+          <span>Batch Send</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Section -->
+  <div class="main-content">
+    <!-- Invoice List -->
+    <div class="invoice-list-section">
+      <div class="list-header">
+        <div class="filter-section">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-icon matPrefix>filter_list</mat-icon>
+            <mat-select [value]="selectedFilter()" (selectionChange)="selectedFilter.set($event.value)">
+              @for (option of filterOptions; track option) {
+                <mat-option [value]="option">{{ option }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Search invoices..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="invoice-table-container">
+        <table mat-table [dataSource]="filteredInvoices" class="invoice-table">
+          <!-- Invoice ID Column -->
+          <ng-container matColumnDef="invoiceNumber">
+            <th mat-header-cell *matHeaderCellDef class="header-invoice-id">INVOICE ID</th>
+            <td mat-cell *matCellDef="let invoice" class="cell-invoice-id">
+              <div class="invoice-number-cell">
+                <span class="invoice-id">{{ invoice.invoiceNumber }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Tenant & Property Column -->
+          <ng-container matColumnDef="tenantProperty">
+            <th mat-header-cell *matHeaderCellDef class="header-tenant-property">TENANT & PROPERTY</th>
+            <td mat-cell *matCellDef="let invoice" class="cell-tenant-property">
+              <div class="tenant-property-content">
+                <div class="tenant-info">
+                  <div class="tenant-avatar">
+                    <span>{{ invoice.tenantInitials }}</span>
+                  </div>
+                  <div class="tenant-details">
+                    <div class="tenant-name">{{ invoice.tenant }}</div>
+                    <div class="property-unit">{{ invoice.propertyUnit }}</div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Due Date Column -->
+          <ng-container matColumnDef="dueDate">
+            <th mat-header-cell *matHeaderCellDef class="header-due-date">DUE DATE</th>
+            <td mat-cell *matCellDef="let invoice" class="cell-due-date">
+              <div class="due-date-content">
+                <div class="date">{{ invoice.dueDate }}</div>
+                <div class="days-info" [class.overdue]="invoice.status === 'overdue'">
+                  {{ invoice.daysInfo }}
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Breakdown Column -->
+          <ng-container matColumnDef="breakdown">
+            <th mat-header-cell *matHeaderCellDef class="header-breakdown">BREAKDOWN</th>
+            <td mat-cell *matCellDef="let invoice" class="cell-breakdown">
+              <div class="breakdown-amounts">
+                <span>{{ formatCurrency(invoice.breakdown.baseRent) }}</span>
+                @if (invoice.breakdown.additionalCharges > 0) {
+                  <span>+ {{ formatCurrency(invoice.breakdown.additionalCharges) }} svc</span>
+                }
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Amount Column -->
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef class="header-amount">AMOUNT (KES)</th>
+            <td mat-cell *matCellDef="let invoice" class="cell-amount">
+              {{ formatCurrency(invoice.amount) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="header-status">STATUS</th>
+            <td mat-cell *matCellDef="let invoice" class="cell-status">
+              <mat-chip [class]="getStatusClass(invoice.status)" class="table-status-chip">
+                {{ getStatusLabel(invoice.status) }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="delivery">
+            <th mat-header-cell *matHeaderCellDef class="header-delivery">DELIVERY</th>
+            <td mat-cell *matCellDef="let invoice" class="cell-delivery">
+              <mat-icon [matTooltip]="invoice.delivery.emailStatus || 'pending'">mail_outline</mat-icon>
+              @if (invoice.delivery.sms) {
+                <mat-icon [matTooltip]="invoice.delivery.smsStatus || 'pending'">sms</mat-icon>
+              } @else {
+                <mat-icon class="pending-delivery" matTooltip="No SMS delivery">schedule</mat-icon>
+              }
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="header-actions"></th>
+            <td mat-cell *matCellDef="let invoice" class="cell-actions">
+              <button mat-icon-button (click)="selectInvoice(invoice); $event.stopPropagation()" matTooltip="View Details">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+              (click)="selectInvoice(row)"
+              [class.selected-row]="selectedInvoice()?.id === row.id"></tr>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-section">
+        <mat-paginator [length]="160" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
+      </div>
+    </div>
+
+    <!-- Document Inspector -->
+    @if (selectedInvoice()) {
+      <div class="document-inspector">
+        <div class="inspector-header">
+          <mat-icon class="inspector-icon">description</mat-icon>
+          <span class="inspector-title">DOCUMENT INSPECTOR</span>
+          <mat-chip [class]="getStatusClass(selectedInvoice()!.status)" class="status-chip">
+            {{ getStatusLabel(selectedInvoice()!.status) }}
+          </mat-chip>
+        </div>
+
+        <div class="inspector-content">
+          <div class="invoice-header">
+            <div class="invoice-number">{{ selectedInvoice()!.invoiceNumber }}</div>
+            <div class="billing-cycle">{{ selectedInvoice()!.billingCycle }}</div>
+            <div class="issue-date">Issued: {{ selectedInvoice()!.issueDate }}</div>
+          </div>
+
+          <mat-divider class="divider"></mat-divider>
+
+          <div class="tenant-section">
+            <div class="tenant-avatar-large">
+              <span>{{ selectedInvoice()!.tenantInitials }}</span>
+            </div>
+            <div class="tenant-info">
+              <div class="tenant-name">{{ selectedInvoice()!.tenant }}</div>
+              <div class="property-unit">{{ selectedInvoice()!.propertyUnit }}</div>
+            </div>
+          </div>
+
+          <mat-divider class="divider"></mat-divider>
+
+          <div class="billing-breakdown">
+            <div class="breakdown-row">
+              <span class="label">Monthly Base Rent</span>
+              <span class="amount">{{ formatDetailedCurrency(selectedInvoice()!.monthlyBaseRent) }}</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="label">Water & Common Amenities</span>
+              <span class="amount">{{ formatDetailedCurrency(selectedInvoice()!.waterAndCommon) }}</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="label">Garbage & Night Security</span>
+              <span class="amount">{{ formatDetailedCurrency(selectedInvoice()!.garbageAndWater) }}</span>
+            </div>
+            <div class="breakdown-row total">
+              <span class="label">Total Payable</span>
+              <span class="amount">{{ formatDetailedCurrency(selectedInvoice()!.totalPayable) }}</span>
+            </div>
+          </div>
+
+          <mat-divider class="divider"></mat-divider>
+
+          <div class="delivery-section">
+            <div class="section-title">DELIVERY VERIFICATION & TRACE</div>
+            <div class="delivery-item">
+              <mat-icon class="channel-icon">email</mat-icon>
+              <div class="delivery-info">
+                <span class="delivery-contact">{{ selectedInvoice()!.deliveryVerificationTrace.email }}</span>
+                <mat-chip class="delivery-status delivered">Delivered</mat-chip>
+              </div>
+            </div>
+            <div class="delivery-item">
+              <mat-icon class="channel-icon">phone</mat-icon>
+              <div class="delivery-info">
+                <span class="delivery-contact">{{ selectedInvoice()!.deliveryVerificationTrace.phone }}</span>
+                <mat-chip class="delivery-status delivered">SMS OK</mat-chip>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider class="divider"></mat-divider>
+
+          <div class="action-buttons">
+            <button mat-stroked-button class="action-btn secondary" (click)="resendAlert(selectedInvoice()!.id)">
+              <mat-icon>notifications</mat-icon>
+              <span>Resend Alert</span>
+            </button>
+            <button mat-stroked-button class="action-btn secondary" (click)="exportPDF(selectedInvoice()!.id)">
+              <mat-icon>picture_as_pdf</mat-icon>
+              <span>PDF Export</span>
+            </button>
+            <button mat-stroked-button class="action-btn primary" (click)="recordPayment(selectedInvoice()!.id)">
+              <mat-icon>payments</mat-icon>
+              <span>Record Payment / Receipt</span>
+            </button>
+            <button mat-stroked-button class="action-btn danger" (click)="cancelOrAdjust(selectedInvoice()!.id)">
+              <mat-icon>cancel</mat-icon>
+              <span>Cancel or Adjust Invoice</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="document-inspector empty">
+        <mat-icon class="empty-icon">receipt_long</mat-icon>
+        <span class="empty-text">Select an invoice to view details</span>
+      </div>
+    }
+  </div>
+</div>
