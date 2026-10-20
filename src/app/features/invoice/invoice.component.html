@@ -12,14 +12,16 @@
             <mat-icon class="card-icon">{{ card.iconClass }}</mat-icon>
           </div>
           <div class="card-value"><span class="currency-prefix">KES</span>{{ card.value }}</div>
-          @if (card.subtitle) {
-            <div class="card-subtitle">{{ card.subtitle }}</div>
-          }
+
           @if (card.progress !== undefined) {
             <div class="card-progress">
               <mat-progress-bar mode="determinate" [value]="card.progress"></mat-progress-bar>
             </div>
           }
+          @if (card.subtitle) {
+            <div class="card-subtitle">{{ card.subtitle }}</div>
+          }
+
         </mat-card>
       }
     </div>
@@ -143,11 +145,29 @@
           <ng-container matColumnDef="delivery">
             <th mat-header-cell *matHeaderCellDef class="header-delivery">DELIVERY</th>
             <td mat-cell *matCellDef="let invoice" class="cell-delivery">
-              <mat-icon [matTooltip]="invoice.delivery.emailStatus || 'pending'">mail_outline</mat-icon>
+              <button
+                mat-icon-button
+                class="delivery-action-btn"
+                [matTooltip]="invoice.delivery.emailStatus || 'pending'"
+                [attr.aria-label]="'Email delivery ' + (invoice.delivery.emailStatus || 'pending')">
+                <mat-icon>mail_outline</mat-icon>
+              </button>
               @if (invoice.delivery.sms) {
-                <mat-icon [matTooltip]="invoice.delivery.smsStatus || 'pending'">sms</mat-icon>
+                <button
+                  mat-icon-button
+                  class="delivery-action-btn"
+                  [matTooltip]="invoice.delivery.smsStatus || 'pending'"
+                  [attr.aria-label]="'SMS delivery ' + (invoice.delivery.smsStatus || 'pending')">
+                  <mat-icon>sms</mat-icon>
+                </button>
               } @else {
-                <mat-icon class="pending-delivery" matTooltip="No SMS delivery">schedule</mat-icon>
+                <button
+                  mat-icon-button
+                  class="delivery-action-btn"
+                  matTooltip="No SMS delivery"
+                  aria-label="No SMS delivery">
+                  <mat-icon>schedule</mat-icon>
+                </button>
               }
             </td>
           </ng-container>
