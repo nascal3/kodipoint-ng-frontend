@@ -11,7 +11,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { InvoiceService } from './services/invoice.service';
 import type { Invoice, InvoiceDetails } from './models/invoice.model';
 
@@ -31,7 +30,6 @@ import type { Invoice, InvoiceDetails } from './models/invoice.model';
     MatFormFieldModule,
     MatTableModule,
     MatPaginatorModule,
-    MatProgressBarModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './invoice.component.html',

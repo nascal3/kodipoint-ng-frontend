@@ -19,16 +19,17 @@
             <span class="amount-val">{{ card.value }}</span>
           </div>
 
+          @if (card.progress !== undefined) {
+            <div class="kpi-progress-track">
+              <div
+                class="kpi-progress-fill fill-purple"
+                [style.width.%]="card.progress">
+              </div>
+            </div>
+          }
           @if (card.subtitle) {
             <div class="kpi-detail">
               <span>{{ card.subtitle }}</span>
-              @if (card.progress !== undefined) {
-                <mat-progress-bar
-                  class="kpi-progress"
-                  mode="determinate"
-                  [value]="card.progress">
-                </mat-progress-bar>
-              }
             </div>
           }
         </div>
@@ -200,7 +201,7 @@
 
       <!-- Pagination -->
       <div class="pagination-section">
-        <mat-paginator [length]="160" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
+        <mat-paginator [length]="160" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 50]" [showFirstLastButtons]="true"></mat-paginator>
       </div>
     </div>
 

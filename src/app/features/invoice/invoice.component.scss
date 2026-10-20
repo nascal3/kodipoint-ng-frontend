@@ -115,24 +115,21 @@
   color: #64748b;
 }
 
-.kpi-progress {
-  display: block;
+.kpi-progress-track {
+  background: #e2e8f0;
   height: 6px;
-  margin-top: 8px;
-  border-radius: 4px;
+  border-radius: 3px;
   overflow: hidden;
+  margin-bottom: 10px;
 }
 
-.kpi-progress ::ng-deep .mat-mdc-progress-bar-buffer {
-  background: #e6e9ff;
-}
+.kpi-progress-fill {
+  height: 100%;
+  border-radius: 3px;
 
-.kpi-progress ::ng-deep .mat-mdc-progress-bar-fill {
-  background: #047857;
-}
-
-.kpi-card:nth-child(3) .kpi-progress ::ng-deep .mat-mdc-progress-bar-fill {
-  background: #c81e1e;
+  &.fill-purple {
+    background: #312e81;
+  }
 }
 
 .billing-operations {
