@@ -389,8 +389,34 @@
   height: 26px;
   flex: 0 0 26px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid #eef2f6;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+// Cycle through different gradient colors for avatars in different rows
+::ng-deep .mat-mdc-row:nth-child(2n) .tenant-avatar {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+::ng-deep .mat-mdc-row:nth-child(3n) .tenant-avatar {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
+::ng-deep .mat-mdc-row:nth-child(4n) .tenant-avatar {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+::ng-deep .mat-mdc-row:nth-child(5n) .tenant-avatar {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+::ng-deep .mat-mdc-row:nth-child(6n) .tenant-avatar {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
 }
 
 .tenant-info,

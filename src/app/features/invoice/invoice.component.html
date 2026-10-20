@@ -228,8 +228,13 @@
         <div class="inspector-header">
           <mat-icon class="inspector-icon">description</mat-icon>
           <span class="inspector-title">DOCUMENT INSPECTOR</span>
-          <mat-chip [class]="getStatusClass(selectedInvoice()!.status)" class="status-chip">
-            {{ getStatusLabel(selectedInvoice()!.status) }}
+          <mat-chip class="status-chip" [ngClass]="getStatusClass(selectedInvoice()!.status)">
+            <span class="status-chip-content">
+              <mat-icon class="ledger-balance-icon">
+                {{ getStatusIcon(selectedInvoice()!.status) }}
+              </mat-icon>
+              <span>{{ getStatusLabel(selectedInvoice()!.status) }}</span>
+            </span>
           </mat-chip>
         </div>
 

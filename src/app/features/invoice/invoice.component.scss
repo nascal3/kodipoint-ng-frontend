@@ -462,6 +462,10 @@
   overflow-wrap: anywhere;
 }
 
+.selected-row .invoice-id {
+  color: #352CD7;
+}
+
 .cell-tenant-property {
   width: 210px;
 }
@@ -527,6 +531,28 @@
   color: #ffffff;
   font-size: 12px;
   font-weight: 600;
+  margin-top: 8px;
+}
+
+// Cycle through different gradient colors for avatars in different rows
+::ng-deep .mat-mdc-row:nth-child(2n) .tenant-avatar {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+::ng-deep .mat-mdc-row:nth-child(3n) .tenant-avatar {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
+::ng-deep .mat-mdc-row:nth-child(4n) .tenant-avatar {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+::ng-deep .mat-mdc-row:nth-child(5n) .tenant-avatar {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+::ng-deep .mat-mdc-row:nth-child(6n) .tenant-avatar {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
 }
 
 .tenant-details {
@@ -576,23 +602,50 @@
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
 
-  &.status-overdue {
-    color: #b91c1c;
-    background: #fee2e2;
-  }
-  &.status-paid {
-    color: #047857;
-    background: #a7f3d0;
-  }
-  &.status-sent {
-    color: #4f46e5;
-    background: #e0e7ff;
-  }
-  &.status-draft {
-    color: #64748B;
-    background: #E0E7FF;
-  }
+.ledger-balance.status-overdue,
+.status-chip.status-overdue {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.ledger-balance.status-paid,
+.status-chip.status-paid {
+  color: #047857;
+  background: #a7f3d0;
+}
+
+.ledger-balance.status-sent,
+.status-chip.status-sent {
+  color: #4f46e5;
+  background: #e0e7ff;
+}
+
+.ledger-balance.status-draft,
+.status-chip.status-draft {
+  color: #64748B;
+  background: #E0E7FF;
+}
+
+.status-chip.status-overdue {
+  color: #b91c1c !important;
+  background: #fee2e2 !important;
+}
+
+.status-chip.status-paid {
+  color: #047857 !important;
+  background: #a7f3d0 !important;
+}
+
+.status-chip.status-sent {
+  color: #4f46e5 !important;
+  background: #e0e7ff !important;
+}
+
+.status-chip.status-draft {
+  color: #64748B !important;
+  background: #E0E7FF !important;
 }
 
 .ledger-balance-icon {
@@ -600,6 +653,7 @@
   height: 15px;
   flex: 0 0 15px;
   font-size: 15px;
+  font-weight: 600;
   line-height: 15px;
 }
 
@@ -723,10 +777,25 @@
   font-weight: 600;
   min-height: 0;
   height: auto;
-  padding: 4px 8px;
+  padding: 7px 8px;
   border-radius: 12px;
-  background: #6ee7b7 !important;
-  color: #064e3b !important;
+  text-align: center;
+}
+
+.status-chip-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  line-height: 15px;
+}
+
+.status-chip-content .ledger-balance-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
 }
 
 .inspector-content {
@@ -794,6 +863,27 @@
   font-weight: 600;
 }
 
+// Apply random colors to tenant-avatar-large based on selected invoice index
+::ng-deep .document-inspector:nth-child(2n) .tenant-avatar-large {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+::ng-deep .document-inspector:nth-child(3n) .tenant-avatar-large {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+}
+
+::ng-deep .document-inspector:nth-child(4n) .tenant-avatar-large {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+::ng-deep .document-inspector:nth-child(5n) .tenant-avatar-large {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+::ng-deep .document-inspector:nth-child(6n) .tenant-avatar-large {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+}
+
 .tenant-section .tenant-info {
   display: flex;
   flex-direction: column;
@@ -842,7 +932,8 @@
 
 .breakdown-row.total .amount {
   font-size: 16px;
-  color: #312e81;
+  font-weight: 700;
+  color: #352CD7;
 }
 
 .delivery-section {
