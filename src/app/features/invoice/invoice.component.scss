@@ -359,7 +359,7 @@
 
 .invoice-table-container {
   min-width: 0;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   border: 1px solid #eef2f6;
   border-radius: 13px;
@@ -368,7 +368,7 @@
 
 .invoice-table {
   width: 100%;
-  min-width: 1097px;
+  min-width: 0;
   table-layout: fixed;
 
   ::ng-deep .mat-mdc-header-row {
@@ -377,10 +377,10 @@
 
   ::ng-deep .mat-mdc-header-cell {
     overflow: hidden;
-    padding: 12px 16px;
+    padding: 10px 8px;
     border-bottom: 1px solid #e2e8f0;
     color: #64748b;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     text-overflow: ellipsis;
@@ -408,46 +408,49 @@
 
   ::ng-deep .mat-mdc-cell {
     overflow: hidden;
-    padding: 14px 16px;
+    padding: 10px 8px;
     color: #1e293b;
     font-size: 13px;
   }
 }
 
-.header-invoice-id {
-  max-width: 30px;
+.header-invoice-id,
+.cell-invoice-id {
+  width: 12%;
 }
 
-.header-tenant-property {
-  max-width: 30px;
+.header-tenant-property,
+.cell-tenant-property {
+  width: 18%;
 }
 
-.header-due-date {
-  max-width: 30px;
+.header-due-date,
+.cell-due-date {
+  width: 10%;
 }
 
-.header-breakdown {
+.header-amount,
+.cell-amount {
+  width: 10%;
+}
+
+.header-status,
+.cell-status {
+  width: 10%;
+}
+
+.header-delivery,
+.cell-delivery {
+  width: 10%;
+}
+
+.header-breakdown,
+.cell-breakdown {
   width: 105px;
-}
-
-.header-amount {
-  max-width: 30px;
-}
-
-.header-status {
-  max-width: 30px;
-}
-
-.header-delivery {
-  max-width: 30px;
 }
 
 .header-actions {
   max-width: 40px;
-}
-
-.cell-invoice-id {
-  max-width: 60px;
 }
 
 .invoice-number-cell {
@@ -466,17 +469,9 @@
   color: #352CD7;
 }
 
-.cell-tenant-property {
-  max-width: 30px;
-}
-
 .tenant-property-content {
   display: flex;
   align-items: center;
-}
-
-.cell-due-date {
-  max-width: 30px;
 }
 
 .due-date-content {
@@ -499,10 +494,6 @@
     color: #dc2626;
     font-weight: 600;
   }
-}
-
-.cell-breakdown {
-  width: 105px;
 }
 
 .breakdown-amounts {
@@ -580,14 +571,9 @@
 }
 
 .cell-amount {
-  width: 30px;
   font-size: 12px;
   font-weight: 700;
   color: #0f172a;
-}
-
-.cell-status {
-  width: 30px;
 }
 
 .ledger-balance {
@@ -595,13 +581,20 @@
   align-items: center;
   gap: 4px;
   max-width: 100%;
+  box-sizing: border-box;
   overflow: hidden;
-  padding: 5px 10px;
+  padding: 4px 6px;
   border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.ledger-balance-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ledger-balance.status-overdue,
@@ -658,12 +651,11 @@
 }
 
 .cell-delivery {
-  width: 30px;
-  white-space: nowrap;
+  white-space: normal;
 
   .delivery-action-btn {
-    width: 24px;
-    height: 28px;
+    width: 22px;
+    height: 24px;
     padding: 0;
     color: #475569;
 
@@ -1087,6 +1079,38 @@
 }
 
 @media (max-width: 768px) {
+  .invoice-table {
+    ::ng-deep .mat-mdc-header-cell,
+    ::ng-deep .mat-mdc-cell {
+      padding-right: 4px;
+      padding-left: 4px;
+    }
+  }
+
+  .ledger-balance {
+    gap: 2px;
+    padding-right: 4px;
+    padding-left: 4px;
+  }
+
+  .ledger-balance-icon {
+    width: 13px;
+    height: 13px;
+    flex-basis: 13px;
+    font-size: 13px;
+    line-height: 13px;
+  }
+
+  .cell-delivery .delivery-action-btn {
+    width: 19px;
+  }
+
+  .cell-delivery .delivery-action-btn ::ng-deep .mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+
   .filter-section {
     flex-direction: column;
   }
