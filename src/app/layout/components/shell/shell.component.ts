@@ -24,15 +24,15 @@ export class ShellComponent {
 
   private updatePageTitle(): void {
     const url = this.router.url;
-    if (url.includes('/properties')) {
-      this.pageTitle.set('Properties');
-    } else if (url.includes('/dashboard')) {
-      this.pageTitle.set('Dashboard');
-    }else if (url.includes('/tenants')) {
-      this.pageTitle.set('Tenants');
-    } else {
-      this.pageTitle.set('');
-    }
+    const routeTitleMap: Record<string, string> = {
+      '/properties': 'Properties',
+      '/dashboard': 'Dashboard',
+      '/tenants': 'Tenants',
+      '/invoice': 'Invoice',
+    };
+
+    const title = Object.entries(routeTitleMap).find(([route]) => url.includes(route))?.[1] || '';
+    this.pageTitle.set(title);
   }
 
   toggleSidebar(): void {
