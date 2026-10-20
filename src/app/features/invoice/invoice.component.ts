@@ -63,7 +63,6 @@ export class InvoiceComponent {
     'amount',
     'status',
     'delivery',
-    'actions',
   ];
 
 
