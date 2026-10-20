@@ -105,12 +105,9 @@
   }
 }
 
-.month-filter {
-  width: 185px;
-  flex: 0 0 185px;
-
-  --mat-form-field-container-height: 42px;
-  --mat-form-field-container-vertical-padding: 10px;
+.date-filter-field {
+  width: 270px;
+  margin: 0;
 
   ::ng-deep .mat-mdc-form-field-subscript-wrapper {
     display: none;
@@ -118,21 +115,33 @@
   ::ng-deep .mat-mdc-form-field-flex,
   ::ng-deep .mat-mdc-text-field-wrapper,
   ::ng-deep .mdc-text-field--outlined {
-    height: 42px;
+    height: 38px;
   }
   ::ng-deep .mat-mdc-form-field-infix {
     display: flex;
-    min-height: 42px;
+    min-height: 38px;
     align-items: center;
     padding: 0;
   }
-
-  ::ng-deep .mat-mdc-form-field-icon-prefix > .mat-icon {
-    width: 14px;
-    height: 14px;
-    font-size: 14px;
-    color: #4338ca;
+  ::ng-deep .mat-mdc-form-field-icon-prefix {
+    padding: 0 8px 0 0;
   }
+  ::ng-deep .mat-mdc-form-field-icon-prefix .mat-datepicker-toggle {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+  ::ng-deep .mat-date-range-input-container {
+    color: #1e293b;
+    font-size: 13px;
+  }
+}
+
+.calendar-icon {
+  width: 16px;
+  height: 16px;
+  color: #4f46e5;
+  font-size: 16px;
 }
 
 .receipts-content {
@@ -833,7 +842,7 @@
 
   .payment-filter,
   .receipt-search,
-  .month-filter {
+  .date-filter-field {
     width: 100%;
     max-width: none;
     flex: 1 1 100%;

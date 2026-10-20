@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
+import { DATE_RANGE_DATE_PROVIDERS } from '../dashboard/components/date-range-date-adapter';
 
 interface ReceiptAllocation {
   description: string;
@@ -46,6 +48,7 @@ interface Receipt {
     FormsModule,
     MatButtonModule,
     MatChipsModule,
+    MatDatepickerModule,
     MatDividerModule,
     MatFormFieldModule,
     MatIconModule,
@@ -56,6 +59,7 @@ interface Receipt {
     MatTooltipModule,
     RouterLink,
   ],
+  providers: DATE_RANGE_DATE_PROVIDERS,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './receipts.component.html',
   styleUrl: './receipts.component.scss',
@@ -63,19 +67,16 @@ interface Receipt {
 export class ReceiptsComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  readonly maxDate = new Date();
+  readonly dateRangeStart = signal(new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), 1));
+  readonly dateRangeEnd = signal(this.maxDate);
   readonly selectedFilter = signal('all');
   readonly searchQuery = signal('');
-  readonly selectedMonth = signal('2026-10');
   readonly selectedReceipt = signal<Receipt | null>(null);
   readonly filterOptions = [
     { value: 'all', label: 'All Payments' },
     { value: 'allocated', label: 'Allocated' },
     { value: 'partial', label: 'Partial' },
-  ];
-  readonly monthOptions = [
-    { value: '2026-10', label: 'Oct 01 – Oct 31, 2026' },
-    { value: '2026-09', label: 'Sep 01 – Sep 30, 2026' },
-    { value: '2026-08', label: 'Aug 01 – Aug 31, 2026' },
   ];
   readonly displayedColumns = [
     'receipt',
@@ -193,12 +194,17 @@ export class ReceiptsComponent implements AfterViewInit {
       const criteria = JSON.parse(filter) as {
         allocation: string;
         query: string;
-        month: string;
+        start: string;
+        end: string;
       };
       const query = criteria.query.toLowerCase();
+      const receiptDate = new Date(receipt.timestamp);
+      const startDate = this.parseFilterDate(criteria.start);
+      const endDate = this.endOfDate(this.parseFilterDate(criteria.end));
       return (
         (criteria.allocation === 'all' || receipt.allocationStatus === criteria.allocation) &&
-        receipt.timestamp.startsWith(criteria.month) &&
+        receiptDate >= startDate &&
+        receiptDate <= endDate &&
         `${receipt.tenant} ${receipt.receiptNumber} ${receipt.transactionReference} ${receipt.unit} ${receipt.property}`
           .toLowerCase()
           .includes(query)
@@ -215,11 +221,26 @@ export class ReceiptsComponent implements AfterViewInit {
     this.selectedReceipt.set(receipt);
   }
 
+  updateDateRangeStart(date: Date | null): void {
+    if (date) {
+      this.dateRangeStart.set(date);
+      this.applyFilters();
+    }
+  }
+
+  updateDateRangeEnd(date: Date | null): void {
+    if (date) {
+      this.dateRangeEnd.set(date);
+      this.applyFilters();
+    }
+  }
+
   applyFilters(): void {
     this.dataSource.filter = JSON.stringify({
       allocation: this.selectedFilter(),
       query: this.searchQuery().trim(),
-      month: this.selectedMonth(),
+      start: this.formatDateForFilter(this.dateRangeStart()),
+      end: this.formatDateForFilter(this.dateRangeEnd()),
     });
     this.paginator?.firstPage();
   }
@@ -240,8 +261,26 @@ export class ReceiptsComponent implements AfterViewInit {
   countForFilter(filter: string): number {
     return this.receipts.filter(receipt =>
       (filter === 'all' || receipt.allocationStatus === filter) &&
-      receipt.timestamp.startsWith(this.selectedMonth()),
+      new Date(receipt.timestamp) >= this.dateRangeStart() &&
+      new Date(receipt.timestamp) <= this.endOfDate(this.dateRangeEnd()),
     ).length;
+  }
+
+  private endOfDate(date: Date): Date {
+    const endOfDate = new Date(date);
+    endOfDate.setHours(23, 59, 59, 999);
+    return endOfDate;
+  }
+
+  private formatDateForFilter(date: Date): string {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${date.getFullYear()}-${month}-${day}`;
+  }
+
+  private parseFilterDate(date: string): Date {
+    const [year, month, day] = date.split('-').map(Number);
+    return new Date(year, month - 1, day);
   }
 
   get filteredCount(): number {
@@ -251,9 +290,5 @@ export class ReceiptsComponent implements AfterViewInit {
   get allocationFilterLabel(): string {
     const option = this.filterOptions.find(item => item.value === this.selectedFilter());
     return `${option?.label ?? 'All Payments'} (${this.filteredCount})`;
-  }
-
-  get selectedMonthLabel(): string {
-    return this.monthOptions.find(item => item.value === this.selectedMonth())?.label ?? '';
   }
 }
