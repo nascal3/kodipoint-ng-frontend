@@ -302,11 +302,14 @@
 }
 
 .receipt-number {
-  color: #352cd7;
-  font-family: monospace;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  overflow-wrap: anywhere;
+}
+
+.selected-row .receipt-number {
+  color: #352CD7;
 }
 
 .tenant-cell {
