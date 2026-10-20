@@ -39,7 +39,7 @@ export class SidebarComponent {
         { path: '/properties', label: 'Properties', icon: 'domain' },
         { path: '/tenants', label: 'Tenants', icon: 'people' },
         { path: '/invoice', label: 'Invoices', icon: 'receipt_long' },
-        { path: '/payments', label: 'Payments & Receipts', icon: 'payments' },
+        { path: '/receipts', label: 'Payments & Receipts', icon: 'payments' },
       ],
     },
     {

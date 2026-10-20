@@ -1,0 +1,195 @@
+<div class="receipts-page">
+  <section class="receipts-toolbar" aria-label="Filter payment receipts">
+    <mat-form-field appearance="outline" class="payment-filter">
+      <mat-icon matPrefix>filter_list</mat-icon>
+      <mat-select [value]="selectedFilter()" (selectionChange)="selectedFilter.set($event.value); applyFilters()">
+        <mat-select-trigger>{{ allocationFilterLabel }}</mat-select-trigger>
+        @for (option of filterOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }} ({{ countForFilter(option.value) }})</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="toolbar-spacer"></div>
+
+    <mat-form-field appearance="outline" class="receipt-search">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        placeholder="Search tenant, ref (e.g. QHX4910LK7)."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event); applyFilters()"
+        aria-label="Search payments by tenant, receipt, or reference">
+      <kbd>⌘F</kbd>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="month-filter">
+      <mat-icon matPrefix>calendar_month</mat-icon>
+      <mat-select [value]="selectedMonth()" (selectionChange)="selectedMonth.set($event.value); applyFilters()">
+        @for (month of monthOptions; track month.value) {
+          <mat-option [value]="month.value">{{ month.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </section>
+
+  <main class="receipts-content">
+    <section class="transactions-card" aria-labelledby="transactions-title">
+      <header class="transactions-header">
+        <h1 id="transactions-title">Payment Transactions</h1>
+        <button mat-icon-button class="refresh-button" aria-label="Refresh payments" (click)="applyFilters()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        <button mat-flat-button class="record-payment-button" routerLink="/invoice">
+          <mat-icon>add</mat-icon>
+          <span>Record Payment</span>
+        </button>
+      </header>
+
+      <div class="transactions-table-container">
+        <table mat-table [dataSource]="dataSource" class="transactions-table">
+          <ng-container matColumnDef="receipt">
+            <th mat-header-cell *matHeaderCellDef>Receipt</th>
+            <td mat-cell *matCellDef="let receipt">
+              <span class="receipt-number">{{ receipt.receiptNumber }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="tenant">
+            <th mat-header-cell *matHeaderCellDef>Tenant &amp; Unit</th>
+            <td mat-cell *matCellDef="let receipt">
+              <div class="tenant-cell">
+                <span class="tenant-avatar">{{ receipt.initials }}</span>
+                <span class="tenant-description">
+                  <strong>{{ receipt.tenant }}</strong>
+                  <span>{{ receipt.unit }} · {{ receipt.property }}</span>
+                </span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="channel">
+            <th mat-header-cell *matHeaderCellDef>Channel</th>
+            <td mat-cell *matCellDef="let receipt">
+              <span class="channel-badge" [class.channel-mpesa]="receipt.channel === 'M-Pesa'">{{ receipt.channel }}</span>
+              <span class="channel-reference">{{ receipt.transactionReference }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="timestamp">
+            <th mat-header-cell *matHeaderCellDef>Date &amp; Time</th>
+            <td mat-cell *matCellDef="let receipt">{{ receipt.timestamp | date: 'MMM dd, hh:mm a' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount (KES)</th>
+            <td mat-cell *matCellDef="let receipt" class="amount-cell">{{ formatCurrency(receipt.amount) }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="allocation">
+            <th mat-header-cell *matHeaderCellDef>Allocation</th>
+            <td mat-cell *matCellDef="let receipt">
+              <span class="allocation-badge" [class.partial]="receipt.allocationStatus === 'partial'">
+                <span class="allocation-dot"></span>
+                {{ receipt.allocationStatus === 'partial' ? 'Partial' : 'Allocated' }}
+              </span>
+              @if (receipt.outstandingBalance > 0) {
+                <span class="outstanding-balance">KES {{ receipt.outstandingBalance | number: '1.0-0' }} Bal</span>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            (click)="selectReceipt(row)"
+            [class.selected-row]="selectedReceipt()?.id === row.id"
+            [attr.aria-selected]="selectedReceipt()?.id === row.id"
+            tabindex="0"
+            (keydown.enter)="selectReceipt(row)">
+          </tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="empty-table-cell" [attr.colspan]="displayedColumns.length">No payment receipts match your filters.</td>
+          </tr>
+        </table>
+      </div>
+
+      <mat-paginator
+        [length]="filteredCount"
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 25]"
+        [showFirstLastButtons]="true"
+        aria-label="Payment receipts pagination">
+      </mat-paginator>
+    </section>
+
+    @if (selectedReceipt(); as receipt) {
+      <aside class="receipt-inspector" aria-labelledby="receipt-inspector-title">
+        <header class="inspector-header">
+          <div class="inspector-heading">
+            <mat-icon>receipt_long</mat-icon>
+            <span id="receipt-inspector-title">Receipt Inspector</span>
+          </div>
+          <span class="issued-badge"><mat-icon>verified</mat-icon> Issued</span>
+        </header>
+
+        <h2 class="inspector-receipt-number">{{ receipt.receiptNumber }}</h2>
+
+        <section class="payment-total" aria-label="Total amount paid">
+          <span class="total-label">Total Amount Paid</span>
+          <strong>{{ formatCurrency(receipt.amount) }}</strong>
+          <span class="settlement-note">
+            <mat-icon>check_circle</mat-icon>
+            {{ receipt.allocationStatus === 'allocated' ? 'Settled in Full' : 'Partially Allocated' }} · {{ receipt.channel }}
+          </span>
+        </section>
+
+        <dl class="receipt-details">
+          <div><dt>Tenant</dt><dd>{{ receipt.tenant }}</dd></div>
+          <div><dt>Unit / Property</dt><dd>{{ receipt.unit }}, {{ receipt.property }}</dd></div>
+          <div><dt>Payment Channel</dt><dd>{{ receipt.channel }}</dd></div>
+          <div><dt>Transaction Ref</dt><dd class="transaction-ref">{{ receipt.transactionReference }}</dd></div>
+          <div><dt>Timestamp</dt><dd>{{ receipt.timestamp | date: "dd MMM yyyy, hh:mm a 'EAT'" }}</dd></div>
+        </dl>
+
+        <section class="allocation-card">
+          <header>
+            <h3>Invoice Allocation</h3>
+            <span>{{ receipt.invoiceNumber }}</span>
+          </header>
+          @for (allocation of receipt.allocations; track allocation.description) {
+            <div class="allocation-line">
+              <span><mat-icon>check</mat-icon>{{ allocation.description }}</span>
+              <strong>{{ formatCurrency(allocation.amount) }}</strong>
+            </div>
+          }
+          <div class="allocation-balance">
+            <span>Unallocated Balance</span>
+            <strong>{{ formatCurrency(receipt.unallocatedBalance) }}</strong>
+          </div>
+        </section>
+
+        <section class="delivery-card">
+          <h3>Dispatch &amp; Delivery Tracing</h3>
+          <div><span><mat-icon>mail</mat-icon>{{ receipt.email }}</span><strong><mat-icon>done_all</mat-icon>Delivered</strong></div>
+          <div><span><mat-icon>sms</mat-icon>{{ receipt.phone }}</span><strong><mat-icon>done_all</mat-icon>SMS Ack'd</strong></div>
+        </section>
+
+        <footer class="inspector-actions">
+          <button mat-flat-button class="download-button" type="button" (click)="printReceipt()">
+            <mat-icon>picture_as_pdf</mat-icon> Download PDF
+          </button>
+          <button mat-stroked-button class="resend-button" type="button" [matTooltip]="'Resend receipt to ' + receipt.tenant">
+            <mat-icon>send</mat-icon> Resend Receipt
+          </button>
+        </footer>
+      </aside>
+    } @else {
+      <aside class="receipt-inspector empty-inspector">
+        <mat-icon>receipt_long</mat-icon>
+        <span>Select a payment to inspect its receipt</span>
+      </aside>
+    }
+  </main>
+</div>

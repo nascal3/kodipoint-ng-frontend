@@ -29,6 +29,7 @@ export class ShellComponent {
       '/dashboard': 'Dashboard',
       '/tenants': 'Tenants',
       '/invoice': 'Invoice',
+      '/receipts': 'Receipts',
     };
 
     const title = Object.entries(routeTitleMap).find(([route]) => url.includes(route))?.[1] || '';
