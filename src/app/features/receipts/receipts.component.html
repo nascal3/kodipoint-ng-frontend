@@ -100,7 +100,7 @@
             <td mat-cell *matCellDef="let receipt">
               <span class="allocation-badge" [class.partial]="receipt.allocationStatus === 'partial'">
                 <span class="allocation-dot"></span>
-                {{ receipt.allocationStatus === 'partial' ? 'Partial' : 'Allocated' }}
+                {{ receipt.allocationStatus === 'partial' ? 'Partially Paid' : 'Allocated' }}
               </span>
               @if (receipt.outstandingBalance > 0) {
                 <span class="outstanding-balance">KES {{ receipt.outstandingBalance | number: '1.0-0' }} Bal</span>
