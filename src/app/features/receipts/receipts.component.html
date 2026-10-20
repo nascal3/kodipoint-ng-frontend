@@ -16,11 +16,10 @@
       <mat-icon matPrefix>search</mat-icon>
       <input
         matInput
-        placeholder="Search tenant, ref (e.g. QHX4910LK7)."
+        placeholder="Search tenant, ref (e.g. QHX4910LK7)"
         [ngModel]="searchQuery()"
         (ngModelChange)="searchQuery.set($event); applyFilters()"
         aria-label="Search payments by tenant, receipt, or reference">
-      <kbd>⌘F</kbd>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="month-filter">
@@ -46,7 +45,7 @@
         </button>
       </header>
 
-      <div class="transactions-table-container">
+      <div class="table-scroll">
         <table mat-table [dataSource]="dataSource" class="transactions-table">
           <ng-container matColumnDef="receipt">
             <th mat-header-cell *matHeaderCellDef>Receipt</th>
@@ -115,13 +114,15 @@
         </table>
       </div>
 
-      <mat-paginator
-        [length]="filteredCount"
-        [pageSize]="5"
-        [pageSizeOptions]="[5, 10, 25]"
-        [showFirstLastButtons]="true"
-        aria-label="Payment receipts pagination">
-      </mat-paginator>
+      <div class="table-pagination">
+        <mat-paginator
+          [length]="filteredCount"
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 25]"
+          [showFirstLastButtons]="true"
+          aria-label="Payment receipts pagination">
+        </mat-paginator>
+      </div>
     </section>
 
     @if (selectedReceipt(); as receipt) {
@@ -176,11 +177,11 @@
           <div><span><mat-icon>sms</mat-icon>{{ receipt.phone }}</span><strong><mat-icon>done_all</mat-icon>SMS Ack'd</strong></div>
         </section>
 
-        <footer class="inspector-actions">
-          <button mat-flat-button class="download-button" type="button" (click)="printReceipt()">
+        <footer class="action-buttons inspector-actions">
+          <button mat-flat-button class="action-btn primary" type="button" (click)="printReceipt()">
             <mat-icon>picture_as_pdf</mat-icon> Download PDF
           </button>
-          <button mat-stroked-button class="resend-button" type="button" [matTooltip]="'Resend receipt to ' + receipt.tenant">
+          <button mat-stroked-button class="action-btn secondary" type="button" [matTooltip]="'Resend receipt to ' + receipt.tenant">
             <mat-icon>send</mat-icon> Resend Receipt
           </button>
         </footer>

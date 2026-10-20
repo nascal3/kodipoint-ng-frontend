@@ -136,24 +136,10 @@
 }
 
 .refresh-button {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 28px;
+  padding: 0;
   color: #475569;
-
-  mat-icon {
-    width: 18px;
-    height: 18px;
-    font-size: 18px;
-  }
-}
-
-.record-payment-button,
-.download-button {
-  border-radius: 24px;
-  background: #3826d5 !important;
-  color: #fff !important;
-  font-size: 13px;
-  font-weight: 600;
 
   mat-icon {
     width: 16px;
@@ -162,9 +148,51 @@
   }
 }
 
-.transactions-table-container {
-  width: 100%;
+.record-payment-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-transform: none;
+  transition: all 0.2s ease;
+
+  mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+
+  &:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1 !important;
+  }
+}
+
+.record-payment-button {
+  border-color: #3826d5 !important;
+  background: #3826d5 !important;
+  color: #fff !important;
+}
+
+.record-payment-button:hover {
+  border-color: #3121bd !important;
+  background: #3121bd !important;
+}
+
+.table-scroll {
   overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-width: thin;
+  border: 1px solid #eef2f6;
+  border-radius: 13px;
 }
 
 .transactions-table {
@@ -172,37 +200,43 @@
   min-width: 760px;
   table-layout: fixed;
 
-  th {
-    background: #f3f2ff;
-    color: #334155;
+  ::ng-deep .mat-mdc-header-row {
+    background: #f8f9fc;
+  }
+
+  ::ng-deep .mat-mdc-header-cell {
+    overflow: hidden;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #64748b;
     font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: normal;
   }
 
-  td {
-    height: 56px;
-    border-bottom-color: #e8e5f2;
-    color: #334155;
-    font-size: 12px;
-  }
-
-  th,
-  td {
-    padding: 8px 10px;
-  }
-
-  tr.mat-mdc-row {
+  ::ng-deep .mat-mdc-row {
+    border-bottom: 1px solid #f1f5f9;
     cursor: pointer;
-    transition: background-color 120ms ease;
+    transition: background 0.15s ease;
 
     &:hover {
-      background: #f8f7ff;
+      background: #f8fafc;
     }
 
     &.selected-row {
-      background: #e2e5ff;
+      background: #f6f5ff;
+      border-left: 3px solid #4338ca;
     }
+  }
+
+  ::ng-deep .mat-mdc-cell {
+    overflow: hidden;
+    padding: 14px 16px;
+    color: #1e293b;
+    font-size: 13px;
+    text-overflow: ellipsis;
   }
 
   th:nth-child(1),
@@ -371,9 +405,27 @@
   font-size: 13px;
 }
 
-mat-paginator {
-  border-top: 1px solid #e2def0;
-  background: #fff;
+.table-pagination {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 12px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 12px;
+
+  ::ng-deep .mat-mdc-paginator {
+    background: transparent;
+    font-size: 12px;
+  }
+
+  ::ng-deep .mat-mdc-paginator-container {
+    min-height: 40px;
+    justify-content: flex-end;
+  }
+
+  ::ng-deep .mat-mdc-paginator-page-size-label,
+  ::ng-deep .mat-mdc-paginator-range-label {
+    font-size: 12px;
+  }
 }
 
 .receipt-inspector {
@@ -647,25 +699,50 @@ mat-paginator {
 
 .inspector-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+  width: 100%;
+}
 
-  button {
-    min-width: 0;
-    border-radius: 22px;
-    font-size: 11px;
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  min-width: 0;
+  padding: 0 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #475569;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-transform: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+  }
+
+  &.primary {
+    border-color: #3826d5;
+    background: #3826d5;
+    color: #fff;
+  }
+
+  &.secondary {
+    border-color: transparent;
+    background: #f4f3ff;
+    color: #1e1b4b;
   }
 
   mat-icon {
-    width: 14px;
-    height: 14px;
-    font-size: 14px;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
   }
-}
-
-.resend-button {
-  border-color: #d2cde5 !important;
-  color: #1e293b !important;
 }
 
 .empty-inspector {
@@ -693,9 +770,6 @@ mat-paginator {
     padding: 14px;
   }
 
-  .transactions-table {
-    min-width: 720px;
-  }
 }
 
 @media (max-width: 900px) {
@@ -742,7 +816,11 @@ mat-paginator {
 
   .record-payment-button {
     padding: 0 10px;
-    font-size: 11px;
+    font-size: 12px;
+  }
+
+  .inspector-actions button {
+    font-size: 12px;
   }
 
   .receipt-inspector {
@@ -750,9 +828,6 @@ mat-paginator {
     padding: 14px 12px;
   }
 
-  .inspector-actions {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media print {
