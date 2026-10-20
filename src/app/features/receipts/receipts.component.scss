@@ -64,6 +64,7 @@
   min-width: 240px;
   max-width: 320px;
   flex: 1 1 240px;
+  margin-left: auto;
 
   --mat-form-field-container-height: 42px;
   --mat-form-field-container-vertical-padding: 10px;
@@ -163,6 +164,7 @@
 
 .transactions-card {
   overflow: hidden;
+  padding: 20px 24px;
 }
 
 .transactions-header {
@@ -171,7 +173,6 @@
   gap: 10px;
   min-height: 74px;
   padding: 0 16px;
-  border-bottom: 1px solid #e2def0;
 
   h1 {
     flex: 1;
