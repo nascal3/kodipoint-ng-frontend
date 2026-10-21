@@ -302,6 +302,7 @@
   background: #2d1db7;
 }
 .primary-button.mat-mdc-unelevated-button {
+  position: relative;
   min-width: 0;
   height: 36px;
   border-radius: 9px;
@@ -309,6 +310,11 @@
   color: #fff;
 }
 .primary-button.mat-mdc-unelevated-button ::ng-deep .mdc-button__label {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+.primary-button .button-content {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -316,6 +322,22 @@
 }
 .primary-button.mat-mdc-unelevated-button:hover {
   background-color: #2d1db7;
+}
+.primary-button.mat-mdc-unelevated-button:disabled {
+  background-color: #b8b4e8;
+  color: #fff;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+.profile-update-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  --mdc-circular-progress-active-indicator-color: currentColor;
+}
+.primary-button.is-updating .button-content {
+  visibility: hidden;
 }
 .password-card h2 {
   margin-bottom: 24px;

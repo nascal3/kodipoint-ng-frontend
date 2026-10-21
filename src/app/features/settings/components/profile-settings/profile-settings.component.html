@@ -133,7 +133,27 @@
             <small class="field-help">Disclosed on statutory invoice/Receipt headers and formal tenant contracts</small>
           </label>
         </div>
-        <div class="form-actions"><button mat-flat-button class="primary-button" type="submit"><span class="material-symbol">save</span> Save Profile</button></div>
+        <div class="form-actions">
+          <button
+            mat-flat-button
+            class="primary-button"
+            type="submit"
+            [class.is-updating]="isUpdatingProfile()"
+            [disabled]="isUpdatingProfile()">
+            <span class="button-content">
+              <span class="material-symbol">save</span>
+              Save Profile
+            </span>
+            @if (isUpdatingProfile()) {
+              <mat-progress-spinner
+                class="profile-update-spinner"
+                diameter="18"
+                mode="indeterminate"
+                aria-label="Updating profile">
+              </mat-progress-spinner>
+            }
+          </button>
+        </div>
       </form>
     </section>
 

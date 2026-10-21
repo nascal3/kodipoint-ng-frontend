@@ -14,6 +14,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { finalize } from 'rxjs';
 import {SettingsService} from '../../services/settings.service';
 import {UserProfileResponse, UpdateProfileRequest} from '../../models/settings.interface';
 
@@ -57,7 +59,13 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
-  imports: [MatButtonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+  imports: [
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    ReactiveFormsModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
@@ -66,6 +74,7 @@ export class ProfileSettingsComponent implements OnInit {
   private readonly settingsService = inject(SettingsService);
 
   readonly profileSubmitted = signal(false);
+  readonly isUpdatingProfile = signal(false);
   readonly passwordSubmitted = signal(false);
   readonly showNewPassword = signal(false);
   readonly showConfirmPassword = signal(false);
@@ -143,7 +152,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.profileSubmitted.set(true);
     this.profileForm.markAllAsTouched();
 
-    if (this.profileForm.valid) {
+    if (this.profileForm.valid && !this.isUpdatingProfile()) {
       const formValue = this.profileForm.getRawValue();
       const profileData: UpdateProfileRequest = {
         email: formValue.email,
@@ -151,28 +160,32 @@ export class ProfileSettingsComponent implements OnInit {
         lastName: formValue.lastName,
         address: formValue.address,
         phone: formValue.phone,
-        organization: formValue.organization || null,
+        organization: formValue.organization || '',
         billingAddress: formValue.billingAddress,
         billingEmail: formValue.billingEmail,
       };
 
-      this.settingsService.updateProfile(profileData).subscribe({
-        next: (updatedUser: UserProfileResponse) => {
-          this.profileForm.patchValue({
-            firstName: updatedUser.firstName,
-            lastName: updatedUser.lastName,
-            email: updatedUser.email,
-            phone: updatedUser.phone,
-            organization: updatedUser.organization || '',
-            address: updatedUser.address,
-            billingAddress: updatedUser.billingAddress || '',
-            billingEmail: updatedUser.billingEmail || '',
-          });
-        },
-        error: (error: unknown) => {
-          console.error('Failed to update profile:', error);
-        },
-      });
+      this.isUpdatingProfile.set(true);
+      this.settingsService
+        .updateProfile(profileData)
+        .pipe(finalize(() => this.isUpdatingProfile.set(false)))
+        .subscribe({
+          next: (updatedUser: UserProfileResponse) => {
+            this.profileForm.patchValue({
+              firstName: updatedUser.firstName,
+              lastName: updatedUser.lastName,
+              email: updatedUser.email,
+              phone: updatedUser.phone,
+              organization: updatedUser.organization || '',
+              address: updatedUser.address,
+              billingAddress: updatedUser.billingAddress || '',
+              billingEmail: updatedUser.billingEmail || '',
+            });
+          },
+          error: (error: unknown) => {
+            console.error('Failed to update profile:', error);
+          },
+        });
     }
   }
 
