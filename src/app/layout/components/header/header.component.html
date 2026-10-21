@@ -8,9 +8,7 @@
         aria-label="Expand sidebar"
         type="button"
       >
-        <svg class="toggle-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M3 6h18v2H3zM3 11h12v2H3zM3 16h18v2H3z" fill="currentColor" />
-        </svg>
+        <mat-icon class="toggle-icon">menu_open</mat-icon>
       </button>
     }
 
@@ -57,7 +55,7 @@
       <mat-divider class="menu-divider" />
       <button mat-menu-item class="profile-menu-item" (click)="settingsSelected.emit()">
         <mat-icon>settings</mat-icon>
-        <span>SettingsService</span>
+        <span>Settings</span>
       </button>
       <mat-divider class="menu-divider" />
       <button mat-menu-item class="profile-menu-item logout-item" (click)="logout.emit()">

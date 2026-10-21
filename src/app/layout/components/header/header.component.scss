@@ -8,7 +8,7 @@
   color: #0f172a;
   border-bottom: 1px solid #e2e8f0;
   padding: 0 32px 0 20px;
-  height: 64px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -68,8 +68,8 @@
 .notification-btn {
   position: relative;
   color: #64748b;
-  width: 40px;
-  height: 40px;
+  width: 55px;
+  height: 55px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,7 +101,7 @@
   border-radius: 9999px;
   border: 1.5px solid #dcd7fe;
   background-color: #ffffff;
-  height: 42px;
+  height: 55px;
   min-width: 0;
   box-sizing: border-box;
   font-family: inherit;
@@ -120,8 +120,8 @@
 }
 
 .user-avatar-bubble {
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background-color: #2b22c6;
   display: flex;
@@ -138,9 +138,10 @@
 }
 
 .user-name {
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 600;
   color: #0f172a;
+  text-transform: capitalize;
 }
 
 .chevron-icon {

@@ -8,7 +8,7 @@
       <span class="role-badge">{{ userProfile()?.role || '—' }}</span>
 
       <dl class="profile-meta">
-        <div><dt>Organization</dt><dd>{{ userProfile()?.organization || '—' }}</dd></div>
+        <div><dt>Organization</dt><dd>{{ userProfile()?.organization || profileName() }}</dd></div>
         <div><dt>Member Since</dt><dd>{{ userProfile()?.createdAt | date:'MMMM yyyy' }}</dd></div>
         <div>
           <dt>Status</dt>
