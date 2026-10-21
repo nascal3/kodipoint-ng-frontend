@@ -1,5 +1,7 @@
 <div class="profile-layout">
+  <!-- Profile Sidebar -->
   <aside class="profile-sidebar">
+    <!-- Identity Card Section -->
     <section class="panel identity-card">
       <div class="profile-avatar">JD</div>
       <h2>John Doe</h2>
@@ -12,6 +14,7 @@
       </dl>
     </section>
 
+    <!-- Security Posture Section -->
     <section class="panel security-card">
       <h2><span class="material-symbol">verified_user</span> Security Posture</h2>
       <div class="security-note">
@@ -20,6 +23,7 @@
       </div>
     </section>
 
+    <!-- Assigned Agency Section -->
     <section class="panel agency-card">
       <h2><span>ASSIGNED AGENCY</span><span class="material-symbol">apartment</span></h2>
       <strong>KodiPoint Plaza, Kilimani</strong>
@@ -34,7 +38,9 @@
     </section>
   </aside>
 
+  <!-- Profile Main Content -->
   <div class="profile-main">
+    <!-- Profile Information Form Section -->
     <section class="panel profile-form-card">
       <h1><span class="material-symbol">assignment_ind</span> Manager Profile Information</h1>
       <form [formGroup]="profileForm" (ngSubmit)="validateProfile()" novalidate>
@@ -108,6 +114,7 @@
       </form>
     </section>
 
+    <!-- Password & Authentication Section -->
     <section class="panel password-card">
       <h2><span class="material-symbol">lock_reset</span> Password &amp; Authentication</h2>
       <form [formGroup]="passwordForm" (ngSubmit)="validatePassword()" novalidate>

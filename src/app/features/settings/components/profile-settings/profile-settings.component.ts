@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -14,6 +14,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {SettingsService} from '../../services/settings.service';
+import {UserProfileResponse} from '../../models/settings.interface';
 
 const passwordsMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -50,6 +52,8 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+
+
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
@@ -58,7 +62,9 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
 })
-export class ProfileSettingsComponent {
+export class ProfileSettingsComponent implements OnInit {
+  private readonly settingsService = inject(SettingsService);
+
   readonly profileSubmitted = signal(false);
   readonly passwordSubmitted = signal(false);
   readonly showNewPassword = signal(false);
@@ -66,18 +72,18 @@ export class ProfileSettingsComponent {
   readonly profileErrorStateMatcher = new ProfileErrorStateMatcher();
   readonly confirmPasswordErrorStateMatcher = new PasswordMismatchErrorStateMatcher();
   readonly profileForm = new FormGroup({
-    firstName: new FormControl('John', { nonNullable: true, validators: [Validators.required] }),
-    lastName: new FormControl('Doe', { nonNullable: true, validators: [Validators.required] }),
-    email: new FormControl('john.doe@enterprise.ke', {
+    firstName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    lastName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    email: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
-    phone: new FormControl('+254 728 762 763', {
+    phone: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.pattern(/^\+\d[\d\s-]{6,17}$/)],
     }),
-    organization: new FormControl('KodiPoint Enterprise / KE'),
-    address: new FormControl('P.O Box 12345 00400 Kiambu, Nairobi', {
+    organization: new FormControl(''),
+    address: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required],
     }),
@@ -99,6 +105,28 @@ export class ProfileSettingsComponent {
     },
     { validators: passwordsMatchValidator },
   );
+
+  ngOnInit(): void {
+    this.loadUserProfile();
+  }
+
+  private loadUserProfile(): void {
+    this.settingsService.loadUserProfile().subscribe({
+      next: (user: UserProfileResponse) => {
+        this.profileForm.patchValue({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone,
+          organization: user.organization || '',
+          address: user.address,
+        });
+      },
+      error: (error: unknown) => {
+        console.error('Failed to load user profile:', error);
+      },
+    });
+  }
 
   validateProfile(): void {
     this.profileSubmitted.set(true);
