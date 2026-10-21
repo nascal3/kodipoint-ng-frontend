@@ -1,0 +1,72 @@
+:host {
+  display: block;
+  color: #253047;
+}
+
+.settings-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-tabs {
+  --mdc-tab-indicator-active-indicator-color: #4939e5;
+  --mat-tab-header-active-label-text-color: #4232d5;
+  --mat-tab-header-active-ripple-color: transparent;
+  --mat-tab-header-inactive-label-text-color: #55576a;
+  --mat-tab-header-inactive-ripple-color: transparent;
+}
+
+.settings-tabs ::ng-deep .mat-mdc-tab-header {
+  min-height: 48px;
+  overflow: hidden;
+  border: 1px solid #f0eef7;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(28, 25, 53, 0.035);
+}
+
+.settings-tabs ::ng-deep .mat-mdc-tab {
+  min-width: auto;
+  height: 48px;
+  padding: 0 15px;
+  flex-grow: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.settings-tabs ::ng-deep .mdc-tab__text-label {
+  gap: 7px;
+}
+
+.settings-tabs ::ng-deep .mat-mdc-tab-indicator__content--underline {
+  border-top-width: 3px;
+  border-radius: 3px 3px 0 0;
+}
+
+.settings-tabs ::ng-deep .mat-mdc-tab-body-wrapper {
+  padding-top: 16px;
+}
+
+.material-symbol {
+  display: inline-block;
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 680px) {
+  .settings-tabs ::ng-deep .mat-mdc-tab {
+    padding: 0 11px;
+    font-size: 11px;
+  }
+}

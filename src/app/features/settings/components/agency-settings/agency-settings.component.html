@@ -1,0 +1,38 @@
+<section class="panel alternate-panel">
+  <h1><span class="material-symbol">business</span> Agency &amp; Billing</h1>
+  <p class="panel-description">Manage your agency details and billing contact information.</p>
+  <form [formGroup]="agencyForm" (ngSubmit)="validateAgency()" novalidate>
+  <div class="form-grid">
+    <label class="field">
+      <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Billing Address</mat-label>
+        <span class="material-symbol" matPrefix>location_on</span>
+        <input matInput formControlName="address" />
+        @if (showError(agencyForm.controls.address) && agencyForm.controls.address.hasError('required')) {
+          <mat-error>Billing address is required.</mat-error>
+        }
+      </mat-form-field>
+    </label>
+    <label class="field">
+      <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Billing Email</mat-label>
+        <span class="material-symbol" matPrefix>mail</span>
+        <input matInput formControlName="email" type="email" />
+        @if (showError(agencyForm.controls.email) && agencyForm.controls.email.hasError('required')) {
+          <mat-error>Billing email is required.</mat-error>
+        } @else if (showError(agencyForm.controls.email) && agencyForm.controls.email.hasError('email')) {
+          <mat-error>Enter a valid email address.</mat-error>
+        }
+      </mat-form-field>
+    </label>
+<!--    <label class="field full-width">-->
+<!--      <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">-->
+<!--        <mat-label>Billing Address</mat-label>-->
+<!--        <span class="material-symbol" matPrefix>location_on</span>-->
+<!--        <input matInput value="P.O Box 12345 00400 Kiambu, Nairobi" />-->
+<!--      </mat-form-field>-->
+<!--    </label>-->
+  </div>
+  <div class="form-actions"><button mat-flat-button class="primary-button" type="submit"><span class="material-symbol">save</span> Save Agency Details</button></div>
+  </form>
+</section>
