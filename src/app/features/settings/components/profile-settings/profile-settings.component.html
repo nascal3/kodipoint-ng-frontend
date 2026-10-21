@@ -3,14 +3,23 @@
   <aside class="profile-sidebar">
     <!-- Identity Card Section -->
     <section class="panel identity-card">
-      <div class="profile-avatar">JD</div>
-      <h2>John Doe</h2>
-      <span class="role-badge">Administrator</span>
+      <div class="profile-avatar">{{ profileInitials() }}</div>
+      <h2>{{ profileName() }}</h2>
+      <span class="role-badge">{{ userProfile()?.role || '—' }}</span>
 
       <dl class="profile-meta">
-        <div><dt>Organization</dt><dd>KodiPoint Enterprise / KE</dd></div>
-        <div><dt>Member Since</dt><dd>January 2024</dd></div>
-        <div><dt>Status</dt><dd><span class="status-badge">Active</span></dd></div>
+        <div><dt>Organization</dt><dd>{{ userProfile()?.organization || '—' }}</dd></div>
+        <div><dt>Member Since</dt><dd>{{ userProfile()?.createdAt | date:'MMMM yyyy' }}</dd></div>
+        <div>
+          <dt>Status</dt>
+          <dd>
+            <span
+              class="status-badge"
+              [class.status-inactive]="userProfile()?.status?.toLowerCase() === 'inactive'">
+              {{ userProfile()?.status || '—' }}
+            </span>
+          </dd>
+        </div>
       </dl>
     </section>
 

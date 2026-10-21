@@ -65,6 +65,7 @@
   border-radius: 20px;
   background: #eeefff;
   font-size: 10px;
+  text-transform: capitalize;
 }
 .profile-meta {
   width: 100%;
@@ -86,12 +87,18 @@
   margin: 0;
   text-align: right;
   font-weight: 600;
+  text-transform: capitalize;
 }
 .status-badge {
   padding: 3px 8px;
   border-radius: 12px;
   background: #d9fff0;
   color: #07835d;
+  text-transform: capitalize;
+}
+.status-badge.status-inactive {
+  background: #ffe0e0;
+  color: #b42318;
 }
 .security-card h2,
 .agency-card h2,

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 import {
   AbstractControl,
   FormControl,
@@ -67,6 +68,7 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
     MatInputModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
+    DatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './profile-settings.component.html',
@@ -81,6 +83,15 @@ export class ProfileSettingsComponent implements OnInit {
   readonly passwordSubmitted = signal(false);
   readonly showNewPassword = signal(false);
   readonly showConfirmPassword = signal(false);
+  readonly userProfile = signal<UserProfileResponse | null>(null);
+  readonly profileInitials = computed(() => {
+    const user = this.userProfile();
+    return user ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase() : '';
+  });
+  readonly profileName = computed(() => {
+    const user = this.userProfile();
+    return user ? `${user.firstName} ${user.lastName}`.trim() : '';
+  });
   readonly profileErrorStateMatcher = new ProfileErrorStateMatcher();
   readonly confirmPasswordErrorStateMatcher = new PasswordMismatchErrorStateMatcher();
   readonly profileForm = new FormGroup({
@@ -134,6 +145,7 @@ export class ProfileSettingsComponent implements OnInit {
   private loadUserProfile(): void {
     this.settingsService.loadUserProfile().subscribe({
       next: (user: UserProfileResponse) => {
+        this.userProfile.set(user);
         this.profileForm.patchValue({
           firstName: user.firstName,
           lastName: user.lastName,
@@ -174,6 +186,7 @@ export class ProfileSettingsComponent implements OnInit {
         .pipe(finalize(() => this.isUpdatingProfile.set(false)))
         .subscribe({
           next: (updatedUser: UserProfileResponse) => {
+            this.userProfile.set(updatedUser);
             this.profileForm.patchValue({
               firstName: updatedUser.firstName,
               lastName: updatedUser.lastName,
