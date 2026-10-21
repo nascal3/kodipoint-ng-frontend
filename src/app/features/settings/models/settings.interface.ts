@@ -13,3 +13,14 @@ export interface UserProfileResponse {
   status: string;
   updatedAt: string;
 }
+
+export interface UpdateProfileRequest {
+  email: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  billingAddress?: string | null;
+  billingEmail?: string | null;
+  organization?: string | null;
+  phone: string;
+}

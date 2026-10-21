@@ -43,7 +43,7 @@
     <!-- Profile Information Form Section -->
     <section class="panel profile-form-card">
       <h1><span class="material-symbol">assignment_ind</span> Manager Profile Information</h1>
-      <form [formGroup]="profileForm" (ngSubmit)="validateProfile()" novalidate>
+      <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" novalidate>
         <div class="form-grid">
           <label class="field">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
@@ -96,7 +96,7 @@
               <span class="material-symbol" matPrefix>domain</span>
               <input matInput formControlName="organization" />
             </mat-form-field>
-            <small class="field-help">Disclosed on statutory invoice headers and agency branding</small>
+            <small class="field-help">Disclosed on statutory invoice/Receipt headers and agency branding</small>
           </label>
           <label class="field full-width">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
@@ -107,7 +107,30 @@
                 <mat-error>Physical or office address is required.</mat-error>
               }
             </mat-form-field>
-            <small class="field-help">Disclosed on statutory invoice headers and formal tenant contracts</small>
+          </label>
+          <label class="field">
+            <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Billing Address <small>(Optional)</small></mat-label>
+              <span class="material-symbol" matPrefix>location_on</span>
+              <input matInput formControlName="billingAddress" autocomplete="billing street-address" [errorStateMatcher]="profileErrorStateMatcher" />
+              @if (showProfileError(profileForm.controls.billingAddress) && profileForm.controls.billingAddress.hasError('required')) {
+                <mat-error>Billing address is required.</mat-error>
+              }
+            </mat-form-field>
+            <small class="field-help">Disclosed on statutory invoice/Receipt headers and formal tenant contracts</small>
+          </label>
+          <label class="field">
+            <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Billing Email <small>(Optional)</small></mat-label>
+              <span class="material-symbol" matPrefix>mail</span>
+              <input matInput formControlName="billingEmail" type="email" autocomplete="billing email" [errorStateMatcher]="profileErrorStateMatcher" />
+              @if (showProfileError(profileForm.controls.billingEmail) && profileForm.controls.billingEmail.hasError('required')) {
+                <mat-error>Billing email is required.</mat-error>
+              } @else if (showProfileError(profileForm.controls.billingEmail) && profileForm.controls.billingEmail.hasError('email')) {
+                <mat-error>Enter a valid billing email address.</mat-error>
+              }
+            </mat-form-field>
+            <small class="field-help">Disclosed on statutory invoice/Receipt headers and formal tenant contracts</small>
           </label>
         </div>
         <div class="form-actions"><button mat-flat-button class="primary-button" type="submit"><span class="material-symbol">save</span> Save Profile</button></div>

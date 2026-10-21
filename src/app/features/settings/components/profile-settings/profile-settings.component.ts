@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {SettingsService} from '../../services/settings.service';
-import {UserProfileResponse} from '../../models/settings.interface';
+import {UserProfileResponse, UpdateProfileRequest} from '../../models/settings.interface';
 
 const passwordsMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -82,10 +82,19 @@ export class ProfileSettingsComponent implements OnInit {
       nonNullable: true,
       validators: [Validators.required, Validators.pattern(/^\+\d[\d\s-]{6,17}$/)],
     }),
-    organization: new FormControl(''),
+    organization: new FormControl('', {
+      nonNullable: true
+    }),
     address: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required],
+    }),
+    billingAddress: new FormControl('', {
+      nonNullable: true
+    }),
+    billingEmail: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.email],
     }),
   });
   readonly passwordForm = new FormGroup(
@@ -120,6 +129,8 @@ export class ProfileSettingsComponent implements OnInit {
           phone: user.phone,
           organization: user.organization || '',
           address: user.address,
+          billingAddress: user.billingAddress || '',
+          billingEmail: user.billingEmail || '',
         });
       },
       error: (error: unknown) => {
@@ -128,9 +139,41 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
-  validateProfile(): void {
+  updateProfile(): void {
     this.profileSubmitted.set(true);
     this.profileForm.markAllAsTouched();
+
+    if (this.profileForm.valid) {
+      const formValue = this.profileForm.getRawValue();
+      const profileData: UpdateProfileRequest = {
+        email: formValue.email,
+        firstName: formValue.firstName,
+        lastName: formValue.lastName,
+        address: formValue.address,
+        phone: formValue.phone,
+        organization: formValue.organization || null,
+        billingAddress: formValue.billingAddress,
+        billingEmail: formValue.billingEmail,
+      };
+
+      this.settingsService.updateProfile(profileData).subscribe({
+        next: (updatedUser: UserProfileResponse) => {
+          this.profileForm.patchValue({
+            firstName: updatedUser.firstName,
+            lastName: updatedUser.lastName,
+            email: updatedUser.email,
+            phone: updatedUser.phone,
+            organization: updatedUser.organization || '',
+            address: updatedUser.address,
+            billingAddress: updatedUser.billingAddress || '',
+            billingEmail: updatedUser.billingEmail || '',
+          });
+        },
+        error: (error: unknown) => {
+          console.error('Failed to update profile:', error);
+        },
+      });
+    }
   }
 
   validatePassword(): void {

@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../../environments/environment';
 import {Observable} from 'rxjs';
-import {UserProfileResponse} from '../models/settings.interface';
+import {UserProfileResponse, UpdateProfileRequest} from '../models/settings.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -14,5 +14,9 @@ export class SettingsService {
 
   loadUserProfile(): Observable<UserProfileResponse> {
     return this.http.get<UserProfileResponse>(`${this.apiUrl}/users/me`);
+  }
+
+  updateProfile(data: UpdateProfileRequest): Observable<UserProfileResponse> {
+    return this.http.patch<UserProfileResponse>(`${this.apiUrl}/users/me`, data);
   }
 }
