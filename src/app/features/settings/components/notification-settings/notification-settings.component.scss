@@ -1,0 +1,90 @@
+:host {
+  display: block;
+  color: #253047;
+}
+
+.panel {
+  padding: 26px;
+  border: 1px solid #f0eef7;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(28, 25, 53, 0.035);
+}
+.material-symbol {
+  display: inline-block;
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+.alternate-panel h1 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 20px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.alternate-panel h1 .material-symbol {
+  color: #4939e5;
+}
+.panel-description {
+  margin: -8px 0 24px;
+  color: #747589;
+  font-size: 12px;
+}
+.preference-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid #eef0f8;
+}
+.preference-row div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+}
+.preference-row span {
+  color: #747589;
+  font-size: 11px;
+}
+.preference-row mat-checkbox {
+  flex: 0 0 auto;
+  --mat-checkbox-selected-icon-color: #4939e5;
+  --mat-checkbox-selected-checkmark-color: #fff;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+.primary-button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 9px;
+  background: #3826ce;
+  color: #fff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.primary-button:hover {
+  background: #2d1db7;
+}

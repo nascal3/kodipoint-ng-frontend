@@ -1,221 +1,25 @@
 <section class="settings-page" aria-label="Settings">
-  <nav class="settings-tabs" aria-label="Settings sections">
-    <button
-      class="settings-tab"
-      [class.active]="activeTab() === 'profile'"
-      [attr.aria-current]="activeTab() === 'profile' ? 'page' : null"
-      (click)="selectTab('profile')"
-      type="button"
-    >
-      <span class="material-symbol">badge</span>
-      Personal Profile
-    </button>
-    <button
-      class="settings-tab"
-      [class.active]="activeTab() === 'notifications'"
-      [attr.aria-current]="activeTab() === 'notifications' ? 'page' : null"
-      (click)="selectTab('notifications')"
-      type="button"
-    >
-      <span class="material-symbol">notifications_active</span>
-      Notification Preferences
-    </button>
-    <button
-      class="settings-tab"
-      [class.active]="activeTab() === 'agency'"
-      [attr.aria-current]="activeTab() === 'agency' ? 'page' : null"
-      (click)="selectTab('agency')"
-      type="button"
-    >
-      <span class="material-symbol">business</span>
-      Agency &amp; Billing
-    </button>
-  </nav>
-
-  @if (activeTab() === 'profile') {
-    <div class="profile-layout">
-      <aside class="profile-sidebar">
-        <section class="panel identity-card">
-          <div class="profile-avatar">JD</div>
-          <h2>John Doe</h2>
-          <span class="role-badge">Administrator</span>
-
-          <dl class="profile-meta">
-            <div><dt>Organization</dt><dd>KodiPoint Enterprise / KE</dd></div>
-            <div><dt>Member Since</dt><dd>January 2024</dd></div>
-            <div><dt>Status</dt><dd><span class="status-badge">Active</span></dd></div>
-          </dl>
-        </section>
-
-        <section class="panel security-card">
-          <h2><span class="material-symbol">verified_user</span> Security Posture</h2>
-          <div class="security-note">
-            <span class="material-symbol">lock</span>
-            <div><strong>Last Password Rotation</strong><span>Changed 42 days ago</span><span>(Routine cycle: 90 days)</span></div>
-          </div>
-        </section>
-
-        <section class="panel agency-card">
-          <h2><span>ASSIGNED AGENCY</span><span class="material-symbol">apartment</span></h2>
-          <strong>KodiPoint Plaza, Kilimani</strong>
-          <p>P.O. Box 12345 00400 Kiambu, Nairobi</p>
-          <div class="map-preview" role="img" aria-label="Map showing the HQ office location">
-            <div class="map-road road-one"></div>
-            <div class="map-road road-two"></div>
-            <div class="map-road road-three"></div>
-            <span class="map-pin material-symbol">location_on</span>
-            <span class="map-label">HQ Office Location</span>
-          </div>
-        </section>
-      </aside>
-
-      <div class="profile-main">
-        <section class="panel profile-form-card">
-          <h1><span class="material-symbol">assignment_ind</span> Manager Profile Information</h1>
-          <form (submit)="$event.preventDefault()">
-            <div class="form-grid">
-              <label class="field">
-                <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>First Name <b>*</b></mat-label>
-                  <span class="material-symbol" matPrefix>person</span>
-                  <input matInput value="John" autocomplete="given-name" />
-                </mat-form-field>
-              </label>
-              <label class="field">
-                <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Last Name <b>*</b></mat-label>
-                  <span class="material-symbol" matPrefix>person</span>
-                  <input matInput value="Doe" autocomplete="family-name" />
-                </mat-form-field>
-              </label>
-              <label class="field">
-                <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Email Address <b>*</b></mat-label>
-                  <span class="material-symbol" matPrefix>mail</span>
-                  <input matInput type="email" value="john.doe@enterprise.ke" autocomplete="email" />
-                  <span class="verified-icon material-symbol" matSuffix>check_circle</span>
-                </mat-form-field>
-              </label>
-              <label class="field">
-                <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Phone Number (SMS Alerts) <b>*</b></mat-label>
-                  <span class="material-symbol" matPrefix>call</span>
-                  <input matInput type="tel" value="+254 728 762 763" autocomplete="tel" />
-                </mat-form-field>
-              </label>
-              <label class="field full-width">
-                <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Organization / Agency Name <small>(Optional)</small></mat-label>
-                  <span class="material-symbol" matPrefix>domain</span>
-                  <input matInput value="KodiPoint Enterprise / KE" />
-                </mat-form-field>
-                <small class="field-help">Disclosed on statutory invoice headers and agency branding</small>
-              </label>
-              <label class="field full-width">
-                <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-                  <mat-label>Physical / Office Address <b>*</b></mat-label>
-                  <span class="material-symbol" matPrefix>location_on</span>
-                  <input matInput value="P.O Box 12345 00400 Kiambu, Nairobi" autocomplete="street-address" />
-                </mat-form-field>
-                <small class="field-help">Disclosed on statutory invoice headers and formal tenant contracts</small>
-              </label>
-            </div>
-            <div class="form-actions"><button class="primary-button" type="submit"><span class="material-symbol">save</span> Save Profile</button></div>
-          </form>
-        </section>
-
-        <section class="panel password-card">
-          <h2><span class="material-symbol">lock_reset</span> Password &amp; Authentication</h2>
-          <form (submit)="$event.preventDefault()">
-            <div class="field">
-              <div class="label-with-link"><a href="/forget-password">Forgot password?</a></div>
-              <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Current Password</mat-label>
-                <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
-                  <rect x="4" y="8" width="12" height="10" rx="1.5" />
-                  <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
-                  <circle cx="10" cy="12" r=".7" />
-                </svg>
-                <input matInput type="password" value="password123" readonly />
-              </mat-form-field>
-            </div>
-            <label class="field password-field">
-              <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-                <mat-label>New Password <b>*</b></mat-label>
-                <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
-                  <rect x="4" y="8" width="12" height="10" rx="1.5" />
-                  <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
-                  <circle cx="10" cy="12" r=".7" />
-                </svg>
-                <input matInput [type]="showNewPassword() ? 'text' : 'password'" />
-                <button matSuffix class="visibility-toggle" type="button" [attr.aria-label]="showNewPassword() ? 'Hide new password' : 'Show new password'" (click)="toggleNewPassword()">
-                  @if (showNewPassword()) {
-                    <svg viewBox="0 0 20 20" aria-hidden="true">
-                      <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
-                      <circle cx="10" cy="10" r="2.2" />
-                    </svg>
-                  } @else {
-                    <svg viewBox="0 0 20 20" aria-hidden="true">
-                      <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
-                      <circle cx="10" cy="10" r="2.2" />
-                      <path d="m3 3 14 14" />
-                    </svg>
-                  }
-                </button>
-              </mat-form-field>
-              <span class="strength-label">Complexity: <strong>Strong</strong></span>
-              <span class="strength-meter" aria-label="Password strength: strong"><i></i><i></i><i></i><i></i></span>
-            </label>
-            <label class="field">
-              <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-                <mat-label>Confirm New Password <b>*</b></mat-label>
-                <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
-                  <rect x="4" y="8" width="12" height="10" rx="1.5" />
-                  <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
-                  <circle cx="10" cy="12" r=".7" />
-                </svg>
-                <input matInput [type]="showConfirmPassword() ? 'text' : 'password'" />
-                <button matSuffix class="visibility-toggle" type="button" [attr.aria-label]="showConfirmPassword() ? 'Hide confirmed password' : 'Show confirmed password'" (click)="toggleConfirmPassword()">
-                  @if (showConfirmPassword()) {
-                    <svg viewBox="0 0 20 20" aria-hidden="true">
-                      <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
-                      <circle cx="10" cy="10" r="2.2" />
-                    </svg>
-                  } @else {
-                    <svg viewBox="0 0 20 20" aria-hidden="true">
-                      <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
-                      <circle cx="10" cy="10" r="2.2" />
-                      <path d="m3 3 14 14" />
-                    </svg>
-                  }
-                </button>
-              </mat-form-field>
-              <small class="field-help">Must match the password above</small>
-            </label>
-            <div class="form-actions"><button class="primary-button" type="submit"><span class="material-symbol">password</span> Update Password</button></div>
-          </form>
-        </section>
-      </div>
-    </div>
-  } @else if (activeTab() === 'notifications') {
-    <section class="panel alternate-panel">
-      <h1><span class="material-symbol">notifications_active</span> Notification Preferences</h1>
-      <p class="panel-description">Choose how you want to receive important account and property updates.</p>
-      <div class="preference-row"><div><strong>Email notifications</strong><span>Invoices, rent updates, and account activity</span></div><mat-checkbox checked aria-label="Email notifications"></mat-checkbox></div>
-      <div class="preference-row"><div><strong>SMS alerts</strong><span>Urgent payment and security notifications</span></div><mat-checkbox checked aria-label="SMS alerts"></mat-checkbox></div>
-      <div class="preference-row"><div><strong>Product updates</strong><span>News about features and service improvements</span></div><mat-checkbox aria-label="Product updates"></mat-checkbox></div>
-      <div class="form-actions"><button class="primary-button" type="button"><span class="material-symbol">save</span> Save Preferences</button></div>
-    </section>
-  } @else {
-    <section class="panel alternate-panel">
-      <h1><span class="material-symbol">business</span> Agency &amp; Billing</h1>
-      <p class="panel-description">Manage your agency details and billing contact information.</p>
-      <div class="form-grid">
-        <label class="field"><mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic"><mat-label>Agency Name</mat-label><span class="material-symbol" matPrefix>domain</span><input matInput value="KodiPoint Enterprise / KE" /></mat-form-field></label>
-        <label class="field"><mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic"><mat-label>Billing Email</mat-label><span class="material-symbol" matPrefix>mail</span><input matInput type="email" value="billing@enterprise.ke" /></mat-form-field></label>
-        <label class="field full-width"><mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic"><mat-label>Billing Address</mat-label><span class="material-symbol" matPrefix>location_on</span><input matInput value="P.O Box 12345 00400 Kiambu, Nairobi" /></mat-form-field></label>
-      </div>
-      <div class="form-actions"><button class="primary-button" type="button"><span class="material-symbol">save</span> Save Agency Details</button></div>
-    </section>
-  }
+  <mat-tab-group class="settings-tabs" animationDuration="300ms">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="material-symbol" aria-hidden="true">badge</span>
+        <span>Personal Profile</span>
+      </ng-template>
+      <app-profile-settings />
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="material-symbol" aria-hidden="true">notifications_active</span>
+        <span>Notification Preferences</span>
+      </ng-template>
+      <app-notification-settings />
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="material-symbol" aria-hidden="true">business</span>
+        <span>Agency &amp; Billing</span>
+      </ng-template>
+      <app-agency-settings />
+    </mat-tab>
+  </mat-tab-group>
 </section>
