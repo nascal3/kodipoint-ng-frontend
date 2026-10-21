@@ -44,6 +44,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/receipts/receipts.routes').then(m => m.RECEIPTS_ROUTES),
         canActivate: [authGuard]
       },
+      {
+        path: 'settings',
+        loadChildren: () => import('./features/settings/settings.routes').then(m => m.SETTINGS_ROUTES),
+        canActivate: [authGuard]
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

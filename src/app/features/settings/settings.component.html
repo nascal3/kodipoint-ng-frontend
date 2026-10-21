@@ -1,0 +1,152 @@
+<section class="settings-page" aria-label="Settings">
+  <nav class="settings-tabs" aria-label="Settings sections">
+    <button
+      class="settings-tab"
+      [class.active]="activeTab() === 'profile'"
+      [attr.aria-current]="activeTab() === 'profile' ? 'page' : null"
+      (click)="selectTab('profile')"
+      type="button"
+    >
+      <span class="material-symbol">badge</span>
+      Personal Profile
+    </button>
+    <button
+      class="settings-tab"
+      [class.active]="activeTab() === 'notifications'"
+      [attr.aria-current]="activeTab() === 'notifications' ? 'page' : null"
+      (click)="selectTab('notifications')"
+      type="button"
+    >
+      <span class="material-symbol">notifications_active</span>
+      Notification Preferences
+    </button>
+    <button
+      class="settings-tab"
+      [class.active]="activeTab() === 'agency'"
+      [attr.aria-current]="activeTab() === 'agency' ? 'page' : null"
+      (click)="selectTab('agency')"
+      type="button"
+    >
+      <span class="material-symbol">business</span>
+      Agency &amp; Billing
+    </button>
+  </nav>
+
+  @if (activeTab() === 'profile') {
+    <div class="profile-layout">
+      <aside class="profile-sidebar">
+        <section class="panel identity-card">
+          <div class="profile-avatar">JD</div>
+          <h2>John Doe</h2>
+          <span class="role-badge">Administrator</span>
+
+          <dl class="profile-meta">
+            <div><dt>Organization</dt><dd>KodiPoint Enterprise / KE</dd></div>
+            <div><dt>Member Since</dt><dd>January 2024</dd></div>
+            <div><dt>Status</dt><dd><span class="status-badge">Active</span></dd></div>
+          </dl>
+        </section>
+
+        <section class="panel security-card">
+          <h2><span class="material-symbol">verified_user</span> Security Posture</h2>
+          <div class="security-note">
+            <span class="material-symbol">lock</span>
+            <div><strong>Last Password Rotation</strong><span>Changed 42 days ago</span><span>(Routine cycle: 90 days)</span></div>
+          </div>
+        </section>
+
+        <section class="panel agency-card">
+          <h2><span>ASSIGNED AGENCY</span><span class="material-symbol">apartment</span></h2>
+          <strong>KodiPoint Plaza, Kilimani</strong>
+          <p>P.O. Box 12345 00400 Kiambu, Nairobi</p>
+          <div class="map-preview" role="img" aria-label="Map showing the HQ office location">
+            <div class="map-road road-one"></div>
+            <div class="map-road road-two"></div>
+            <div class="map-road road-three"></div>
+            <span class="map-pin material-symbol">location_on</span>
+            <span class="map-label">HQ Office Location</span>
+          </div>
+        </section>
+      </aside>
+
+      <div class="profile-main">
+        <section class="panel profile-form-card">
+          <h1><span class="material-symbol">assignment_ind</span> Manager Profile Information</h1>
+          <form (submit)="$event.preventDefault()">
+            <div class="form-grid">
+              <label class="field">
+                <span>First Name <b>*</b></span>
+                <span class="input-wrap"><span class="material-symbol">person</span><input value="John" autocomplete="given-name" /></span>
+              </label>
+              <label class="field">
+                <span>Last Name <b>*</b></span>
+                <span class="input-wrap"><span class="material-symbol">badge</span><input value="Doe" autocomplete="family-name" /></span>
+              </label>
+              <label class="field">
+                <span>Email Address <b>*</b></span>
+                <span class="input-wrap"><span class="material-symbol">mail</span><input type="email" value="john.doe@enterprise.ke" autocomplete="email" /><span class="verified-icon material-symbol">check_circle</span></span>
+              </label>
+              <label class="field">
+                <span>Phone Number (SMS Alerts) <b>*</b></span>
+                <span class="input-wrap"><span class="material-symbol">call</span><span class="country-code">KE</span><input type="tel" value="+254 728 762 763" autocomplete="tel" /></span>
+              </label>
+              <label class="field full-width">
+                <span>Organization / Agency Name <small>(Optional)</small></span>
+                <span class="input-wrap"><span class="material-symbol">domain</span><input value="KodiPoint Enterprise / KE" /></span>
+                <small class="field-help">Disclosed on statutory invoice headers and agency branding</small>
+              </label>
+              <label class="field full-width">
+                <span>Physical / Office Address <b>*</b></span>
+                <span class="input-wrap"><span class="material-symbol">location_on</span><input value="P.O Box 12345 00400 Kiambu, Nairobi" autocomplete="street-address" /></span>
+                <small class="field-help">Disclosed on statutory invoice headers and formal tenant contracts</small>
+              </label>
+            </div>
+            <div class="form-actions"><button class="primary-button" type="submit"><span class="material-symbol">save</span> Save Profile</button></div>
+          </form>
+        </section>
+
+        <section class="panel password-card">
+          <h2><span class="material-symbol">lock_reset</span> Password &amp; Authentication</h2>
+          <form (submit)="$event.preventDefault()">
+            <label class="field">
+              <span class="label-with-link">Current Password <b>*</b><a href="/forget-password">Forgot password?</a></span>
+              <span class="input-wrap"><span class="material-symbol">key</span><input [type]="showCurrentPassword() ? 'text' : 'password'" value="password123" autocomplete="current-password" /><button class="icon-button material-symbol" type="button" (click)="toggleCurrentPassword()" [attr.aria-label]="showCurrentPassword() ? 'Hide current password' : 'Show current password'">{{ showCurrentPassword() ? 'visibility_off' : 'visibility' }}</button></span>
+            </label>
+            <label class="field password-field">
+              <span>New Password <b>*</b></span>
+              <span class="input-wrap"><span class="material-symbol">lock</span><input [type]="showNewPassword() ? 'text' : 'password'" placeholder="Minimum 8 alphanumeric characters" autocomplete="new-password" /><button class="icon-button material-symbol" type="button" (click)="toggleNewPassword()" [attr.aria-label]="showNewPassword() ? 'Hide new password' : 'Show new password'">{{ showNewPassword() ? 'visibility_off' : 'visibility' }}</button></span>
+              <span class="strength-label">Complexity: <strong>Strong</strong></span>
+              <span class="strength-meter" aria-label="Password strength: strong"><i></i><i></i><i></i><i></i></span>
+            </label>
+            <label class="field">
+              <span>Confirm New Password <b>*</b></span>
+              <span class="input-wrap"><span class="material-symbol">check_circle</span><input [type]="showConfirmPassword() ? 'text' : 'password'" placeholder="Re-type new password" autocomplete="new-password" /><button class="icon-button material-symbol" type="button" (click)="toggleConfirmPassword()" [attr.aria-label]="showConfirmPassword() ? 'Hide confirmed password' : 'Show confirmed password'">{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</button></span>
+              <small class="field-help">Must match the password above</small>
+            </label>
+            <div class="form-actions"><button class="primary-button" type="submit"><span class="material-symbol">password</span> Update Password</button></div>
+          </form>
+        </section>
+      </div>
+    </div>
+  } @else if (activeTab() === 'notifications') {
+    <section class="panel alternate-panel">
+      <h1><span class="material-symbol">notifications_active</span> Notification Preferences</h1>
+      <p class="panel-description">Choose how you want to receive important account and property updates.</p>
+      <div class="preference-row"><div><strong>Email notifications</strong><span>Invoices, rent updates, and account activity</span></div><input type="checkbox" checked aria-label="Email notifications" /></div>
+      <div class="preference-row"><div><strong>SMS alerts</strong><span>Urgent payment and security notifications</span></div><input type="checkbox" checked aria-label="SMS alerts" /></div>
+      <div class="preference-row"><div><strong>Product updates</strong><span>News about features and service improvements</span></div><input type="checkbox" aria-label="Product updates" /></div>
+      <div class="form-actions"><button class="primary-button" type="button"><span class="material-symbol">save</span> Save Preferences</button></div>
+    </section>
+  } @else {
+    <section class="panel alternate-panel">
+      <h1><span class="material-symbol">business</span> Agency &amp; Billing</h1>
+      <p class="panel-description">Manage your agency details and billing contact information.</p>
+      <div class="form-grid">
+        <label class="field"><span>Agency Name</span><span class="input-wrap"><span class="material-symbol">domain</span><input value="KodiPoint Enterprise / KE" /></span></label>
+        <label class="field"><span>Billing Email</span><span class="input-wrap"><span class="material-symbol">mail</span><input type="email" value="billing@enterprise.ke" /></span></label>
+        <label class="field full-width"><span>Billing Address</span><span class="input-wrap"><span class="material-symbol">location_on</span><input value="P.O Box 12345 00400 Kiambu, Nairobi" /></span></label>
+      </div>
+      <div class="form-actions"><button class="primary-button" type="button"><span class="material-symbol">save</span> Save Agency Details</button></div>
+    </section>
+  }
+</section>

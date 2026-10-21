@@ -36,6 +36,7 @@ export class ShellComponent {
       '/tenants': 'Tenants',
       '/invoice': 'Invoice',
       '/receipts': 'Receipts',
+      '/settings': 'Settings',
     };
 
     const title = Object.entries(routeTitleMap).find(([route]) => url.includes(route))?.[1] || '';
@@ -50,5 +51,9 @@ export class ShellComponent {
     this.authTokenService.removeToken();
     this.userService.clearUser();
     this.router.navigate(['/login']);
+  }
+
+  navigateToSettings(): void {
+    this.router.navigate(['/settings']);
   }
 }
