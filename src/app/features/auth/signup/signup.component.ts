@@ -19,6 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthTokenService } from '../../../core/services/auth-token.service';
+import { UserService } from '../../../core/services/user.service';
 import { SignupRequest } from '../../../core/models/auth.interface';
 
 const passwordsMatchValidator: ValidatorFn = (
@@ -65,6 +66,7 @@ export class SignupComponent {
   private readonly authService = inject(AuthService);
   private readonly authTokenService = inject(AuthTokenService);
   private readonly router = inject(Router);
+  private readonly userService = inject(UserService);
 
   readonly passwordVisible = signal(false);
   readonly confirmPasswordVisible = signal(false);
@@ -137,6 +139,9 @@ export class SignupComponent {
 
     this.authService.signup(signupData).subscribe({
       next: (response) => {
+        if (response.user) {
+          this.userService.setUser(response.user);
+        }
         this.authTokenService.setToken(response.accessToken);
         this.router.navigate(['/dashboard']);
       },

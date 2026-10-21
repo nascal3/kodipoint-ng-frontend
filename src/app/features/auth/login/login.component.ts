@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
 import { AuthTokenService } from '../../../core/services/auth-token.service';
 import {AuthService} from '../../../core/services/auth.service';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -30,6 +31,7 @@ export class LoginComponent {
   private readonly authTokenService = inject(AuthTokenService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly userService = inject(UserService);
 
   readonly passwordVisible = signal(false);
   readonly signInMessage = signal('');
@@ -69,6 +71,10 @@ export class LoginComponent {
             this.signInMessage.set('The login response did not include an access token.');
             this.isSubmitting.set(false);
             return;
+          }
+
+          if (response.user) {
+            this.userService.setUser(response.user);
           }
 
           this.authTokenService.setToken(response.accessToken);
