@@ -1,17 +1,26 @@
+.mat-mdc-snack-bar-action {
+  font-family: 'Material Symbols Outlined', sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 400 !important;
+  letter-spacing: normal !important;
+  line-height: 1 !important;
+  text-transform: none !important;
+}
+
 .app-snackbar--error {
-  --mdc-snackbar-container-color: #b91c1c;
-  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-container-color: #b91c1c;
+  --mat-snack-bar-supporting-text-color: #ffffff;
   --mat-snack-bar-button-color: #ffffff;
 }
 
 .app-snackbar--success {
-  --mdc-snackbar-container-color: #166534;
-  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-container-color: #166534;
+  --mat-snack-bar-supporting-text-color: #ffffff;
   --mat-snack-bar-button-color: #ffffff;
 }
 
 .app-snackbar--warning {
-  --mdc-snackbar-container-color: #fef3c7;
-  --mdc-snackbar-supporting-text-color: #78350f;
+  --mat-snack-bar-container-color: #fef3c7;
+  --mat-snack-bar-supporting-text-color: #78350f;
   --mat-snack-bar-button-color: #92400e;
 }

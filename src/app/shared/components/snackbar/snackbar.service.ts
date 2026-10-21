@@ -7,24 +7,24 @@ import {MatSnackBar, MatSnackBarConfig} from '@angular/material/snack-bar';
 export class SnackbarService {
   private readonly snackBar = inject(MatSnackBar);
 
-  open(message: string, action = 'Dismiss', config: MatSnackBarConfig = {}): void {
+  open(message: string, action = 'close', config: MatSnackBarConfig = {}): void {
     this.snackBar.open(message, action, {
       duration: 4000,
-      horizontalPosition: 'end',
+      horizontalPosition: 'center',
       verticalPosition: 'bottom',
       ...config,
     });
   }
 
-  error(message: string, action = 'Dismiss', config: MatSnackBarConfig = {}): void {
+  error(message: string, action = 'close', config: MatSnackBarConfig = {}): void {
     this.openWithStyle(message, 'app-snackbar--error', action, config);
   }
 
-  success(message: string, action = 'Dismiss', config: MatSnackBarConfig = {}): void {
+  success(message: string, action = 'close', config: MatSnackBarConfig = {}): void {
     this.openWithStyle(message, 'app-snackbar--success', action, config);
   }
 
-  warning(message: string, action = 'Dismiss', config: MatSnackBarConfig = {}): void {
+  warning(message: string, action = 'close', config: MatSnackBarConfig = {}): void {
     this.openWithStyle(message, 'app-snackbar--warning', action, config);
   }
 
