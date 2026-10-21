@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -13,10 +14,12 @@ import { MatMenuModule } from '@angular/material/menu';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
+  private readonly userService = inject(UserService);
+
   readonly pageTitle = input<string | undefined>(undefined);
-  readonly userName = input('John Doe');
-  readonly userEmail = input('john.doe@estateops.com');
-  readonly userInitials = input('JD');
+  readonly userName = this.userService.userName;
+  readonly userEmail = this.userService.userEmail;
+  readonly userInitials = this.userService.userInitials;
   readonly sidebarCollapsed = input(false);
   readonly toggleSidebar = output<void>();
   readonly profileSelected = output<void>();

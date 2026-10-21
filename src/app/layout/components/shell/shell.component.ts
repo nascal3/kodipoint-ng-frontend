@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AuthTokenService } from '../../../core/services/auth-token.service';
+import {UserService} from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-shell',
@@ -12,10 +14,14 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   styleUrl: './shell.component.scss',
 })
 export class ShellComponent {
+  private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
+  private readonly authTokenService = inject(AuthTokenService);
+
   readonly pageTitle = signal('');
   sidebarCollapsed = signal(false);
 
-  constructor(private router: Router) {
+  constructor() {
     this.updatePageTitle();
     this.router.events.subscribe(() => {
       this.updatePageTitle();
@@ -38,5 +44,11 @@ export class ShellComponent {
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update((value) => !value);
+  }
+
+  logout(): void {
+    this.authTokenService.removeToken();
+    this.userService.clearUser();
+    this.router.navigate(['/login']);
   }
 }
