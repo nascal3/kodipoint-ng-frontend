@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   AbstractControl,
   FormControl,
@@ -186,7 +187,11 @@ export class ProfileSettingsComponent implements OnInit {
             this.snackbarService.success('Profile updated successfully.');
           },
           error: (error: unknown) => {
-            this.snackbarService.error('Failed to update profile. Please try again.');
+            const message =
+              error instanceof HttpErrorResponse && typeof error.error?.message === 'string'
+                ? error.error.message
+                : 'Failed to update profile. Please try again.';
+            this.snackbarService.error(message);
           },
         });
     }
