@@ -1,10 +1,14 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 type SettingsTab = 'profile' | 'notifications' | 'agency';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
+  imports: [MatCheckboxModule, MatFormFieldModule, MatInputModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',

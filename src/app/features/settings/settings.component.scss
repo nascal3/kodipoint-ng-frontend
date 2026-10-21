@@ -277,45 +277,58 @@
 .full-width {
   grid-column: 1 / -1;
 }
-.input-wrap {
-  display: flex;
-  min-width: 0;
-  height: 34px;
-  align-items: center;
-  gap: 7px;
-  box-sizing: border-box;
-  padding: 0 10px;
-  border-radius: 9px;
-  background: #f1f1ff;
-  color: #666a7d;
-}
-.input-wrap > .material-symbol {
-  flex: 0 0 auto;
-  font-size: 15px;
-}
-.input-wrap input {
+.settings-input {
   width: 100%;
-  min-width: 0;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: #4c5262;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 400;
+  margin: 0;
 }
-.input-wrap input::placeholder {
+.settings-input ::ng-deep .mat-mdc-form-field-icon-prefix {
+  padding-left: 12px;
+}
+.settings-input .material-symbol {
+  color: #666a7d;
+  font-size: 16px;
+}
+.settings-input mat-label {
+  color: #535365;
+  font-size: 12px;
+  font-weight: 500;
+}
+.settings-input input {
+  color: #4c5262;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+}
+.settings-input input::placeholder {
   color: #686b7b;
   opacity: 1;
+}
+.settings-input ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #f1f1ff;
+}
+.settings-input ::ng-deep .mdc-notched-outline__leading,
+.settings-input ::ng-deep .mdc-notched-outline__notch,
+.settings-input ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #e5e4f4;
 }
 .verified-icon {
   color: #00885e;
 }
-.country-code {
-  font-size: 10px;
-  font-weight: 700;
+.settings-input .verified-icon {
+  padding-right: 10px;
+}
+.password-card .settings-input .field-icon {
+  width: 20px;
+  height: 20px;
+  margin: 0 8px 0 0;
+  flex: none;
+  fill: none;
+  stroke: #4b4b5f;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+.password-card .settings-input input {
+  font-size: 14px;
 }
 .field-help {
   color: #7b7d8c;
@@ -355,7 +368,7 @@
 }
 .label-with-link {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 .label-with-link a {
   color: #4032d3;
@@ -365,12 +378,25 @@
 .password-field {
   gap: 5px;
 }
-.icon-button {
-  padding: 0;
+.visibility-toggle {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  margin-right: -2px;
   border: 0;
   background: transparent;
-  color: #737589;
   cursor: pointer;
+}
+.visibility-toggle svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: #4b4b61;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
 }
 .strength-label {
   display: flex;
@@ -419,10 +445,10 @@
   color: #747589;
   font-size: 11px;
 }
-.preference-row input {
-  width: 17px;
-  height: 17px;
-  accent-color: #4939e5;
+.preference-row mat-checkbox {
+  flex: 0 0 auto;
+  --mat-checkbox-selected-icon-color: #4939e5;
+  --mat-checkbox-selected-checkmark-color: #fff;
 }
 
 @media (max-width: 900px) {
