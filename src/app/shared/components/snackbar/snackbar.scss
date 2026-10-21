@@ -1,0 +1,17 @@
+.app-snackbar--error {
+  --mdc-snackbar-container-color: #b91c1c;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+
+.app-snackbar--success {
+  --mdc-snackbar-container-color: #166534;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+
+.app-snackbar--warning {
+  --mdc-snackbar-container-color: #fef3c7;
+  --mdc-snackbar-supporting-text-color: #78350f;
+  --mat-snack-bar-button-color: #92400e;
+}
