@@ -111,6 +111,22 @@
 .primary-button:hover {
   background: #2d1db7;
 }
+.primary-button.mat-mdc-unelevated-button {
+  min-width: 0;
+  height: 36px;
+  border-radius: 9px;
+  background-color: #3826ce;
+  color: #fff;
+}
+.primary-button.mat-mdc-unelevated-button ::ng-deep .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.primary-button.mat-mdc-unelevated-button:hover {
+  background-color: #2d1db7;
+}
 @media (max-width: 680px) {
   .form-grid {
     grid-template-columns: 1fr;

@@ -41,9 +41,9 @@
         <div class="form-grid">
           <label class="field">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-              <mat-label>First Name <b>*</b></mat-label>
+              <mat-label>First Name</mat-label>
               <span class="material-symbol" matPrefix>person</span>
-              <input matInput formControlName="firstName" autocomplete="given-name" />
+              <input matInput formControlName="firstName" autocomplete="given-name" [errorStateMatcher]="profileErrorStateMatcher" />
               @if (showProfileError(profileForm.controls.firstName) && profileForm.controls.firstName.hasError('required')) {
                 <mat-error>First name is required.</mat-error>
               }
@@ -51,9 +51,9 @@
           </label>
           <label class="field">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-              <mat-label>Last Name <b>*</b></mat-label>
+              <mat-label>Last Name</mat-label>
               <span class="material-symbol" matPrefix>person</span>
-              <input matInput formControlName="lastName" autocomplete="family-name" />
+              <input matInput formControlName="lastName" autocomplete="family-name" [errorStateMatcher]="profileErrorStateMatcher" />
               @if (showProfileError(profileForm.controls.lastName) && profileForm.controls.lastName.hasError('required')) {
                 <mat-error>Last name is required.</mat-error>
               }
@@ -61,9 +61,9 @@
           </label>
           <label class="field">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-              <mat-label>Email Address <b>*</b></mat-label>
+              <mat-label>Email Address </mat-label>
               <span class="material-symbol" matPrefix>mail</span>
-              <input matInput formControlName="email" type="email" autocomplete="email" />
+              <input matInput formControlName="email" type="email" autocomplete="email" [errorStateMatcher]="profileErrorStateMatcher" />
               <span class="verified-icon material-symbol" matSuffix>check_circle</span>
               @if (showProfileError(profileForm.controls.email) && profileForm.controls.email.hasError('required')) {
                 <mat-error>Email address is required.</mat-error>
@@ -74,9 +74,9 @@
           </label>
           <label class="field">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-              <mat-label>Phone Number (SMS Alerts) <b>*</b></mat-label>
+              <mat-label>Phone Number (SMS Alerts) </mat-label>
               <span class="material-symbol" matPrefix>call</span>
-              <input matInput formControlName="phone" type="tel" autocomplete="tel" />
+              <input matInput formControlName="phone" type="tel" autocomplete="tel" [errorStateMatcher]="profileErrorStateMatcher" />
               @if (showProfileError(profileForm.controls.phone) && profileForm.controls.phone.hasError('required')) {
                 <mat-error>Phone number is required.</mat-error>
               } @else if (showProfileError(profileForm.controls.phone) && profileForm.controls.phone.hasError('pattern')) {
@@ -94,9 +94,9 @@
           </label>
           <label class="field full-width">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-              <mat-label>Physical / Office Address <b>*</b></mat-label>
+              <mat-label>Physical / Office Address </mat-label>
               <span class="material-symbol" matPrefix>location_on</span>
-              <input matInput formControlName="address" autocomplete="street-address" />
+              <input matInput formControlName="address" autocomplete="street-address" [errorStateMatcher]="profileErrorStateMatcher" />
               @if (showProfileError(profileForm.controls.address) && profileForm.controls.address.hasError('required')) {
                 <mat-error>Physical or office address is required.</mat-error>
               }
@@ -104,7 +104,7 @@
             <small class="field-help">Disclosed on statutory invoice headers and formal tenant contracts</small>
           </label>
         </div>
-        <div class="form-actions"><button class="primary-button" type="submit"><span class="material-symbol">save</span> Save Profile</button></div>
+        <div class="form-actions"><button mat-flat-button class="primary-button" type="submit"><span class="material-symbol">save</span> Save Profile</button></div>
       </form>
     </section>
 
@@ -125,13 +125,13 @@
         </div>
         <label class="field password-field">
           <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-            <mat-label>New Password <b>*</b></mat-label>
+            <mat-label>New Password</mat-label>
             <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
               <rect x="4" y="8" width="12" height="10" rx="1.5" />
               <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
               <circle cx="10" cy="12" r=".7" />
             </svg>
-            <input matInput formControlName="newPassword" [type]="showNewPassword() ? 'text' : 'password'" />
+            <input matInput formControlName="newPassword" [type]="showNewPassword() ? 'text' : 'password'" [errorStateMatcher]="profileErrorStateMatcher" />
             @if (showPasswordError(passwordForm.controls.newPassword) && passwordForm.controls.newPassword.hasError('required')) {
               <mat-error>New password is required.</mat-error>
             } @else if (showPasswordError(passwordForm.controls.newPassword) && passwordForm.controls.newPassword.hasError('minlength')) {
@@ -139,7 +139,7 @@
             } @else if (showPasswordError(passwordForm.controls.newPassword) && passwordForm.controls.newPassword.hasError('pattern')) {
               <mat-error>Include at least one number and one symbol.</mat-error>
             }
-            <button matSuffix class="visibility-toggle" type="button" [attr.aria-label]="showNewPassword() ? 'Hide new password' : 'Show new password'" (click)="toggleNewPassword()">
+            <button mat-icon-button matSuffix class="visibility-toggle" type="button" [attr.aria-label]="showNewPassword() ? 'Hide new password' : 'Show new password'" (click)="toggleNewPassword()">
               @if (showNewPassword()) {
                 <svg viewBox="0 0 20 20" aria-hidden="true">
                   <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
@@ -159,19 +159,19 @@
         </label>
         <label class="field">
           <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Confirm New Password <b>*</b></mat-label>
+            <mat-label>Confirm New Password </mat-label>
             <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
               <rect x="4" y="8" width="12" height="10" rx="1.5" />
               <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
               <circle cx="10" cy="12" r=".7" />
             </svg>
-            <input matInput formControlName="confirmPassword" [errorStateMatcher]="confirmPasswordErrorStateMatcher" [type]="showConfirmPassword() ? 'text' : 'password'" />
+            <input matInput formControlName="confirmPassword" [type]="showConfirmPassword() ? 'text' : 'password'" [errorStateMatcher]="confirmPasswordErrorStateMatcher" />
             @if (showPasswordError(passwordForm.controls.confirmPassword) && passwordForm.controls.confirmPassword.hasError('required')) {
               <mat-error>Please confirm your password.</mat-error>
-            } @else if (passwordSubmitted() && passwordForm.hasError('passwordMismatch') && (passwordForm.controls.confirmPassword.dirty || passwordForm.controls.confirmPassword.touched)) {
+            } @else if (passwordForm.hasError('passwordMismatch') && (passwordSubmitted() || passwordForm.controls.confirmPassword.dirty || passwordForm.controls.confirmPassword.touched)) {
               <mat-error>Passwords do not match.</mat-error>
             }
-            <button matSuffix class="visibility-toggle" type="button" [attr.aria-label]="showConfirmPassword() ? 'Hide confirmed password' : 'Show confirmed password'" (click)="toggleConfirmPassword()">
+            <button mat-icon-button matSuffix class="visibility-toggle" type="button" [attr.aria-label]="showConfirmPassword() ? 'Hide confirmed password' : 'Show confirmed password'" (click)="toggleConfirmPassword()">
               @if (showConfirmPassword()) {
                 <svg viewBox="0 0 20 20" aria-hidden="true">
                   <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
@@ -188,7 +188,7 @@
           </mat-form-field>
           <small class="field-help">Must match the password above</small>
         </label>
-        <div class="form-actions"><button class="primary-button" type="submit"><span class="material-symbol">password</span> Update Password</button></div>
+        <div class="form-actions"><button mat-flat-button class="primary-button" type="submit"><span class="material-symbol">password</span> Update Password</button></div>
       </form>
     </section>
   </div>

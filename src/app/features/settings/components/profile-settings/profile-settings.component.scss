@@ -301,6 +301,22 @@
 .primary-button:hover {
   background: #2d1db7;
 }
+.primary-button.mat-mdc-unelevated-button {
+  min-width: 0;
+  height: 36px;
+  border-radius: 9px;
+  background-color: #3826ce;
+  color: #fff;
+}
+.primary-button.mat-mdc-unelevated-button ::ng-deep .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.primary-button.mat-mdc-unelevated-button:hover {
+  background-color: #2d1db7;
+}
 .password-card h2 {
   margin-bottom: 24px;
 }
@@ -330,6 +346,14 @@
   border: 0;
   background: transparent;
   cursor: pointer;
+}
+.visibility-toggle.mat-mdc-icon-button {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 .visibility-toggle svg {
   width: 18px;

@@ -11,6 +11,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
@@ -29,7 +30,8 @@ class PasswordMismatchErrorStateMatcher implements ErrorStateMatcher {
     form: FormGroupDirective | NgForm | null,
   ): boolean {
     const isSubmitted = form?.submitted ?? false;
-    const showControlError = !!control && control.invalid && (control.touched || isSubmitted);
+    const showControlError =
+      !!control && control.invalid && (control.dirty || control.touched || isSubmitted);
     const showMismatchError =
       !!control?.parent?.hasError('passwordMismatch') &&
       (control.dirty || control.touched || isSubmitted);
@@ -38,10 +40,20 @@ class PasswordMismatchErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+class ProfileErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(
+    control: AbstractControl | null,
+    form: FormGroupDirective | NgForm | null,
+  ): boolean {
+    const isSubmitted = form?.submitted ?? false;
+    return !!control && control.invalid && (control.dirty || control.touched || isSubmitted);
+  }
+}
+
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+  imports: [MatButtonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
@@ -51,6 +63,7 @@ export class ProfileSettingsComponent {
   readonly passwordSubmitted = signal(false);
   readonly showNewPassword = signal(false);
   readonly showConfirmPassword = signal(false);
+  readonly profileErrorStateMatcher = new ProfileErrorStateMatcher();
   readonly confirmPasswordErrorStateMatcher = new PasswordMismatchErrorStateMatcher();
   readonly profileForm = new FormGroup({
     firstName: new FormControl('John', { nonNullable: true, validators: [Validators.required] }),
@@ -98,11 +111,11 @@ export class ProfileSettingsComponent {
   }
 
   showProfileError(control: AbstractControl): boolean {
-    return control.invalid && (control.touched || this.profileSubmitted());
+    return control.invalid && (control.dirty || control.touched || this.profileSubmitted());
   }
 
   showPasswordError(control: AbstractControl): boolean {
-    return control.invalid && (control.touched || this.passwordSubmitted());
+    return control.invalid && (control.dirty || control.touched || this.passwordSubmitted());
   }
 
   toggleNewPassword(): void {
