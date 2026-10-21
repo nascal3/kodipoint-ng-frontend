@@ -143,7 +143,7 @@ export class SignupComponent {
           this.userService.setUser(response.user);
         }
         this.authTokenService.setToken(response.accessToken);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/settings']);
       },
       error: (error) => {
         this.isSubmitting.set(false);

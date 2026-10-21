@@ -186,7 +186,6 @@ export class ProfileSettingsComponent implements OnInit {
             this.snackbarService.success('Profile updated successfully.');
           },
           error: (error: unknown) => {
-            console.error('Failed to update profile:', error);
             this.snackbarService.error('Failed to update profile. Please try again.');
           },
         });
