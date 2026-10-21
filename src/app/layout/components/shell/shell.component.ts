@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AuthTokenService } from '../../../core/services/auth-token.service';
 
 @Component({
   selector: 'app-shell',
@@ -15,7 +16,10 @@ export class ShellComponent {
   readonly pageTitle = signal('');
   sidebarCollapsed = signal(false);
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private authTokenService: AuthTokenService
+  ) {
     this.updatePageTitle();
     this.router.events.subscribe(() => {
       this.updatePageTitle();
@@ -38,5 +42,10 @@ export class ShellComponent {
 
   toggleSidebar(): void {
     this.sidebarCollapsed.update((value) => !value);
+  }
+
+  logout(): void {
+    this.authTokenService.removeToken();
+    this.router.navigate(['/login']);
   }
 }
