@@ -161,8 +161,8 @@ export class ProfileSettingsComponent implements OnInit {
         address: formValue.address,
         phone: formValue.phone,
         organization: formValue.organization || '',
-        billingAddress: formValue.billingAddress,
-        billingEmail: formValue.billingEmail,
+        billingAddress: formValue.billingAddress|| '',
+        billingEmail: formValue.billingEmail || '',
       };
 
       this.isUpdatingProfile.set(true);
