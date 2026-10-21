@@ -16,6 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs';
+import { SnackbarService } from '../../../../shared/components/snackbar/snackbar.service';
 import {SettingsService} from '../../services/settings.service';
 import {UserProfileResponse, UpdateProfileRequest} from '../../models/settings.interface';
 
@@ -72,6 +73,7 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
 })
 export class ProfileSettingsComponent implements OnInit {
   private readonly settingsService = inject(SettingsService);
+  private readonly snackbarService = inject(SnackbarService);
 
   readonly profileSubmitted = signal(false);
   readonly isUpdatingProfile = signal(false);
@@ -181,9 +183,11 @@ export class ProfileSettingsComponent implements OnInit {
               billingAddress: updatedUser.billingAddress || '',
               billingEmail: updatedUser.billingEmail || '',
             });
+            this.snackbarService.success('Profile updated successfully.');
           },
           error: (error: unknown) => {
             console.error('Failed to update profile:', error);
+            this.snackbarService.error('Failed to update profile. Please try again.');
           },
         });
     }
