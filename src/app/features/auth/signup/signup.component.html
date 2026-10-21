@@ -110,6 +110,8 @@
         />
         @if (signupForm.controls.phone.hasError('required') && signupForm.controls.phone.touched) {
           <mat-error>Phone number is required.</mat-error>
+        } @else if (signupForm.controls.phone.hasError('pattern') && signupForm.controls.phone.touched) {
+          <mat-error>Enter a valid phone number with country code (e.g., +254700000000).</mat-error>
         }
       </mat-form-field>
 
@@ -187,6 +189,7 @@
           matInput
           id="signup-confirm-password"
           formControlName="confirmPassword"
+          [errorStateMatcher]="confirmPasswordErrorStateMatcher"
           [type]="confirmPasswordVisible() ? 'text' : 'password'"
           placeholder="Re-enter password"
           autocomplete="new-password"
@@ -197,7 +200,8 @@
         ) {
           <mat-error>Please confirm your password.</mat-error>
         } @else if (
-          signupForm.hasError('passwordMismatch') && signupForm.controls.confirmPassword.touched
+          signupForm.hasError('passwordMismatch') &&
+          (signupForm.controls.confirmPassword.dirty || signupForm.controls.confirmPassword.touched)
         ) {
           <mat-error>Passwords do not match.</mat-error>
         }
@@ -232,10 +236,14 @@
       }
 
       <p class="form-message" role="status" aria-live="polite">{{ signupMessage() }}</p>
-      <button matButton="filled" class="submit-button" type="submit">
+      <button matButton="filled" class="submit-button" type="submit" [disabled]="isSubmitting()">
         <span class="submit-button-content">
-          <span>CREATE ACCOUNT</span>
-          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13m-5-5 5 5-5 5" /></svg>
+          @if (isSubmitting()) {
+            <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+          } @else {
+            <span>CREATE ACCOUNT</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13m-5-5 5 5-5 5" /></svg>
+          }
         </span>
       </button>
     </form>

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -7,12 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
-import { environment } from '../../../../environments/environment';
 import { AuthTokenService } from '../../../core/services/auth-token.service';
-
-interface LoginResponse {
-  accessToken: string;
-}
+import {AuthService} from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +27,10 @@ interface LoginResponse {
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
+  private readonly authTokenService = inject(AuthTokenService);
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
+
   readonly passwordVisible = signal(false);
   readonly signInMessage = signal('');
   readonly isSubmitting = signal(false);
@@ -44,12 +44,6 @@ export class LoginComponent {
       validators: [Validators.required],
     }),
   });
-
-  constructor(
-    private readonly http: HttpClient,
-    private readonly authTokenService: AuthTokenService,
-    private readonly router: Router,
-  ) {}
 
   togglePasswordVisibility(): void {
     this.passwordVisible.update((visible) => !visible);
@@ -68,8 +62,7 @@ export class LoginComponent {
     }
 
     this.isSubmitting.set(true);
-    this.http
-      .post<LoginResponse>(`${environment.apiUrl}/auth/login`, this.loginForm.getRawValue())
+    this.authService.signin(this.loginForm.getRawValue())
       .subscribe({
         next: (response) => {
           if (!response?.accessToken) {
