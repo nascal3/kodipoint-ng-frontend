@@ -37,42 +37,58 @@
   <div class="profile-main">
     <section class="panel profile-form-card">
       <h1><span class="material-symbol">assignment_ind</span> Manager Profile Information</h1>
-      <form (submit)="$event.preventDefault()">
+      <form [formGroup]="profileForm" (ngSubmit)="validateProfile()" novalidate>
         <div class="form-grid">
           <label class="field">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
               <mat-label>First Name <b>*</b></mat-label>
               <span class="material-symbol" matPrefix>person</span>
-              <input matInput value="John" autocomplete="given-name" />
+              <input matInput formControlName="firstName" autocomplete="given-name" />
+              @if (showProfileError(profileForm.controls.firstName) && profileForm.controls.firstName.hasError('required')) {
+                <mat-error>First name is required.</mat-error>
+              }
             </mat-form-field>
           </label>
           <label class="field">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
               <mat-label>Last Name <b>*</b></mat-label>
               <span class="material-symbol" matPrefix>person</span>
-              <input matInput value="Doe" autocomplete="family-name" />
+              <input matInput formControlName="lastName" autocomplete="family-name" />
+              @if (showProfileError(profileForm.controls.lastName) && profileForm.controls.lastName.hasError('required')) {
+                <mat-error>Last name is required.</mat-error>
+              }
             </mat-form-field>
           </label>
           <label class="field">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
               <mat-label>Email Address <b>*</b></mat-label>
               <span class="material-symbol" matPrefix>mail</span>
-              <input matInput type="email" value="john.doe@enterprise.ke" autocomplete="email" />
+              <input matInput formControlName="email" type="email" autocomplete="email" />
               <span class="verified-icon material-symbol" matSuffix>check_circle</span>
+              @if (showProfileError(profileForm.controls.email) && profileForm.controls.email.hasError('required')) {
+                <mat-error>Email address is required.</mat-error>
+              } @else if (showProfileError(profileForm.controls.email) && profileForm.controls.email.hasError('email')) {
+                <mat-error>Enter a valid email address.</mat-error>
+              }
             </mat-form-field>
           </label>
           <label class="field">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
               <mat-label>Phone Number (SMS Alerts) <b>*</b></mat-label>
               <span class="material-symbol" matPrefix>call</span>
-              <input matInput type="tel" value="+254 728 762 763" autocomplete="tel" />
+              <input matInput formControlName="phone" type="tel" autocomplete="tel" />
+              @if (showProfileError(profileForm.controls.phone) && profileForm.controls.phone.hasError('required')) {
+                <mat-error>Phone number is required.</mat-error>
+              } @else if (showProfileError(profileForm.controls.phone) && profileForm.controls.phone.hasError('pattern')) {
+                <mat-error>Enter a valid phone number with country code (e.g. +254700000000).</mat-error>
+              }
             </mat-form-field>
           </label>
           <label class="field full-width">
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
               <mat-label>Organization / Agency Name <small>(Optional)</small></mat-label>
               <span class="material-symbol" matPrefix>domain</span>
-              <input matInput value="KodiPoint Enterprise / KE" />
+              <input matInput formControlName="organization" />
             </mat-form-field>
             <small class="field-help">Disclosed on statutory invoice headers and agency branding</small>
           </label>
@@ -80,7 +96,10 @@
             <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
               <mat-label>Physical / Office Address <b>*</b></mat-label>
               <span class="material-symbol" matPrefix>location_on</span>
-              <input matInput value="P.O Box 12345 00400 Kiambu, Nairobi" autocomplete="street-address" />
+              <input matInput formControlName="address" autocomplete="street-address" />
+              @if (showProfileError(profileForm.controls.address) && profileForm.controls.address.hasError('required')) {
+                <mat-error>Physical or office address is required.</mat-error>
+              }
             </mat-form-field>
             <small class="field-help">Disclosed on statutory invoice headers and formal tenant contracts</small>
           </label>
@@ -91,7 +110,7 @@
 
     <section class="panel password-card">
       <h2><span class="material-symbol">lock_reset</span> Password &amp; Authentication</h2>
-      <form (submit)="$event.preventDefault()">
+      <form [formGroup]="passwordForm" (ngSubmit)="validatePassword()" novalidate>
         <div class="field">
           <div class="label-with-link"><a href="/forget-password">Forgot password?</a></div>
           <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
@@ -112,7 +131,14 @@
               <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
               <circle cx="10" cy="12" r=".7" />
             </svg>
-            <input matInput [type]="showNewPassword() ? 'text' : 'password'" />
+            <input matInput formControlName="newPassword" [type]="showNewPassword() ? 'text' : 'password'" />
+            @if (showPasswordError(passwordForm.controls.newPassword) && passwordForm.controls.newPassword.hasError('required')) {
+              <mat-error>New password is required.</mat-error>
+            } @else if (showPasswordError(passwordForm.controls.newPassword) && passwordForm.controls.newPassword.hasError('minlength')) {
+              <mat-error>Password must be at least 8 characters.</mat-error>
+            } @else if (showPasswordError(passwordForm.controls.newPassword) && passwordForm.controls.newPassword.hasError('pattern')) {
+              <mat-error>Include at least one number and one symbol.</mat-error>
+            }
             <button matSuffix class="visibility-toggle" type="button" [attr.aria-label]="showNewPassword() ? 'Hide new password' : 'Show new password'" (click)="toggleNewPassword()">
               @if (showNewPassword()) {
                 <svg viewBox="0 0 20 20" aria-hidden="true">
@@ -139,7 +165,12 @@
               <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
               <circle cx="10" cy="12" r=".7" />
             </svg>
-            <input matInput [type]="showConfirmPassword() ? 'text' : 'password'" />
+            <input matInput formControlName="confirmPassword" [errorStateMatcher]="confirmPasswordErrorStateMatcher" [type]="showConfirmPassword() ? 'text' : 'password'" />
+            @if (showPasswordError(passwordForm.controls.confirmPassword) && passwordForm.controls.confirmPassword.hasError('required')) {
+              <mat-error>Please confirm your password.</mat-error>
+            } @else if (passwordSubmitted() && passwordForm.hasError('passwordMismatch') && (passwordForm.controls.confirmPassword.dirty || passwordForm.controls.confirmPassword.touched)) {
+              <mat-error>Passwords do not match.</mat-error>
+            }
             <button matSuffix class="visibility-toggle" type="button" [attr.aria-label]="showConfirmPassword() ? 'Hide confirmed password' : 'Show confirmed password'" (click)="toggleConfirmPassword()">
               @if (showConfirmPassword()) {
                 <svg viewBox="0 0 20 20" aria-hidden="true">
