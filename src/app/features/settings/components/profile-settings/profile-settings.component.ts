@@ -15,6 +15,7 @@ import {
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs';
@@ -65,6 +66,7 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
   imports: [
     MatButtonModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
