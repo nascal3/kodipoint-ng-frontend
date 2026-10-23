@@ -1,4 +1,6 @@
+<!-- Main page wrapper for receipts view -->
 <div class="receipts-page">
+  <!-- Toolbar section with record payment button -->
   <section class="receipts-toolbar" aria-label="Filter payment receipts">
     <div class="toolbar-spacer"></div>
     <button mat-flat-button class="record-payment-button" routerLink="/invoice">
@@ -7,8 +9,11 @@
     </button>
   </section>
 
+  <!-- Main content area containing transactions table and receipt inspector -->
   <main class="receipts-content">
+    <!-- Transactions card with filters and payment table -->
     <section class="transactions-card" aria-labelledby="transactions-title">
+      <!-- Header with filter controls: allocation filter, search, date range, refresh -->
       <header class="transactions-header">
         <mat-form-field appearance="outline" class="payment-filter">
           <mat-icon matPrefix>filter_list</mat-icon>
@@ -50,11 +55,12 @@
           </mat-datepicker-toggle>
           <mat-date-range-picker #datePicker />
         </mat-form-field>
-        <button mat-icon-button class="refresh-button" aria-label="Refresh payments" (click)="applyFilters()">
+        <button mat-icon-button class="refresh-button" aria-label="Refresh payments" matTooltip="Refresh Table" (click)="applyFilters()">
           <mat-icon>refresh</mat-icon>
         </button>
       </header>
 
+      <!-- Scrollable table container with payment receipts data -->
       <div class="table-scroll">
         <table mat-table [dataSource]="dataSource" class="transactions-table">
           <ng-container matColumnDef="receipt">
@@ -108,7 +114,9 @@
             </td>
           </ng-container>
 
+          <!-- Table header row -->
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <!-- Data rows with click selection and keyboard navigation -->
           <tr
             mat-row
             *matRowDef="let row; columns: displayedColumns"
@@ -118,12 +126,14 @@
             tabindex="0"
             (keydown.enter)="selectReceipt(row)">
           </tr>
+          <!-- Empty state row when no results match filters -->
           <tr class="mat-row" *matNoDataRow>
             <td class="empty-table-cell" [attr.colspan]="displayedColumns.length">No payment receipts match your filters.</td>
           </tr>
         </table>
       </div>
 
+      <!-- Pagination controls for table -->
       <div class="table-pagination">
         <mat-paginator
           [length]="filteredCount"
@@ -135,8 +145,10 @@
       </div>
     </section>
 
+    <!-- Receipt inspector sidebar - shows details of selected payment -->
     @if (selectedReceipt(); as receipt) {
       <aside class="receipt-inspector" aria-labelledby="receipt-inspector-title">
+        <!-- Inspector header with title and status badge -->
         <header class="inspector-header">
           <div class="inspector-heading">
             <mat-icon>receipt_long</mat-icon>
@@ -145,8 +157,10 @@
           <span class="issued-badge"><mat-icon>verified</mat-icon> Issued</span>
         </header>
 
+        <!-- Receipt number display -->
         <h2 class="inspector-receipt-number">{{ receipt.receiptNumber }}</h2>
 
+        <!-- Total amount paid section with settlement status -->
         <section class="payment-total" aria-label="Total amount paid">
           <span class="total-label">Total Amount Paid</span>
           <strong>{{ formatCurrency(receipt.amount) }}</strong>
@@ -156,6 +170,7 @@
           </span>
         </section>
 
+        <!-- Receipt details: tenant, unit, channel, transaction ref, timestamp -->
         <dl class="receipt-details">
           <div><dt>Tenant</dt><dd>{{ receipt.tenant }}</dd></div>
           <div><dt>Unit / Property</dt><dd>{{ receipt.unit }}, {{ receipt.property }}</dd></div>
@@ -164,29 +179,34 @@
           <div><dt>Timestamp</dt><dd>{{ receipt.timestamp | date: "dd MMM yyyy, hh:mm a 'EAT'" }}</dd></div>
         </dl>
 
+        <!-- Invoice allocation breakdown section -->
         <section class="allocation-card">
           <header>
             <h3>Invoice Allocation</h3>
             <span>{{ receipt.invoiceNumber }}</span>
           </header>
+          <!-- Allocation line items with descriptions and amounts -->
           @for (allocation of receipt.allocations; track allocation.description) {
             <div class="allocation-line">
               <span><mat-icon>check</mat-icon>{{ allocation.description }}</span>
               <strong>{{ formatCurrency(allocation.amount) }}</strong>
             </div>
           }
+          <!-- Unallocated balance display -->
           <div class="allocation-balance">
             <span>Unallocated Balance</span>
             <strong>{{ formatCurrency(receipt.unallocatedBalance) }}</strong>
           </div>
         </section>
 
+        <!-- Dispatch and delivery tracing section -->
         <section class="delivery-card">
           <h3>Dispatch &amp; Delivery Tracing</h3>
           <div><span><mat-icon>mail</mat-icon>{{ receipt.email }}</span><strong><mat-icon>done_all</mat-icon>Delivered</strong></div>
           <div><span><mat-icon>sms</mat-icon>{{ receipt.phone }}</span><strong><mat-icon>done_all</mat-icon>SMS Ack'd</strong></div>
         </section>
 
+        <!-- Action buttons: download PDF and resend receipt -->
         <footer class="action-buttons inspector-actions">
           <button mat-flat-button class="action-btn primary" type="button" (click)="printReceipt()">
             <mat-icon>picture_as_pdf</mat-icon> Download PDF
@@ -197,6 +217,7 @@
         </footer>
       </aside>
     } @else {
+      <!-- Empty inspector state when no receipt is selected -->
       <aside class="receipt-inspector empty-inspector">
         <mat-icon>receipt_long</mat-icon>
         <span>Select a payment to inspect its receipt</span>
