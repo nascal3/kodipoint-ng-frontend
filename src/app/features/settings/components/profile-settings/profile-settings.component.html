@@ -169,7 +169,7 @@
     <!-- Password & Authentication Section -->
     <section class="panel password-card">
       <h2><span class="material-symbol">lock_reset</span> Password &amp; Authentication</h2>
-      <form [formGroup]="passwordForm" (ngSubmit)="validatePassword()" novalidate>
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" novalidate>
         <div class="field">
           <div class="label-with-link"><a href="/forget-password">Forgot password?</a></div>
           <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">

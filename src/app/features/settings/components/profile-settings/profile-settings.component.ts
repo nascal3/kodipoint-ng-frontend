@@ -16,7 +16,7 @@ import { MATERIAL_MODULES, ErrorStateMatcher } from '../../../../shared/material
 import { finalize } from 'rxjs';
 import { SnackbarService } from '../../../../shared/components/snackbar/snackbar.service';
 import {SettingsService} from '../../services/settings.service';
-import {UserProfileResponse, UpdateProfileRequest} from '../../models/settings.interface';
+import {UserProfileResponse, UpdateProfileRequest, ChangePasswordRequest} from '../../models/settings.interface';
 import {PasswordStrengthService} from '../../../../shared/utils/password-strength.service';
 
 const passwordsMatchValidator: ValidatorFn = (
@@ -76,6 +76,7 @@ export class ProfileSettingsComponent implements OnInit {
   readonly profileSubmitted = signal(false);
   readonly isUpdatingProfile = signal(false);
   readonly passwordSubmitted = signal(false);
+  readonly isChangingPassword = signal(false);
   readonly showNewPassword = signal(false);
   readonly showConfirmPassword = signal(false);
   readonly userProfile = signal<UserProfileResponse | null>(null);
@@ -209,9 +210,37 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
-  validatePassword(): void {
+  changePassword(): void {
     this.passwordSubmitted.set(true);
     this.passwordForm.markAllAsTouched();
+
+    if (this.passwordForm.valid && !this.isChangingPassword()) {
+      const formValue = this.passwordForm.getRawValue();
+      const passwordData: ChangePasswordRequest = {
+        currentPassword: formValue.currentPassword,
+        newPassword: formValue.newPassword,
+      };
+
+      this.isChangingPassword.set(true);
+      this.settingsService
+        .changePassword(passwordData)
+        .pipe(finalize(() => this.isChangingPassword.set(false)))
+        .subscribe({
+          next: (updatedUser: UserProfileResponse) => {
+            this.userProfile.set(updatedUser);
+            this.passwordForm.reset();
+            this.passwordSubmitted.set(false);
+            this.snackbarService.success('Password changed successfully.');
+          },
+          error: (error: unknown) => {
+            const message =
+              error instanceof HttpErrorResponse && typeof error.error?.message === 'string'
+                ? error.error.message
+                : 'Failed to change password. Please try again.';
+            this.snackbarService.error(message);
+          },
+        });
+    }
   }
 
   showProfileError(control: AbstractControl): boolean {

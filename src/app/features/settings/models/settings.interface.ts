@@ -24,3 +24,8 @@ export interface UpdateProfileRequest {
   organization?: string | null;
   phone: string;
 }
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
