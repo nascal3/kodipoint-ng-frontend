@@ -17,11 +17,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { finalize } from 'rxjs';
 import { SnackbarService } from '../../../../shared/components/snackbar/snackbar.service';
 import {SettingsService} from '../../services/settings.service';
 import {UserProfileResponse, UpdateProfileRequest} from '../../models/settings.interface';
+import {PasswordStrengthService} from '../../../../shared/utils/password-strength.service';
 
 const passwordsMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -68,6 +70,7 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     DatePipe,
@@ -79,6 +82,7 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
 export class ProfileSettingsComponent implements OnInit {
   private readonly settingsService = inject(SettingsService);
   private readonly snackbarService = inject(SnackbarService);
+  readonly strengthService = inject(PasswordStrengthService);
 
   readonly profileSubmitted = signal(false);
   readonly isUpdatingProfile = signal(false);
@@ -124,6 +128,10 @@ export class ProfileSettingsComponent implements OnInit {
   });
   readonly passwordForm = new FormGroup(
     {
+      currentPassword: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       newPassword: new FormControl('', {
         nonNullable: true,
         validators: [
@@ -231,5 +239,10 @@ export class ProfileSettingsComponent implements OnInit {
 
   toggleConfirmPassword(): void {
     this.showConfirmPassword.update((value) => !value);
+  }
+
+  onPasswordInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.strengthService.updatePassword(input.value);
   }
 }

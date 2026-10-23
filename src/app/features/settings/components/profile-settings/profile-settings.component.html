@@ -175,14 +175,30 @@
           <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Current Password</mat-label>
             <mat-icon matPrefix class="material-symbol">key</mat-icon>
-            <input matInput type="password" value="password123" readonly />
+            <input matInput type="password" formControlName="currentPassword" [type]="showNewPassword() ? 'text' : 'password'" />
+            @if (showPasswordError(passwordForm.controls.currentPassword) && passwordForm.controls.currentPassword.hasError('required')) {
+              <mat-error>Current password is required.</mat-error>
+            }
+            <button mat-icon-button matSuffix class="visibility-toggle" type="button" [attr.aria-label]="showNewPassword() ? 'Hide new password' : 'Show new password'" (click)="toggleNewPassword()">
+              @if (showNewPassword()) {
+                <mat-icon class="material-symbol">visibility</mat-icon>
+              } @else {
+                <mat-icon class="material-symbol">visibility_off</mat-icon>
+              }
+            </button>
           </mat-form-field>
         </div>
         <label class="field password-field">
           <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>New Password</mat-label>
             <mat-icon matPrefix class="material-symbol">lock</mat-icon>
-            <input matInput formControlName="newPassword" [type]="showNewPassword() ? 'text' : 'password'" [errorStateMatcher]="profileErrorStateMatcher" />
+            <input
+              matInput
+              formControlName="newPassword"
+              (input)="onPasswordInput($event)"
+              [type]="showNewPassword() ? 'text' : 'password'"
+              [errorStateMatcher]="profileErrorStateMatcher"
+            />
             @if (showPasswordError(passwordForm.controls.newPassword) && passwordForm.controls.newPassword.hasError('required')) {
               <mat-error>New password is required.</mat-error>
             } @else if (showPasswordError(passwordForm.controls.newPassword) && passwordForm.controls.newPassword.hasError('minlength')) {
@@ -198,8 +214,23 @@
               }
             </button>
           </mat-form-field>
-          <span class="strength-label">Complexity: <strong>Strong</strong></span>
-          <span class="strength-meter" aria-label="Password strength: strong"><i></i><i></i><i></i><i></i></span>
+          @if (strengthService.password()) {
+            <span class="strength-label">Complexity: <strong>{{ strengthService.scoreLabel() }}</strong></span>
+            <!-- Angular Material Progress Bar -->
+            <mat-progress-bar
+              [mode]="'determinate'"
+              [value]="strengthService.progressValue()"
+              [style.--mdc-linear-progress-active-indicator-color]="strengthService.progressColor()">
+            </mat-progress-bar>
+
+            @if (strengthService.feedback().suggestions.length > 0) {
+              <ul class="suggestions">
+                @for (suggestion of strengthService.feedback().suggestions; track suggestion) {
+                  <li>{{ suggestion }}</li>
+                }
+              </ul>
+            }
+          }
         </label>
         <label class="field">
           <mat-form-field class="settings-input" appearance="outline" subscriptSizing="dynamic">
