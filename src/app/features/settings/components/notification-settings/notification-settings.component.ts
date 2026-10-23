@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MATERIAL_MODULES } from '@app/shared/material.imports';
 
 @Component({
   selector: 'app-notification-settings',
   standalone: true,
-  imports: [MatButtonModule, MatCheckboxModule],
+  imports: [...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './notification-settings.component.html',
   styleUrl: './notification-settings.component.scss',

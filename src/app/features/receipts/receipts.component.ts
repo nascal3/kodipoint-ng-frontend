@@ -1,18 +1,10 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
+import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { DATE_RANGE_DATE_PROVIDERS } from '../dashboard/components/date-range-date-adapter';
 
 interface ReceiptAllocation {
@@ -46,17 +38,7 @@ interface Receipt {
   imports: [
     CommonModule,
     FormsModule,
-    MatButtonModule,
-    MatChipsModule,
-    MatDatepickerModule,
-    MatDividerModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatPaginatorModule,
-    MatSelectModule,
-    MatTableModule,
-    MatTooltipModule,
+    ...MATERIAL_MODULES,
     RouterLink,
   ],
   providers: DATE_RANGE_DATE_PROVIDERS,
@@ -256,14 +238,6 @@ export class ReceiptsComponent implements AfterViewInit {
 
   printReceipt(): void {
     window.print();
-  }
-
-  countForFilter(filter: string): number {
-    return this.receipts.filter(receipt =>
-      (filter === 'all' || receipt.allocationStatus === filter) &&
-      new Date(receipt.timestamp) >= this.dateRangeStart() &&
-      new Date(receipt.timestamp) <= this.endOfDate(this.dateRangeEnd()),
-    ).length;
   }
 
   private endOfDate(date: Date): Date {

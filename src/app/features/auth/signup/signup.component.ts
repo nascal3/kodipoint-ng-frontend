@@ -10,17 +10,12 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
-import { AuthTokenService } from '../../../core/services/auth-token.service';
-import { UserService } from '../../../core/services/user.service';
-import { SignupRequest } from '../../../core/models/auth.interface';
+import { AuthService } from '@app/core/services/auth.service';
+import { AuthTokenService } from '@app/core/services/auth-token.service';
+import { UserService } from '@app/core/services/user.service';
+import { SignupRequest } from '@app/core/models/auth.interface';
+import { MATERIAL_MODULES, ErrorStateMatcher } from '@app/shared/material.imports';
 
 const passwordsMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -50,11 +45,7 @@ class PasswordMismatchErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-signup',
   standalone: true,
   imports: [
-    MatButtonModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
+    MATERIAL_MODULES,
     ReactiveFormsModule,
     RouterLink,
   ],

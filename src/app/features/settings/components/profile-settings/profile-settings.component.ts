@@ -12,14 +12,14 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import {ErrorStateMatcher, MATERIAL_MODULES} from '../../../../shared/material.imports';
+import {ErrorStateMatcher, MATERIAL_MODULES} from '@app/shared/material.imports';
 import {finalize} from 'rxjs';
-import {SnackbarService} from '../../../../shared/components/snackbar/snackbar.service';
+import {SnackbarService} from '@app/shared/components/snackbar/snackbar.service';
 import {SettingsService} from '../../services/settings.service';
 import {ChangePasswordRequest, UpdateProfileRequest, UserProfileResponse} from '../../models/settings.interface';
-import {PasswordStrengthService} from '../../../../shared/utils/password-strength.service';
-import {UserService} from '../../../../core/services/user.service';
-import {User} from '../../../../core/models/auth.interface';
+import {PasswordStrengthService} from '@app/shared/utils/password-strength.service';
+import {UserService} from '@app/core/services/user.service';
+import {User} from '@app/core/models/auth.interface';
 
 const passwordsMatchValidator: ValidatorFn = (
   control: AbstractControl,

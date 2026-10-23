@@ -1,25 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { Router, RouterLink } from '@angular/router';
-import { AuthTokenService } from '../../../core/services/auth-token.service';
-import {AuthService} from '../../../core/services/auth.service';
-import { UserService } from '../../../core/services/user.service';
+import { AuthTokenService } from '@app/core/services/auth-token.service';
+import { AuthService } from '@app/core/services/auth.service';
+import { UserService } from '@app/core/services/user.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    MatButtonModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
+    MATERIAL_MODULES,
     ReactiveFormsModule,
     RouterLink,
   ],

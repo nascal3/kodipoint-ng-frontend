@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, model, output, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 export interface NavItem {
@@ -19,7 +17,7 @@ export interface NavSection {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, MatTooltipModule, RouterLink, RouterLinkActive],
+  imports: [...MATERIAL_MODULES, RouterLink, RouterLinkActive],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class.collapsed]': 'collapsed()',

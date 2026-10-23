@@ -8,26 +8,14 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import * as echarts from 'echarts';
 import { DATE_RANGE_DATE_PROVIDERS } from '../date-range-date-adapter';
+import { MATERIAL_MODULES } from '@app/shared/material.imports';
 
 @Component({
   selector: 'app-financial-chart',
   standalone: true,
-  imports: [
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
+  imports: [MATERIAL_MODULES],
   providers: DATE_RANGE_DATE_PROVIDERS,
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './financial-chart.component.html',

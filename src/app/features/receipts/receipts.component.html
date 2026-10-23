@@ -20,7 +20,7 @@
           <mat-select [value]="selectedFilter()" (selectionChange)="selectedFilter.set($event.value); applyFilters()">
             <mat-select-trigger>{{ allocationFilterLabel }}</mat-select-trigger>
             @for (option of filterOptions; track option.value) {
-              <mat-option [value]="option.value">{{ option.label }} ({{ countForFilter(option.value) }})</mat-option>
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
             }
           </mat-select>
         </mat-form-field>

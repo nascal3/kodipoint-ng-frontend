@@ -20,6 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -40,6 +41,7 @@ export const MATERIAL_MODULES = [
   MatProgressSpinnerModule,
   MatPaginatorModule,
   MatSelectModule,
+  MatSortModule,
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,

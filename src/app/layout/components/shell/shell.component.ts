@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core'
 import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { AuthTokenService } from '../../../core/services/auth-token.service';
-import {UserService} from '../../../core/services/user.service';
+import { AuthTokenService } from '@app/core/services/auth-token.service';
+import {UserService} from '@app/core/services/user.service';
 
 @Component({
   selector: 'app-shell',
