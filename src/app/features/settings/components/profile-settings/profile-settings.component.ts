@@ -18,6 +18,8 @@ import {SnackbarService} from '../../../../shared/components/snackbar/snackbar.s
 import {SettingsService} from '../../services/settings.service';
 import {ChangePasswordRequest, UpdateProfileRequest, UserProfileResponse} from '../../models/settings.interface';
 import {PasswordStrengthService} from '../../../../shared/utils/password-strength.service';
+import {UserService} from '../../../../core/services/user.service';
+import {User} from '../../../../core/models/auth.interface';
 
 const passwordsMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -71,6 +73,7 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
 export class ProfileSettingsComponent implements OnInit {
   private readonly settingsService = inject(SettingsService);
   private readonly snackbarService = inject(SnackbarService);
+  private readonly userService = inject(UserService);
   readonly strengthService = inject(PasswordStrengthService);
 
   readonly profileSubmitted = signal(false);
@@ -205,6 +208,19 @@ export class ProfileSettingsComponent implements OnInit {
               billingAddress: updatedUser.billingAddress || '',
               billingEmail: updatedUser.billingEmail || '',
             });
+
+            const user: User = {
+              id: updatedUser.id,
+              firstName: updatedUser.firstName,
+              lastName: updatedUser.lastName,
+              email: updatedUser.email,
+              phone: updatedUser.phone,
+              address: updatedUser.address,
+              createdAt: updatedUser.createdAt,
+              updatedAt: updatedUser.updatedAt,
+            };
+            this.userService.setUser(user);
+
             this.snackbarService.success('Profile updated successfully.');
           },
           error: (error: unknown) => {

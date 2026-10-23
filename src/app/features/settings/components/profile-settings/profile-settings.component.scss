@@ -106,7 +106,7 @@
 .profile-form-card h1,
 .password-card h2 {
   display: flex;
-  align-items: center;
+  //align-items: center;
   gap: 7px;
   margin: 0 0 20px;
   font-size: 15px;
@@ -141,10 +141,8 @@
   color: #747589;
 }
 .agency-card h2 {
-  justify-content: space-between;
   margin-bottom: 12px;
-  color: #737589;
-  font-size: 10px;
+  font-size: 15px;
 }
 .agency-card > strong {
   font-size: 12px;
