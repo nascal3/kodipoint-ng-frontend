@@ -229,6 +229,8 @@ export class ProfileSettingsComponent implements OnInit {
           next: (updatedUser: UserProfileResponse) => {
             this.userProfile.set(updatedUser);
             this.passwordForm.reset();
+            this.passwordForm.markAsPristine();
+            this.passwordForm.markAsUntouched();
             this.passwordSubmitted.set(false);
             this.snackbarService.success('Password changed successfully.');
           },

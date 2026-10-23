@@ -256,8 +256,21 @@
           <button
             mat-flat-button
             class="primary-button"
+            [class.is-updating]="isChangingPassword()"
+            [disabled]="isChangingPassword()"
             type="submit">
-            <mat-icon>password</mat-icon> Update Password
+            <span class="button-content">
+              <mat-icon>password</mat-icon>
+              Update Password
+            </span>
+            @if (isChangingPassword()) {
+              <mat-progress-spinner
+                class="profile-update-spinner"
+                diameter="18"
+                mode="indeterminate"
+                aria-label="Updating profile">
+              </mat-progress-spinner>
+            }
           </button>
         </div>
       </form>
