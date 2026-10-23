@@ -8,6 +8,7 @@ export interface UserProfileResponse {
   id: string;
   lastName: string;
   organization: string | null;
+  passwordUpdatedAt: string | null;
   phone: string;
   role: string;
   status: string;

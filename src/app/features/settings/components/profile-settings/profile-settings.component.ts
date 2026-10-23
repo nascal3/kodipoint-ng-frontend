@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
+import {ChangeDetectionStrategy, Component, computed, inject, OnInit, signal} from '@angular/core';
+import {HttpErrorResponse} from '@angular/common/http';
+import {DatePipe} from '@angular/common';
 import {
   AbstractControl,
   FormControl,
@@ -12,11 +12,11 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { MATERIAL_MODULES, ErrorStateMatcher } from '../../../../shared/material.imports';
-import { finalize } from 'rxjs';
-import { SnackbarService } from '../../../../shared/components/snackbar/snackbar.service';
+import {ErrorStateMatcher, MATERIAL_MODULES} from '../../../../shared/material.imports';
+import {finalize} from 'rxjs';
+import {SnackbarService} from '../../../../shared/components/snackbar/snackbar.service';
 import {SettingsService} from '../../services/settings.service';
-import {UserProfileResponse, UpdateProfileRequest, ChangePasswordRequest} from '../../models/settings.interface';
+import {ChangePasswordRequest, UpdateProfileRequest, UserProfileResponse} from '../../models/settings.interface';
 import {PasswordStrengthService} from '../../../../shared/utils/password-strength.service';
 
 const passwordsMatchValidator: ValidatorFn = (
@@ -87,6 +87,14 @@ export class ProfileSettingsComponent implements OnInit {
   readonly profileName = computed(() => {
     const user = this.userProfile();
     return user ? `${user.firstName} ${user.lastName}`.trim() : '';
+  });
+  readonly daysSincePasswordUpdate = computed(() => {
+    const user = this.userProfile();
+    if (!user?.passwordUpdatedAt) return 0;
+    const passwordDate = new Date(user.passwordUpdatedAt);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - passwordDate.getTime());
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
   });
   readonly profileErrorStateMatcher = new ProfileErrorStateMatcher();
   readonly confirmPasswordErrorStateMatcher = new PasswordMismatchErrorStateMatcher();
