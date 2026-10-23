@@ -18,7 +18,7 @@ Child routes require their own `<router-outlet />` within the parent component's
 
 ```ts
 // Parent component template
-<h1>Settings</h1>
+<h1>SettingsService</h1>
 <router-outlet /> <!-- Child components like Profile or Security render here -->
 ```
 

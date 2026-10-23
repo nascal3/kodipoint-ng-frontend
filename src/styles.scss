@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@use './app/shared/components/snackbar/snackbar';
 
 html, body {
   margin: 0;
@@ -42,10 +43,11 @@ html, body {
 }
 
 .user-profile-menu-panel .profile-menu-header .header-name {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
   color: #0f172a;
   line-height: 1.3;
+  text-transform: capitalize;
 }
 
 .user-profile-menu-panel .profile-menu-header .header-email {

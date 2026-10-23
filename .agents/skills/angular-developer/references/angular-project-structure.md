@@ -21,48 +21,49 @@ Agents **must** place files strictly within this directory structure:
 
 ```text
 src/
-├── app/
-│   ├── core/                          # Singleton infrastructure (loaded ONCE)
-│   │   ├── guards/                    # Auth, Role, Route protection
-│   │   ├── interceptors/              # Token injection, Error handling
-│   │   ├── services/                  # Global singletons (Auth, AppState, Theme)
-│   │   └── models/                    # Shared TypeScript domain interfaces
-│   │
-│   ├── shared/                        # Reusable, stateless UI primitives
-│   │   ├── components/                # Pure components (badge, card, table, dialog)
-│   │   ├── directives/                # Custom structural/attribute directives
-│   │   ├── pipes/                     # Formatters (Currency KES, Date, Reference)
-│   │   ├── utils/                     # Pure functions & helpers
-│   │   └── material.imports.ts        # Centralized Angular Material imports
-│   │
-│   ├── layout/                        # Frame & Layout Shell
-│   │   ├── components/
-│   │   │   ├── sidebar/               # Left navigation menu (MatSidenav)
-│   │   │   ├── header/                # Top bar with Breadcrumbs & Profile (MatToolbar)
-│   │   │   └── shell/                 # Shell container with <router-outlet>
-│   │
-│   ├── features/                      # Lazy-loaded feature modules
-│   │   ├── auth/                      # Login, Sign Up, Password Recovery page components & template
-│   │   ├── dashboard/                 # Overview KPIs, Financial Bar Chart, Recent Settlements
-│   │   ├── properties/                # Property & Unit management
-│   │   ├── tenants/                   # Tenant directory & lease profiles
-│   │   ├── invoices/                  # Billing, Invoices & Statements
-│   │   ├── payments/                  # Payment collection & Receipts (M-Pesa, Bank, RTGS)
-│   │   ├── analytics/                 # Reports & Financial Performance
-│   │   └── support/                   # Support Tickets
-│   │
-│   ├── app.component.ts               # Root shell wrapper
-│   ├── app.config.ts                  # Application providers configuration
-│   └── app.routes.ts                  # Main routing configuration
-│
-├── assets/                            # Static media, icons, i18n JSONs
-└── styles/                            # Theme config, global styling, M3 color palettes
-    ├── _variables.scss
-    ├── theme.scss                     # Material Theme Configuration
-    └── styles.scss                    # Main global style entry point
+└── app/
+    ├── core/                          # Singleton infrastructure (loaded ONCE)
+    │   ├── guards/                    # Auth, Role, Route protection
+    │   ├── interceptors/              # Token injection, Error handling
+    │   ├── services/                  # Global singletons (Auth, AppState, Theme)
+    │   └── models/                    # Shared TypeScript domain interfaces
+    │
+    ├── shared/                        # Reusable, stateless UI primitives
+    │   ├── components/                # Pure components (badge, card, table, dialog)
+    │   ├── directives/                # Custom structural/attribute directives
+    │   ├── pipes/                     # Formatters (Currency KES, Date, Reference)
+    │   ├── utils/                     # Pure functions & helpers
+    │   └── material.imports.ts        # Centralized Angular Material imports
+    │
+    ├── layout/                        # Frame & Layout Shell
+    │   └── components/
+    │       ├── sidebar/               # Left navigation menu (MatSidenav)
+    │       ├── header/                # Top bar with Breadcrumbs & Profile (MatToolbar)
+    │       └── shell/                 # Shell container with <router-outlet>
+    │
+    ├── features/                      # Lazy-loaded feature modules
+    │   ├── auth/                      # Login, Sign Up, Password Recovery page components & template
+    │   ├── dashboard/                 # Overview KPIs, Financial Bar Chart, Recent Settlements
+    │   ├── properties/                # Property & Unit management
+    │   ├── tenants/                   # Tenant directory & lease profiles
+    │   ├── invoices/                  # Billing, Invoices & Statements
+    │   ├── payments/                  # Payment collection & Receipts (M-Pesa, Bank, RTGS)
+    │   ├── analytics/                 # Reports & Financial Performance
+    │   └── support/                   # Support Tickets
+    │
+    ├── app.ts                         # Root shell wrapper
+    ├── app.html                       # Router outlet
+    ├── app.config.ts                  # Application providers configuration
+    └── app.routes.ts                  # Main routing configuration
+    │
+    ├── index.html                     # Main HTML entry point
+    ├── main.ts                        # Bootstrapping entry point
+    ├── styles.scss                    # Main global style entry point
+    ├── material-theme.scss            # Material Theme Configuration, global styling, M3 color palettes
+    └── environments/                  # Project env variables , 
+        ├── environment.development.ts # Project development environment variables
+        └── environment.ts             # Project production environment variables
 ```
-
----
 
 ## 3. Code Generation Rules for AI Agents
 

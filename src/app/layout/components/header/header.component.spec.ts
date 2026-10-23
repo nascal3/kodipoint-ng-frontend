@@ -90,7 +90,7 @@ describe('HeaderComponent', () => {
 
     const menuTexts = Array.from(menuItems || []).map((el) => el.textContent?.trim());
     expect(menuTexts.some((t) => t?.includes('Profile'))).toBe(true);
-    expect(menuTexts.some((t) => t?.includes('Settings'))).toBe(true);
+    expect(menuTexts.some((t) => t?.includes('SettingsService'))).toBe(true);
     expect(menuTexts.some((t) => t?.includes('Logout'))).toBe(true);
   });
 
@@ -128,7 +128,7 @@ describe('HeaderComponent', () => {
       '.profile-menu-item',
     ) as NodeListOf<HTMLButtonElement>;
     const settingsItem = Array.from(newMenuItems).find((el) =>
-      el.textContent?.includes('Settings'),
+      el.textContent?.includes('SettingsService'),
     );
     settingsItem?.click();
     expect(settingsEmitted).toBe(true);

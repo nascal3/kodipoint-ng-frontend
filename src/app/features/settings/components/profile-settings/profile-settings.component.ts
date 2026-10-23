@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, OnInit, signal} from '@angular/core';
+import {HttpErrorResponse} from '@angular/common/http';
+import {DatePipe} from '@angular/common';
 import {
   AbstractControl,
   FormControl,
@@ -10,10 +12,14 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {ErrorStateMatcher, MATERIAL_MODULES} from '../../../../shared/material.imports';
+import {finalize} from 'rxjs';
+import {SnackbarService} from '../../../../shared/components/snackbar/snackbar.service';
+import {SettingsService} from '../../services/settings.service';
+import {ChangePasswordRequest, UpdateProfileRequest, UserProfileResponse} from '../../models/settings.interface';
+import {PasswordStrengthService} from '../../../../shared/utils/password-strength.service';
+import {UserService} from '../../../../core/services/user.service';
+import {User} from '../../../../core/models/auth.interface';
 
 const passwordsMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -50,40 +56,83 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 
+
+
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
-  imports: [MatButtonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+  imports: [
+    ...MATERIAL_MODULES,
+    ReactiveFormsModule,
+    DatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
 })
-export class ProfileSettingsComponent {
+export class ProfileSettingsComponent implements OnInit {
+  private readonly settingsService = inject(SettingsService);
+  private readonly snackbarService = inject(SnackbarService);
+  private readonly userService = inject(UserService);
+  readonly strengthService = inject(PasswordStrengthService);
+
   readonly profileSubmitted = signal(false);
+  readonly isUpdatingProfile = signal(false);
   readonly passwordSubmitted = signal(false);
+  readonly isChangingPassword = signal(false);
   readonly showNewPassword = signal(false);
   readonly showConfirmPassword = signal(false);
+  readonly userProfile = signal<UserProfileResponse | null>(null);
+  readonly profileInitials = computed(() => {
+    const user = this.userProfile();
+    return user ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase() : '';
+  });
+  readonly profileName = computed(() => {
+    const user = this.userProfile();
+    return user ? `${user.firstName} ${user.lastName}`.trim() : '';
+  });
+  readonly daysSincePasswordUpdate = computed(() => {
+    const user = this.userProfile();
+    if (!user?.passwordUpdatedAt) return 0;
+    const passwordDate = new Date(user.passwordUpdatedAt);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - passwordDate.getTime());
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  });
   readonly profileErrorStateMatcher = new ProfileErrorStateMatcher();
   readonly confirmPasswordErrorStateMatcher = new PasswordMismatchErrorStateMatcher();
   readonly profileForm = new FormGroup({
-    firstName: new FormControl('John', { nonNullable: true, validators: [Validators.required] }),
-    lastName: new FormControl('Doe', { nonNullable: true, validators: [Validators.required] }),
-    email: new FormControl('john.doe@enterprise.ke', {
+    firstName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    lastName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    email: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
-    phone: new FormControl('+254 728 762 763', {
+    phone: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.pattern(/^\+\d[\d\s-]{6,17}$/)],
     }),
-    organization: new FormControl('KodiPoint Enterprise / KE'),
-    address: new FormControl('P.O Box 12345 00400 Kiambu, Nairobi', {
+    organization: new FormControl('', {
+      nonNullable: true
+    }),
+    address: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required],
+    }),
+    billingAddress: new FormControl('', {
+      nonNullable: true
+    }),
+    billingEmail: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.email],
     }),
   });
   readonly passwordForm = new FormGroup(
     {
+      currentPassword: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       newPassword: new FormControl('', {
         nonNullable: true,
         validators: [
@@ -100,14 +149,124 @@ export class ProfileSettingsComponent {
     { validators: passwordsMatchValidator },
   );
 
-  validateProfile(): void {
-    this.profileSubmitted.set(true);
-    this.profileForm.markAllAsTouched();
+  ngOnInit(): void {
+    this.loadUserProfile();
   }
 
-  validatePassword(): void {
+  private loadUserProfile(): void {
+    this.settingsService.loadUserProfile().subscribe({
+      next: (user: UserProfileResponse) => {
+        this.userProfile.set(user);
+        this.profileForm.patchValue({
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone,
+          organization: user.organization || '',
+          address: user.address,
+          billingAddress: user.billingAddress || '',
+          billingEmail: user.billingEmail || '',
+        });
+      },
+      error: (error: unknown) => {
+        console.error('Failed to load user profile:', error);
+      },
+    });
+  }
+
+  updateProfile(): void {
+    this.profileSubmitted.set(true);
+    this.profileForm.markAllAsTouched();
+
+    if (this.profileForm.valid && !this.isUpdatingProfile()) {
+      const formValue = this.profileForm.getRawValue();
+      const profileData: UpdateProfileRequest = {
+        email: formValue.email,
+        firstName: formValue.firstName,
+        lastName: formValue.lastName,
+        address: formValue.address,
+        phone: formValue.phone,
+        organization: formValue.organization || '',
+        billingAddress: formValue.billingAddress|| '',
+        billingEmail: formValue.billingEmail || '',
+      };
+
+      this.isUpdatingProfile.set(true);
+      this.settingsService
+        .updateProfile(profileData)
+        .pipe(finalize(() => this.isUpdatingProfile.set(false)))
+        .subscribe({
+          next: (updatedUser: UserProfileResponse) => {
+            this.userProfile.set(updatedUser);
+            this.profileForm.patchValue({
+              firstName: updatedUser.firstName,
+              lastName: updatedUser.lastName,
+              email: updatedUser.email,
+              phone: updatedUser.phone,
+              organization: updatedUser.organization || '',
+              address: updatedUser.address,
+              billingAddress: updatedUser.billingAddress || '',
+              billingEmail: updatedUser.billingEmail || '',
+            });
+
+            const user: User = {
+              id: updatedUser.id,
+              firstName: updatedUser.firstName,
+              lastName: updatedUser.lastName,
+              email: updatedUser.email,
+              phone: updatedUser.phone,
+              address: updatedUser.address,
+              createdAt: updatedUser.createdAt,
+              updatedAt: updatedUser.updatedAt,
+            };
+            this.userService.setUser(user);
+
+            this.snackbarService.success('Profile updated successfully.');
+          },
+          error: (error: unknown) => {
+            const message =
+              error instanceof HttpErrorResponse && typeof error.error?.message === 'string'
+                ? error.error.message
+                : 'Failed to update profile. Please try again.';
+            this.snackbarService.error(message);
+          },
+        });
+    }
+  }
+
+  changePassword(): void {
     this.passwordSubmitted.set(true);
     this.passwordForm.markAllAsTouched();
+
+    if (this.passwordForm.valid && !this.isChangingPassword()) {
+      const formValue = this.passwordForm.getRawValue();
+      const passwordData: ChangePasswordRequest = {
+        currentPassword: formValue.currentPassword,
+        newPassword: formValue.newPassword,
+      };
+
+      this.isChangingPassword.set(true);
+      this.settingsService
+        .changePassword(passwordData)
+        .pipe(finalize(() => this.isChangingPassword.set(false)))
+        .subscribe({
+          next: (updatedUser: UserProfileResponse) => {
+            this.userProfile.set(updatedUser);
+            this.passwordForm.reset();
+            this.passwordForm.markAsPristine();
+            this.passwordForm.markAsUntouched();
+            this.passwordSubmitted.set(false);
+            this.snackbarService.success('Password changed successfully.');
+          },
+          error: (error: unknown) => {
+            const message =
+              error instanceof HttpErrorResponse && typeof error.error?.message === 'string'
+                ? error.error.message
+                : 'Failed to change password. Please try again.';
+            this.snackbarService.error(message);
+          },
+        });
+    }
   }
 
   showProfileError(control: AbstractControl): boolean {
@@ -124,5 +283,10 @@ export class ProfileSettingsComponent {
 
   toggleConfirmPassword(): void {
     this.showConfirmPassword.update((value) => !value);
+  }
+
+  onPasswordInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.strengthService.updatePassword(input.value);
   }
 }

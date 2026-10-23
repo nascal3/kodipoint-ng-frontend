@@ -124,7 +124,7 @@ Usage (the consumer imports both `TabGroup` and `Tab`):
 ```html
 <app-tab-group>
   <app-tab title="Profile">...</app-tab>
-  <app-tab title="Settings">...</app-tab>
+  <app-tab title="SettingsService">...</app-tab>
 </app-tab-group>
 ```
 

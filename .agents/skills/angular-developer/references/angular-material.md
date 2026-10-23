@@ -723,7 +723,7 @@ export class MainLayout {
         </a>
         <a mat-list-item routerLink="/settings">
           <mat-icon matListItemIcon>settings</mat-icon>
-          <span matListItemTitle>Settings</span>
+          <span matListItemTitle>SettingsService</span>
         </a>
       </mat-nav-list>
     </mat-sidenav>

@@ -288,10 +288,10 @@ Layered content sections where only one panel is visible.
   </ul>
 
   <div ngTabPanel value="profile" class="tab-panel">
-    <ng-template ngTabContent>Profile Settings</ng-template>
+    <ng-template ngTabContent>Profile SettingsService</ng-template>
   </div>
   <div ngTabPanel value="security" class="tab-panel">
-    <ng-template ngTabContent>Security Settings</ng-template>
+    <ng-template ngTabContent>Security SettingsService</ng-template>
   </div>
 </div>
 ```

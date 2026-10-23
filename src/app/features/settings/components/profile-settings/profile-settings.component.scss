@@ -59,12 +59,14 @@
 .identity-card h2 {
   margin: 12px 0 4px;
   font-size: 15px;
+  text-transform: capitalize;
 }
 .role-badge {
   padding: 3px 16px;
   border-radius: 20px;
   background: #eeefff;
   font-size: 10px;
+  text-transform: capitalize;
 }
 .profile-meta {
   width: 100%;
@@ -86,19 +88,25 @@
   margin: 0;
   text-align: right;
   font-weight: 600;
+  text-transform: capitalize;
 }
 .status-badge {
   padding: 3px 8px;
   border-radius: 12px;
   background: #d9fff0;
   color: #07835d;
+  text-transform: capitalize;
+}
+.status-badge.status-inactive {
+  background: #ffe0e0;
+  color: #b42318;
 }
 .security-card h2,
 .agency-card h2,
 .profile-form-card h1,
 .password-card h2 {
   display: flex;
-  align-items: center;
+  //align-items: center;
   gap: 7px;
   margin: 0 0 20px;
   font-size: 15px;
@@ -133,10 +141,8 @@
   color: #747589;
 }
 .agency-card h2 {
-  justify-content: space-between;
   margin-bottom: 12px;
-  color: #737589;
-  font-size: 10px;
+  font-size: 15px;
 }
 .agency-card > strong {
   font-size: 12px;
@@ -229,7 +235,8 @@
 }
 .settings-input .material-symbol {
   color: #666a7d;
-  font-size: 16px;
+  font-size: 20px;
+  padding: 0;
 }
 .settings-input mat-label {
   color: #535365;
@@ -302,6 +309,7 @@
   background: #2d1db7;
 }
 .primary-button.mat-mdc-unelevated-button {
+  position: relative;
   min-width: 0;
   height: 36px;
   border-radius: 9px;
@@ -309,6 +317,11 @@
   color: #fff;
 }
 .primary-button.mat-mdc-unelevated-button ::ng-deep .mdc-button__label {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+.primary-button .button-content {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -316,6 +329,22 @@
 }
 .primary-button.mat-mdc-unelevated-button:hover {
   background-color: #2d1db7;
+}
+.primary-button.mat-mdc-unelevated-button:disabled {
+  background-color: #b8b4e8;
+  color: #fff;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+.profile-update-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  --mdc-circular-progress-active-indicator-color: currentColor;
+}
+.primary-button.is-updating .button-content {
+  visibility: hidden;
 }
 .password-card h2 {
   margin-bottom: 24px;
@@ -372,6 +401,22 @@
 }
 .strength-label strong {
   color: #07835d;
+}
+mat-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  ::ng-deep .mdc-linear-progress__buffer-bar {
+    background-color: var(--mdc-linear-progress-track-color, #e0e0e0);
+  }
+}
+.suggestions {
+  margin: 8px 0 0;
+  padding: 0 0 0 16px;
+  font-size: 10px;
+  color: #747589;
+}
+.suggestions li {
+  margin: 2px 0;
 }
 .strength-meter {
   display: grid;

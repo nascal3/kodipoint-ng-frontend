@@ -36,7 +36,7 @@ export class ShellComponent {
       '/tenants': 'Tenants',
       '/invoice': 'Invoice',
       '/receipts': 'Receipts',
-      '/settings': 'Settings',
+      '/settings': 'SettingsService',
     };
 
     const title = Object.entries(routeTitleMap).find(([route]) => url.includes(route))?.[1] || '';
