@@ -12,13 +12,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MATERIAL_MODULES, ErrorStateMatcher } from '../../../../shared/material.imports';
 import { finalize } from 'rxjs';
 import { SnackbarService } from '../../../../shared/components/snackbar/snackbar.service';
 import {SettingsService} from '../../services/settings.service';
@@ -66,12 +60,7 @@ class ProfileErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-profile-settings',
   standalone: true,
   imports: [
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
+    ...MATERIAL_MODULES,
     ReactiveFormsModule,
     DatePipe,
   ],
