@@ -404,6 +404,22 @@
 .strength-label strong {
   color: #07835d;
 }
+mat-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  ::ng-deep .mdc-linear-progress__buffer-bar {
+    background-color: var(--mdc-linear-progress-track-color, #e0e0e0);
+  }
+}
+.suggestions {
+  margin: 8px 0 0;
+  padding: 0 0 0 16px;
+  font-size: 10px;
+  color: #747589;
+}
+.suggestions li {
+  margin: 2px 0;
+}
 .strength-meter {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

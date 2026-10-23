@@ -215,12 +215,12 @@
             </button>
           </mat-form-field>
           @if (strengthService.password()) {
-            <span class="strength-label">Complexity: <strong>{{ strengthService.scoreLabel() }}</strong></span>
+            <span class="strength-label">Complexity: <strong [style.color]="strengthService.progressColor()">{{ strengthService.scoreLabel() }}</strong></span>
             <!-- Angular Material Progress Bar -->
             <mat-progress-bar
               [mode]="'determinate'"
               [value]="strengthService.progressValue()"
-              [style.--mdc-linear-progress-active-indicator-color]="strengthService.progressColor()">
+              [style.--mat-progress-bar-active-indicator-color]="strengthService.progressColor()">
             </mat-progress-bar>
 
             @if (strengthService.feedback().suggestions.length > 0) {
