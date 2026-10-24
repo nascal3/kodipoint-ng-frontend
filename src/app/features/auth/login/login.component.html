@@ -1,20 +1,7 @@
 <main class="auth-page login-page">
   <section class="auth-card login-card" aria-labelledby="login-title">
     <a class="brand" href="/" aria-label="Kodipoint home">
-      <svg
-        class="brand-logo"
-        width="28"
-        height="28"
-        viewBox="0 0 28 28"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path d="M14 2L24 7.5V18.5L14 24L4 18.5V7.5L14 2Z" fill="#EEF2FF" />
-        <path d="M14 2L24 7.5L14 13L4 7.5L14 2Z" fill="#6366F1" />
-        <path d="M4 7.5L14 13V24L4 18.5V7.5Z" fill="#4338CA" />
-        <path d="M24 7.5L14 13V24L24 18.5V7.5Z" fill="#4F46E5" />
-      </svg>
+      <img src="/kodipoint.svg" alt="KodiPoint Logo">
       <span class="brand-name">KodiPoint</span>
     </a>
 
@@ -24,12 +11,7 @@
     </header>
 
     <button class="google-button" type="button" (click)="showUnavailableMessage()">
-      <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="#4285F4" d="M21.6 12.23c0-.72-.06-1.42-.18-2.09H12v3.95h5.38a4.6 4.6 0 0 1-2 3.02v2.47h3.24c1.9-1.75 2.98-4.32 2.98-7.35Z"/>
-        <path fill="#34A853" d="M12 22c2.7 0 4.97-.9 6.62-2.42l-3.24-2.47c-.9.6-2.04.96-3.38.96-2.6 0-4.8-1.76-5.58-4.12H3.08v2.55A10 10 0 0 0 12 22Z"/>
-        <path fill="#FBBC05" d="M6.42 13.95a6 6 0 0 1 0-3.9V7.5H3.08a10 10 0 0 0 0 9l3.34-2.55Z"/>
-        <path fill="#EA4335" d="M12 5.93c1.47 0 2.8.5 3.84 1.5l2.88-2.88C16.96 2.93 14.7 2 12 2a10 10 0 0 0-8.92 5.5l3.34 2.55C7.2 7.69 9.4 5.93 12 5.93Z"/>
-      </svg>
+      <img class="google-icon" src="/google-icon.svg" alt="" aria-hidden="true">
       <span>Sign in with Google</span>
     </button>
 
@@ -38,10 +20,7 @@
     <form class="auth-form login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <mat-form-field class="auth-input login-input" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Email address</mat-label>
-        <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
-          <rect x="2.5" y="4" width="15" height="12" rx="1.5" />
-          <path d="m3.5 5 6.5 5 6.5-5" />
-        </svg>
+        <mat-icon class="material-symbol" matPrefix>email</mat-icon>
         <input
           matInput
           id="email"
@@ -63,11 +42,7 @@
       </div>
       <mat-form-field class="auth-input login-input" appearance="outline" subscriptSizing="dynamic">
         <mat-label>Password</mat-label>
-        <svg class="field-icon" matPrefix viewBox="0 0 20 20" aria-hidden="true">
-          <rect x="4" y="8" width="12" height="10" rx="1.5" />
-          <path d="M7 8V5.5a3 3 0 0 1 6 0V8m-3 4v2" />
-          <circle cx="10" cy="12" r=".7" />
-        </svg>
+        <mat-icon class="material-symbol" matPrefix>lock</mat-icon>
         <input
           matInput
           id="password"
@@ -87,16 +62,9 @@
           (click)="togglePasswordVisibility()"
         >
           @if (passwordVisible()) {
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
-              <circle cx="10" cy="10" r="2.2" />
-            </svg>
+            <mat-icon class="material-symbol">visibility</mat-icon>
           } @else {
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="M2 10s2.9-5 8-5 8 5 8 5-2.9 5-8 5-8-5-8-5Z" />
-              <circle cx="10" cy="10" r="2.2" />
-              <path d="m3 3 14 14" />
-            </svg>
+            <mat-icon class="material-symbol">visibility_off</mat-icon>
           }
         </button>
       </mat-form-field>

@@ -16,6 +16,7 @@ import { AuthTokenService } from '@app/core/services/auth-token.service';
 import { UserService } from '@app/core/services/user.service';
 import { SignupRequest } from '@app/core/models/auth.interface';
 import { MATERIAL_MODULES, ErrorStateMatcher } from '@app/shared/material.imports';
+import {PasswordStrengthService} from '@app/shared/utils/password-strength.service';
 
 const passwordsMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -58,6 +59,7 @@ export class SignupComponent {
   private readonly authTokenService = inject(AuthTokenService);
   private readonly router = inject(Router);
   private readonly userService = inject(UserService);
+  readonly strengthService = inject(PasswordStrengthService);
 
   readonly passwordVisible = signal(false);
   readonly confirmPasswordVisible = signal(false);
@@ -146,5 +148,10 @@ export class SignupComponent {
 
   showUnavailableMessage(): void {
     this.signupMessage.set('Google sign-up is not configured yet.');
+  }
+
+  onPasswordInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.strengthService.updatePassword(input.value);
   }
 }

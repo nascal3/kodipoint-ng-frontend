@@ -25,6 +25,12 @@
   gap: 8px;
 }
 
+.material-symbol {
+  padding: 5px 0 0 0 !important;
+  color: #666a7d;
+  font-size: 20px;
+}
+
 .name-fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -79,6 +85,44 @@
 
 .signup-footer {
   margin-top: 36px;
+}
+
+.strength-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+}
+.strength-label strong {
+  color: #07835d;
+}
+mat-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  ::ng-deep .mdc-linear-progress__buffer-bar {
+    background-color: var(--mdc-linear-progress-track-color, #e0e0e0);
+  }
+}
+.suggestions {
+  margin: 8px 0 0;
+  padding: 0 0 0 16px;
+  font-size: 10px;
+  color: #747589;
+}
+.suggestions li {
+  margin: 2px 0;
+}
+.strength-meter {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.strength-meter i {
+  height: 4px;
+  border-radius: 5px;
+  background: #07835d;
+}
+.strength-meter i:last-child {
+  background: #a4c7c3;
 }
 
 @media (max-width: 700px) {

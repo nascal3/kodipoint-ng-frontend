@@ -1,0 +1,18 @@
+<svg
+  class="brand-logo-white"
+  width="22"
+  height="22"
+  viewBox="0 0 28 28"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <path
+    d="M14 2L24 7.5V18.5L14 24L4 18.5V7.5L14 2Z"
+    fill="#EEF2FF"
+    fill-opacity="0.3"
+  />
+  <path d="M14 2L24 7.5L14 13L4 7.5L14 2Z" fill="#FFFFFF" fill-opacity="0.95" />
+  <path d="M4 7.5L14 13V24L4 18.5V7.5Z" fill="#FFFFFF" fill-opacity="0.8" />
+  <path d="M24 7.5L14 13V24L24 18.5V7.5Z" fill="#FFFFFF" />
+</svg>
