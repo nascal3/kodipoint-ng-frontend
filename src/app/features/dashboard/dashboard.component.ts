@@ -1,43 +1,26 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FinancialChartComponent } from './components/financial-chart/financial-chart.component';
 import { InvoiceTableComponent } from './components/invoice-table/invoice-table.component';
-import { SummaryCardComponent, type SummaryCardData } from './components/summary-card/summary-card.component';
+import { TotalRentOwedCardComponent } from './components/total-rent-owed-card/total-rent-owed-card.component';
+import { PortfolioOccupancyCardComponent } from './components/portfolio-occupancy-card/portfolio-occupancy-card.component';
+import { TotalRemittanceCardComponent } from './components/total-remittance-card/total-remittance-card.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [SummaryCardComponent, FinancialChartComponent, InvoiceTableComponent],
+  imports: [TotalRentOwedCardComponent, PortfolioOccupancyCardComponent, TotalRemittanceCardComponent, FinancialChartComponent, InvoiceTableComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
-  readonly summaryCards = signal<SummaryCardData[]>([
-    {
-      title: 'Total Rent Owed',
-      value: 'KES 1,420,000',
-      icon: 'pending_actions',
-      iconType: 'error',
-      footerType: 'calendar',
-      footerText: 'Based on last 30 days',
-    },
-    {
-      title: 'Portfolio Occupancy',
-      value: '24',
-      unitDetail: '/ 28 Units',
-      icon: 'domain',
-      iconType: 'secondary',
-      footerType: 'badge',
-      footerText: '86% occupied',
-      badgeIcon: 'check_circle',
-    },
-    {
-      title: 'Total Remittance',
-      value: 'KES 14.82M',
-      icon: 'payments',
-      iconType: 'primary',
-      footerType: 'calendar',
-      footerText: 'Based on last 30 days',
-    },
-  ]);
+  readonly totalRentOwed = signal('KES 1,420,000');
+  readonly totalRentOwedFooter = signal('Based on last 30 days');
+
+  readonly portfolioOccupancyValue = signal('24');
+  readonly portfolioOccupancyUnit = signal('/ 28 Units');
+  readonly portfolioOccupancyFooter = signal('86% occupied');
+
+  readonly totalRemittance = signal('KES 14.82M');
+  readonly totalRemittanceFooter = signal('Based on last 30 days');
 }

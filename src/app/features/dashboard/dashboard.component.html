@@ -1,8 +1,8 @@
 <div class="dashboard-container">
   <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
-    @for (card of summaryCards(); track card.title) {
-      <app-summary-card [data]="card" />
-    }
+    <app-total-rent-owed-card [value]="totalRentOwed()" [footerText]="totalRentOwedFooter()" />
+    <app-portfolio-occupancy-card [value]="portfolioOccupancyValue()" [unitDetail]="portfolioOccupancyUnit()" [footerText]="portfolioOccupancyFooter()" />
+    <app-total-remittance-card [value]="totalRemittance()" [footerText]="totalRemittanceFooter()" />
   </section>
 
   <section class="financial-chart-section" aria-label="Financial Activity">
