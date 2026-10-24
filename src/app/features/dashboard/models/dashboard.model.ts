@@ -1,3 +1,35 @@
+export interface TotalRentOwedResponse {
+  summary: {
+    totalOwed: string;
+    totalOutstandingInvoices: number;
+    totalProperties: number;
+  };
+}
+
+export interface AllPropertiesIncomeResponse {
+  summary: {
+    totalIncome: string;
+    totalPayments: number;
+    totalProperties: number;
+  };
+  properties: unknown[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
+export interface PortfolioOccupancyResponse {
+  occupancyPercentage: number;
+  occupiedUnits: number;
+  totalUnits: number;
+  vacantUnits: number;
+}
+
 export interface SummaryCardData {
   title: string;
   value: string;
