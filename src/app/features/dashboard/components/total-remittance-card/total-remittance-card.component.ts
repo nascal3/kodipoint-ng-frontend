@@ -11,5 +11,4 @@ import { MATERIAL_MODULES } from '@app/shared/material.imports';
 })
 export class TotalRemittanceCardComponent {
   readonly value = input.required<string>();
-  readonly footerText = input.required<string>();
 }
