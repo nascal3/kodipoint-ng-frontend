@@ -90,6 +90,11 @@
   background-color: #ef4444;
   border: 1.5px solid #ffffff;
 }
+.settings-notification-dot {
+  @extend .notification-dot;
+  top: 23px;
+  right: 292px;
+}
 
 .user-profile-trigger {
   display: inline-flex;

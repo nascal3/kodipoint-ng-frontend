@@ -36,7 +36,6 @@ export class AuthCallbackComponent implements OnInit {
 
       if (accessToken || userData) {
         if (this.isNewUser) {
-          debugger;
           void this.router.navigate(['/settings']);
         } else {
           void this.router.navigate(['/dashboard']);

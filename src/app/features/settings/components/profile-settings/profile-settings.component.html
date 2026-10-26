@@ -117,6 +117,12 @@
               <mat-label>Physical / Office Address </mat-label>
               <mat-icon class="material-symbol" matPrefix>location_on</mat-icon>
               <input matInput formControlName="address" autocomplete="street-address" [errorStateMatcher]="profileErrorStateMatcher" />
+              <mat-icon
+                class="verified-icon"
+                matSuffix
+                [class.mat-warn]="!profileForm.controls.address.value">
+                {{ profileForm.controls.address.value ? 'check_circle' : 'error' }}
+              </mat-icon>
               @if (showProfileError(profileForm.controls.address) && profileForm.controls.address.hasError('required')) {
                 <mat-error>Physical or office address is required.</mat-error>
               }

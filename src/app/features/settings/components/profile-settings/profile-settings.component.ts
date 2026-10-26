@@ -157,6 +157,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.settingsService.loadUserProfile().subscribe({
       next: (user: UserProfileResponse) => {
         this.userProfile.set(user);
+        this.settingsService.userProfile.set(user);
         this.profileForm.patchValue({
           firstName: user.firstName,
           lastName: user.lastName,
@@ -167,6 +168,13 @@ export class ProfileSettingsComponent implements OnInit {
           billingAddress: user.billingAddress || '',
           billingEmail: user.billingEmail || '',
         });
+        this.profileForm.controls.phone.markAsTouched();
+        this.profileForm.controls.phone.markAsDirty();
+        this.profileForm.controls.phone.updateValueAndValidity();
+
+        this.profileForm.controls.address.markAsTouched();
+        this.profileForm.controls.address.markAsDirty();
+        this.profileForm.controls.address.updateValueAndValidity();
       },
       error: (error: unknown) => {
         console.error('Failed to load user profile:', error);
@@ -198,6 +206,7 @@ export class ProfileSettingsComponent implements OnInit {
         .subscribe({
           next: (updatedUser: UserProfileResponse) => {
             this.userProfile.set(updatedUser);
+            this.settingsService.userProfile.set(updatedUser);
             this.profileForm.patchValue({
               firstName: updatedUser.firstName,
               lastName: updatedUser.lastName,
