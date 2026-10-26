@@ -26,7 +26,6 @@ export class AuthService {
   }
 
   googleLogin(): void {
-    const callbackUrl = `${window.location.origin}/auth/callback`;
-    window.location.href = `${this.apiUrl}/auth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+    window.location.href = `${this.apiUrl}/auth/google`;
   }
 }

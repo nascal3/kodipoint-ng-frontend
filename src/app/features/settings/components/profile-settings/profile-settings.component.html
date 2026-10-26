@@ -79,12 +79,6 @@
               <mat-label>Email Address </mat-label>
               <mat-icon class="material-symbol" matPrefix>mail</mat-icon>
               <input matInput formControlName="email" type="email" autocomplete="email" [errorStateMatcher]="profileErrorStateMatcher" />
-              <mat-icon
-                class="verified-icon"
-                matSuffix
-                [class.mat-warn]="!profileForm.controls.email.value">
-                {{ profileForm.controls.email.value ? 'check_circle' : 'error' }}
-              </mat-icon>
               @if (showProfileError(profileForm.controls.email) && profileForm.controls.email.hasError('required')) {
                 <mat-error>Email address is required.</mat-error>
               } @else if (showProfileError(profileForm.controls.email) && profileForm.controls.email.hasError('email')) {

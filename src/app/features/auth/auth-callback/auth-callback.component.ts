@@ -13,6 +13,7 @@ export class AuthCallbackComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly authTokenService = inject(AuthTokenService);
   private readonly userService = inject(UserService);
+  private isNewUser = false;
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -26,6 +27,7 @@ export class AuthCallbackComponent implements OnInit {
       if (userData) {
         try {
           const user = JSON.parse(userData);
+          this.isNewUser = user.newUser;
           this.userService.setUser(user);
         } catch {
           console.error('Failed to parse user data from callback');
@@ -33,7 +35,12 @@ export class AuthCallbackComponent implements OnInit {
       }
 
       if (accessToken || userData) {
-        void this.router.navigate(['/dashboard']);
+        if (this.isNewUser) {
+          debugger;
+          void this.router.navigate(['/settings']);
+        } else {
+          void this.router.navigate(['/dashboard']);
+        }
       } else {
         void this.router.navigate(['/login']);
       }
