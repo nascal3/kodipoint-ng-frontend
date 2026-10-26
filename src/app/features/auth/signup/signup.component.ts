@@ -148,6 +148,12 @@ export class SignupComponent {
 
   googleSignUp(): void {
     this.signupMessage.set('');
+    this.signupForm.controls.terms.markAsTouched();
+
+    if (!this.signupForm.controls.terms.value) {
+      return;
+    }
+
     this.isSubmitting.set(true);
     this.authService.googleLogin();
   }
