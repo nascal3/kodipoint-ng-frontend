@@ -10,7 +10,7 @@
       <p>Enter your credentials to access your properties, tenant ledgers, and billing hub.</p>
     </header>
 
-    <button class="google-button" type="button" (click)="showUnavailableMessage()">
+    <button class="google-button" type="button" (click)="googleLogin()">
       <img class="google-icon" src="/google-icon.svg" alt="" aria-hidden="true">
       <span>Sign in with Google</span>
     </button>
@@ -80,7 +80,7 @@
             <mat-spinner diameter="20" aria-label="Signing in"></mat-spinner>
           } @else {
             <span>Sign In to Dashboard</span>
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13m-5-5 5 5-5 5" /></svg>
+            <mat-icon class="material-symbol mat-icon-white">arrow_forward</mat-icon>
           }
         </span>
       </button>
@@ -95,9 +95,9 @@
   <footer class="auth-footer login-footer">
     <nav class="footer-links" aria-label="Support links">
       <span aria-hidden="true">•</span>
-      <a href="#" (click)="$event.preventDefault(); showUnavailableMessage()">Privacy Policy</a>
+      <a href="#" (click)="$event.preventDefault()">Privacy Policy</a>
       <span aria-hidden="true">•</span>
-      <a href="#" (click)="$event.preventDefault(); showUnavailableMessage()">Help Center</a>
+      <a href="#" (click)="$event.preventDefault()">Help Center</a>
     </nav>
   </footer>
 </main>

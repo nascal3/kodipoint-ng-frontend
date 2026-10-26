@@ -24,4 +24,9 @@ export class AuthService {
   signin(data: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, data);
   }
+
+  googleLogin(): void {
+    const callbackUrl = `${window.location.origin}/auth/callback`;
+    window.location.href = `${this.apiUrl}/auth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+  }
 }
