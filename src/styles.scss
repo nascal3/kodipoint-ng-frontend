@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @use './app/shared/components/snackbar/snackbar';
+@use './app/shared/styles/dark-theme';
 
 html, body {
   margin: 0;

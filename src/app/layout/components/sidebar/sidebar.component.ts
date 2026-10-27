@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, model, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, model, output, signal } from '@angular/core';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ThemeService } from '@app/core/services/theme.service';
 
 export interface NavItem {
   path: string;
@@ -26,8 +27,9 @@ export interface NavSection {
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
+  private readonly themeService = inject(ThemeService);
   readonly collapsed = model(false);
-  readonly darkMode = signal(false);
+  readonly darkMode = this.themeService.darkMode;
   readonly toggleCollapsed = output<void>();
 
   readonly navSections = signal<NavSection[]>([
@@ -60,6 +62,6 @@ export class SidebarComponent {
   }
 
   toggleDarkMode(): void {
-    this.darkMode.update((value) => !value);
+    this.themeService.toggle();
   }
 }

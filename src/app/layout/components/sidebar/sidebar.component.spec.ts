@@ -116,6 +116,13 @@ describe('SidebarComponent', () => {
     expect(component.darkMode()).toBe(true);
     expect(themeSwitch.getAttribute('aria-checked')).toBe('true');
     expect(themeSwitch.classList.contains('is-on')).toBe(true);
+    expect(document.documentElement.classList.contains('dark-theme')).toBe(true);
+
+    themeSwitch.click();
+    fixture.detectChanges();
+
+    expect(component.darkMode()).toBe(false);
+    expect(document.documentElement.classList.contains('dark-theme')).toBe(false);
   });
 
   it('should contain router links pointing to correct routes', () => {
