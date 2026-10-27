@@ -8,9 +8,11 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import * as echarts from 'echarts';
 import { DATE_RANGE_DATE_PROVIDERS } from '../date-range-date-adapter';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
+import { DashboardService } from '../../services/dashboard.service';
 
 @Component({
   selector: 'app-financial-chart',
@@ -24,6 +26,7 @@ import { MATERIAL_MODULES } from '@app/shared/material.imports';
 export class FinancialChartComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly chartContainer = viewChild<ElementRef<HTMLDivElement>>('chartContainer');
+  private readonly dashboardService = inject(DashboardService);
 
   private chartInstance: echarts.ECharts | null = null;
 
@@ -32,10 +35,12 @@ export class FinancialChartComponent {
   readonly dateRangeEnd = signal<Date | null>(this.maxDate);
   readonly showCollected = signal(true);
   readonly showOverdue = signal(true);
+  readonly isLoading = signal(false);
 
   constructor() {
     afterNextRender(() => {
       this.initChart();
+      this.fetchChartData();
     });
 
     this.destroyRef.onDestroy(() => {
@@ -232,5 +237,75 @@ export class FinancialChartComponent {
         name: 'Overdue',
       });
     }
+  }
+
+  onDateRangeChange(): void {
+    this.fetchChartData();
+  }
+
+  private fetchChartData(): void {
+    const startDate = this.dateRangeStart();
+    const endDate = this.dateRangeEnd();
+
+    if (!startDate || !endDate) {
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    forkJoin({
+      income: this.dashboardService.getAllPropertiesIncome(startDate, endDate),
+      owed: this.dashboardService.getTotalRentOwed(startDate, endDate),
+    }).subscribe({
+      next: ({ income, owed }) => {
+        this.updateChart(income.monthlyTotals, owed.monthlyTotals);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  private updateChart(
+    incomeData: Array<{ month: string; total: string }>,
+    owedData: Array<{ month: string; total: string }>,
+  ): void {
+    if (!this.chartInstance) {
+      return;
+    }
+
+    const months = incomeData.map(item => {
+      const date = new Date(item.month + '-01');
+      return date.toLocaleString('default', { month: 'short' });
+    });
+
+    const collectedValues = incomeData.map(item => parseFloat(item.total) / 1_000_000);
+    const overdueValues = owedData.map(item => parseFloat(item.total) / 1_000_000);
+
+    const maxValue = Math.max(...collectedValues, ...overdueValues);
+    const yAxisMax = Math.ceil(maxValue / 5) * 5;
+
+    const option: echarts.EChartsOption = {
+      xAxis: {
+        data: months,
+      },
+      yAxis: {
+        max: yAxisMax,
+        interval: yAxisMax / 4,
+      },
+      series: [
+        {
+          name: 'Collected',
+          data: collectedValues,
+        },
+        {
+          name: 'Overdue',
+          data: overdueValues,
+        },
+      ],
+    };
+
+    this.chartInstance.setOption(option);
   }
 }

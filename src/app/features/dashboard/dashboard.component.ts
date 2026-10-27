@@ -26,9 +26,13 @@ export class DashboardComponent implements OnInit {
   readonly portfolioOccupancyFooter = signal('Loading...');
 
   readonly totalRemittance = signal('Loading...');
-  readonly totalRemittanceFooter = signal('Based on last 30 days');
+  readonly totalRemittanceFooter = signal('Based on last 3 months');
 
   ngOnInit(): void {
+    const toDate = new Date();
+    const fromDate = new Date(toDate);
+    fromDate.setMonth(fromDate.getMonth() - 3);
+
     this.dashboardService.getPortfolioOccupancy().subscribe({
       next: ({ occupancyPercentage, occupiedUnits, totalUnits }) => {
         this.portfolioOccupancyValue.set(`${occupiedUnits}`);
@@ -43,7 +47,7 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    this.dashboardService.getTotalRentOwed().subscribe({
+    this.dashboardService.getTotalRentOwed(fromDate, toDate).subscribe({
       next: ({ summary }) => {
         const amount = new Intl.NumberFormat('en-KE', {
           minimumFractionDigits: 2,
@@ -58,7 +62,7 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    this.dashboardService.getAllPropertiesIncome().subscribe({
+    this.dashboardService.getAllPropertiesIncome(fromDate, toDate).subscribe({
       next: ({ summary }) => {
         const amount = new Intl.NumberFormat('en-KE', {
           minimumFractionDigits: 2,

@@ -43,7 +43,7 @@
           <input
             matStartDate
             [value]="dateRangeStart()"
-            (dateChange)="dateRangeStart.set($event.value)"
+            (dateChange)="dateRangeStart.set($event.value); onDateRangeChange()"
             placeholder="Start date"
             aria-label="Start date"
             readonly
@@ -51,7 +51,7 @@
           <input
             matEndDate
             [value]="dateRangeEnd()"
-            (dateChange)="dateRangeEnd.set($event.value)"
+            (dateChange)="dateRangeEnd.set($event.value); onDateRangeChange()"
             placeholder="End date"
             aria-label="End date"
             readonly

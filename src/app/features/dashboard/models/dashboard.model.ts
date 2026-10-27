@@ -4,6 +4,16 @@ export interface TotalRentOwedResponse {
     totalOutstandingInvoices: number;
     totalProperties: number;
   };
+  monthlyTotals: MonthlyTotal[];
+  properties: unknown[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
 }
 
 export interface AllPropertiesIncomeResponse {
@@ -12,6 +22,7 @@ export interface AllPropertiesIncomeResponse {
     totalPayments: number;
     totalProperties: number;
   };
+  monthlyTotals: MonthlyTotal[];
   properties: unknown[];
   pagination: {
     page: number;
@@ -45,6 +56,11 @@ export interface MonthlyFinancialData {
   month: string;
   collected: number; // in Millions e.g. 13.8 or exact amount
   overdue: number; // in Millions e.g. 1.8
+}
+
+export interface MonthlyTotal {
+  month: string;
+  total: string;
 }
 
 export interface InvoiceRecord {
