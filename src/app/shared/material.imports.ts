@@ -1,4 +1,5 @@
 import { MatButtonModule } from '@angular/material/button';
+import {MatBadgeModule} from '@angular/material/badge';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -28,6 +29,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export const MATERIAL_MODULES = [
   MatButtonModule,
   MatButtonToggleModule,
+  MatBadgeModule,
   MatCardModule,
   MatCheckboxModule,
   MatChipsModule,

@@ -90,8 +90,14 @@
   background-color: #ef4444;
   border: 1.5px solid #ffffff;
 }
+.settings-notification-dot {
+  @extend .notification-dot;
+  top: 8px;
+  right: 149px;
+}
 
 .user-profile-trigger {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 10px;

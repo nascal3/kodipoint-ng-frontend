@@ -10,7 +10,7 @@
       <p>Set up your manager credentials to manage properties, leases, and financial ledgers.</p>
     </header>
 
-    <button class="google-button" type="button" (click)="showUnavailableMessage()">
+    <button class="google-button" type="button" (click)="googleSignUp()">
       <img class="google-icon" src="/google-icon.svg" alt="" aria-hidden="true">
       <span>Sign up with Google</span>
     </button>
@@ -204,7 +204,7 @@
             <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
           } @else {
             <span>CREATE ACCOUNT</span>
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13m-5-5 5 5-5 5" /></svg>
+            <mat-icon class="material-symbol mat-icon-white">arrow_forward</mat-icon>
           }
         </span>
       </button>

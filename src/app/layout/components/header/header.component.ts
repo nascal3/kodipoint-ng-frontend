@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { UserService } from '@app/core/services/user.service';
+import { SettingsService } from '@app/features/settings/services/settings.service';
 
 @Component({
   selector: 'app-header',
@@ -12,6 +13,7 @@ import { UserService } from '@app/core/services/user.service';
 })
 export class HeaderComponent {
   private readonly userService = inject(UserService);
+  private readonly settingsService = inject(SettingsService);
 
   readonly pageTitle = input<string | undefined>(undefined);
   readonly userName = this.userService.userName;
@@ -22,4 +24,5 @@ export class HeaderComponent {
   readonly profileSelected = output<void>();
   readonly settingsSelected = output<void>();
   readonly logout = output<void>();
+  readonly showNotificationCount = this.settingsService.showNotificationCount;
 }

@@ -5,12 +5,15 @@ import {
   ElementRef,
   afterNextRender,
   inject,
-  signal,
-  viewChild,
+  input,
+  output,
+  viewChild, signal,
 } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import * as echarts from 'echarts';
 import { DATE_RANGE_DATE_PROVIDERS } from '../date-range-date-adapter';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
+import { DashboardService } from '../../services/dashboard.service';
 
 @Component({
   selector: 'app-financial-chart',
@@ -24,18 +27,22 @@ import { MATERIAL_MODULES } from '@app/shared/material.imports';
 export class FinancialChartComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly chartContainer = viewChild<ElementRef<HTMLDivElement>>('chartContainer');
+  private readonly dashboardService = inject(DashboardService);
 
   private chartInstance: echarts.ECharts | null = null;
 
-  readonly maxDate = new Date();
-  readonly dateRangeStart = signal<Date | null>(new Date(this.maxDate.getFullYear(), 6, 1));
-  readonly dateRangeEnd = signal<Date | null>(this.maxDate);
+  readonly dateRangeStart = input.required<Date | null>();
+  readonly dateRangeEnd = input.required<Date | null>();
+  readonly maxDate = input<Date>(new Date());
+  readonly dateRangeChange = output<{ start: Date | null; end: Date | null }>();
   readonly showCollected = signal(true);
   readonly showOverdue = signal(true);
+  readonly isLoading = signal(false);
 
   constructor() {
     afterNextRender(() => {
       this.initChart();
+      this.fetchChartData();
     });
 
     this.destroyRef.onDestroy(() => {
@@ -83,125 +90,7 @@ export class FinancialChartComponent {
     try {
       this.chartInstance = echarts.init(element);
 
-      const option: echarts.EChartsOption = {
-        backgroundColor: 'transparent',
-        animationDuration: 750,
-        grid: {
-          left: '2%',
-          right: '2%',
-          bottom: '3%',
-          top: '12%',
-          containLabel: true,
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow',
-            shadowStyle: {
-              color: 'rgba(79, 70, 229, 0.04)',
-            },
-          },
-          backgroundColor: '#0f172a',
-          borderColor: '#1e293b',
-          borderWidth: 1,
-          padding: [10, 14],
-          textStyle: {
-            color: '#f8fafc',
-            fontFamily: 'Plus Jakarta Sans, sans-serif',
-            fontSize: 12,
-          },
-          extraCssText:
-            'box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2); border-radius: 10px;',
-          formatter: (params: any) => {
-            if (!Array.isArray(params) || params.length === 0) {
-              return '';
-            }
-            const month = params[0].name;
-            let html = `<div style="font-weight: 700; margin-bottom: 6px; font-size: 13px; color: #ffffff;">${month} 2026</div>`;
-            params.forEach((item: any) => {
-              const marker = `<span style="display:inline-block;margin-right:6px;border-radius:9999px;width:8px;height:8px;background-color:${item.color};"></span>`;
-              html += `<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:3px;font-size:12px;">
-                <span style="color:#94a3b8;display:flex;align-items:center;">${marker}${item.seriesName}</span>
-                <span style="font-weight:600;color:#f8fafc;">KES ${item.value}M</span>
-              </div>`;
-            });
-            return html;
-          },
-        },
-        xAxis: {
-          type: 'category',
-          data: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          axisTick: { show: false },
-          axisLine: {
-            lineStyle: {
-              color: '#c7c4d8',
-              opacity: 0.5,
-            },
-          },
-          axisLabel: {
-            color: '#464555',
-            fontFamily: 'Plus Jakarta Sans, sans-serif',
-            fontSize: 12,
-            fontWeight: 500,
-            margin: 12,
-          },
-        },
-        yAxis: {
-          type: 'value',
-          max: 20,
-          interval: 5,
-          splitLine: {
-            lineStyle: {
-              type: 'dashed',
-              color: '#e2e7ff',
-              opacity: 0.8,
-            },
-          },
-          axisLine: { show: false },
-          axisTick: { show: false },
-          axisLabel: {
-            formatter: '{value}M',
-            color: '#777587',
-            fontFamily: 'Plus Jakarta Sans, sans-serif',
-            fontSize: 11,
-            fontWeight: 500,
-            margin: 8,
-          },
-        },
-        series: [
-          {
-            name: 'Collected',
-            type: 'bar',
-            barWidth: 20,
-            barGap: '30%',
-            itemStyle: {
-              color: '#4f46e5',
-              borderRadius: [6, 6, 0, 0],
-            },
-            emphasis: {
-              itemStyle: {
-                color: '#3525cd',
-              },
-            },
-            data: [13.8, 14.2, 14.5, 14.82, 15.1, 15.6],
-          },
-          {
-            name: 'Overdue',
-            type: 'bar',
-            barWidth: 20,
-            itemStyle: {
-              color: '#f43f5e',
-              borderRadius: [6, 6, 0, 0],
-            },
-            emphasis: {
-              itemStyle: {
-                color: '#e11d48',
-              },
-            },
-            data: [1.8, 1.5, 1.6, 1.42, 1.2, 0.9],
-          },
-        ],
-      };
+      const option: echarts.EChartsOption = {};
 
       this.chartInstance.setOption(option);
       if (typeof window !== 'undefined') {
@@ -232,5 +121,176 @@ export class FinancialChartComponent {
         name: 'Overdue',
       });
     }
+  }
+
+  onDateRangeChange(start: Date | null, end: Date | null): void {
+    this.dateRangeChange.emit({ start, end });
+    this.fetchChartData();
+  }
+
+  private fetchChartData(): void {
+    const startDate = this.dateRangeStart();
+    const endDate = this.dateRangeEnd();
+
+    if (!startDate || !endDate) {
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    forkJoin({
+      income: this.dashboardService.getAllPropertiesIncome(startDate, endDate),
+      owed: this.dashboardService.getTotalRentOwed(startDate, endDate),
+    }).subscribe({
+      next: ({ income, owed }) => {
+        this.updateChart(income.monthlyTotals, owed.monthlyTotals);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  private updateChart(
+    incomeData: Array<{ month: string; total: string }>,
+    owedData: Array<{ month: string; total: string }>,
+  ): void {
+    if (!this.chartInstance) {
+      return;
+    }
+
+    const months = incomeData.map(item => {
+      const date = new Date(item.month + '-01');
+      return date.toLocaleString('default', { month: 'short' });
+    });
+
+    const collectedValues = incomeData.map(item => parseFloat(item.total) / 1_000_000);
+    const overdueValues = owedData.map(item => parseFloat(item.total) / 1_000_000);
+
+    const maxValue = Math.max(...collectedValues, ...overdueValues);
+    const yAxisMax = Math.ceil(maxValue / 5) * 5;
+
+    const option: echarts.EChartsOption = {
+      backgroundColor: 'transparent',
+      animationDuration: 750,
+      grid: {
+        left: '2%',
+        right: '2%',
+        bottom: '3%',
+        top: '12%',
+        containLabel: true,
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+          shadowStyle: {
+            color: 'rgba(79, 70, 229, 0.04)',
+          },
+        },
+        backgroundColor: '#0f172a',
+        borderColor: '#1e293b',
+        borderWidth: 1,
+        padding: [10, 14],
+        textStyle: {
+          color: '#f8fafc',
+          fontFamily: 'Plus Jakarta Sans, sans-serif',
+          fontSize: 12,
+        },
+        extraCssText:
+          'box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2); border-radius: 10px;',
+        formatter: (params: any) => {
+          if (!Array.isArray(params) || params.length === 0) {
+            return '';
+          }
+          const month = params[0].name;
+          let html = `<div style="font-weight: 700; margin-bottom: 6px; font-size: 13px; color: #ffffff;">${month} 2026</div>`;
+          params.forEach((item: any) => {
+            const marker = `<span style="display:inline-block;margin-right:6px;border-radius:9999px;width:8px;height:8px;background-color:${item.color};"></span>`;
+            html += `<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:3px;font-size:12px;">
+                <span style="color:#94a3b8;display:flex;align-items:center;">${marker}${item.seriesName}</span>
+                <span style="font-weight:600;color:#f8fafc;">KES ${item.value}</span>
+              </div>`;
+          });
+          return html;
+        },
+      },
+      xAxis: {
+        type: 'category',
+        data: months,
+        axisTick: { show: false },
+        axisLine: {
+          lineStyle: {
+            color: '#c7c4d8',
+            opacity: 0.5,
+          },
+        },
+        axisLabel: {
+          color: '#464555',
+          fontFamily: 'Plus Jakarta Sans, sans-serif',
+          fontSize: 12,
+          fontWeight: 500,
+          margin: 12,
+        },
+      },
+      yAxis: {
+        type: 'value',
+        max: yAxisMax,
+        interval: yAxisMax / 4,
+        splitLine: {
+          lineStyle: {
+            type: 'dashed',
+            color: '#e2e7ff',
+            opacity: 0.8,
+          },
+        },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+          formatter: '{value}',
+          color: '#777587',
+          fontFamily: 'Plus Jakarta Sans, sans-serif',
+          fontSize: 11,
+          fontWeight: 500,
+          margin: 8,
+        },
+      },
+      series: [
+        {
+          name: 'Collected',
+          type: 'bar',
+          barWidth: 20,
+          barGap: '30%',
+          itemStyle: {
+            color: '#4f46e5',
+            borderRadius: [6, 6, 0, 0],
+          },
+          emphasis: {
+            itemStyle: {
+              color: '#3525cd',
+            },
+          },
+          data: collectedValues,
+        },
+        {
+          name: 'Overdue',
+          type: 'bar',
+          barWidth: 20,
+          itemStyle: {
+            color: '#f43f5e',
+            borderRadius: [6, 6, 0, 0],
+          },
+          emphasis: {
+            itemStyle: {
+              color: '#e11d48',
+            },
+          },
+          data: overdueValues,
+        },
+      ],
+    };
+
+    this.chartInstance.setOption(option);
   }
 }

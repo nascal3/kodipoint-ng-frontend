@@ -79,7 +79,6 @@
               <mat-label>Email Address </mat-label>
               <mat-icon class="material-symbol" matPrefix>mail</mat-icon>
               <input matInput formControlName="email" type="email" autocomplete="email" [errorStateMatcher]="profileErrorStateMatcher" />
-              <mat-icon class="verified-icon" matSuffix>check_circle</mat-icon>
               @if (showProfileError(profileForm.controls.email) && profileForm.controls.email.hasError('required')) {
                 <mat-error>Email address is required.</mat-error>
               } @else if (showProfileError(profileForm.controls.email) && profileForm.controls.email.hasError('email')) {
@@ -92,6 +91,12 @@
               <mat-label>Phone Number (SMS Alerts) </mat-label>
               <mat-icon class="material-symbol" matPrefix>call</mat-icon>
               <input matInput formControlName="phone" type="tel" autocomplete="tel" [errorStateMatcher]="profileErrorStateMatcher" />
+              <mat-icon
+                class="verified-icon"
+                matSuffix
+                [class.mat-warn]="!profileForm.controls.phone.value">
+                {{ profileForm.controls.phone.value ? 'check_circle' : 'error' }}
+              </mat-icon>
               @if (showProfileError(profileForm.controls.phone) && profileForm.controls.phone.hasError('required')) {
                 <mat-error>Phone number is required.</mat-error>
               } @else if (showProfileError(profileForm.controls.phone) && profileForm.controls.phone.hasError('pattern')) {
@@ -112,6 +117,12 @@
               <mat-label>Physical / Office Address </mat-label>
               <mat-icon class="material-symbol" matPrefix>location_on</mat-icon>
               <input matInput formControlName="address" autocomplete="street-address" [errorStateMatcher]="profileErrorStateMatcher" />
+              <mat-icon
+                class="verified-icon"
+                matSuffix
+                [class.mat-warn]="!profileForm.controls.address.value">
+                {{ profileForm.controls.address.value ? 'check_circle' : 'error' }}
+              </mat-icon>
               @if (showProfileError(profileForm.controls.address) && profileForm.controls.address.hasError('required')) {
                 <mat-error>Physical or office address is required.</mat-error>
               }

@@ -1,0 +1,23 @@
+<mat-card appearance="outlined" class="summary-card">
+  <mat-card-content class="card-content">
+    <div class="card-header">
+      <div class="title-value-group">
+        <span class="card-title">Total Rent Owed</span>
+        <div class="card-value-container">
+          <span class="card-value">{{ value() }}</span>
+        </div>
+      </div>
+
+      <div class="icon-bubble icon-error">
+        <mat-icon class="card-icon">pending_actions</mat-icon>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="footer-calendar">
+        <mat-icon class="footer-icon">calendar_today</mat-icon>
+        <span class="footer-text">Based on date range <strong>{{ dateRangeStart() | date:'d MMM, y' }}</strong> to <strong>{{ dateRangeEnd() | date:'d MMM, y' }}</strong></span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

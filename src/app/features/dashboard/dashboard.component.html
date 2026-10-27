@@ -1,12 +1,12 @@
 <div class="dashboard-container">
   <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
-    @for (card of summaryCards(); track card.title) {
-      <app-summary-card [data]="card" />
-    }
+    <app-total-rent-owed-card [value]="totalRentOwed()" [dateRangeStart]="dateRangeStart()" [dateRangeEnd]="dateRangeEnd()" />
+    <app-portfolio-occupancy-card [value]="portfolioOccupancyValue()" [unitDetail]="portfolioOccupancyUnit()" [footerText]="portfolioOccupancyFooter()" />
+    <app-total-remittance-card [value]="totalRemittance()" [dateRangeStart]="dateRangeStart()" [dateRangeEnd]="dateRangeEnd()" />
   </section>
 
   <section class="financial-chart-section" aria-label="Financial Activity">
-    <app-financial-chart />
+    <app-financial-chart [dateRangeStart]="dateRangeStart()" [dateRangeEnd]="dateRangeEnd()" [maxDate]="maxDate" (dateRangeChange)="onDateRangeChange($event)" />
   </section>
 
   <section class="invoice-table-section" aria-label="Tenant Invoices and Remittances">

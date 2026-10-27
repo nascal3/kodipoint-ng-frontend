@@ -1,0 +1,123 @@
+.summary-card {
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+  min-height: 150px;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-content {
+    padding: 20px;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .title-value-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+  }
+
+  .card-value-container {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .card-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .unit-detail {
+    font-size: 14px;
+    color: #666;
+  }
+
+  .icon-bubble {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.icon-error {
+      background-color: #fee2e2;
+    }
+
+    &.icon-secondary {
+      background-color: #e0e7ff;
+    }
+
+    &.icon-primary {
+      background-color: #dbeafe;
+    }
+
+    .card-icon {
+      font-size: 24px;
+    }
+  }
+
+  .card-footer {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 5px;
+  }
+
+  .footer-calendar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-icon {
+    font-size: 16px;
+    color: #666;
+  }
+
+  .footer-text {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .footer-badge {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 16px;
+    background-color: #dcfce7;
+    color: #166534;
+    font-size: 13px;
+    font-weight: 500;
+
+    .badge-icon {
+      font-size: 16px;
+      position: relative;
+      top: 5px;
+    }
+  }
+}

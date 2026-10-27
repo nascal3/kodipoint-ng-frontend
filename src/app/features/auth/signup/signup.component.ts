@@ -146,8 +146,16 @@ export class SignupComponent {
     });
   }
 
-  showUnavailableMessage(): void {
-    this.signupMessage.set('Google sign-up is not configured yet.');
+  googleSignUp(): void {
+    this.signupMessage.set('');
+    this.signupForm.controls.terms.markAsTouched();
+
+    if (!this.signupForm.controls.terms.value) {
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.authService.googleLogin();
   }
 
   onPasswordInput(event: Event): void {

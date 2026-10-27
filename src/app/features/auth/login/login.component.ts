@@ -79,8 +79,10 @@ export class LoginComponent {
       });
   }
 
-  showUnavailableMessage(): void {
-    this.signInMessage.set('Authentication is not configured yet.');
+  googleLogin(): void {
+    this.signInMessage.set('');
+    this.isSubmitting.set(true);
+    this.authService.googleLogin();
   }
 
   private getLoginErrorMessage(error: unknown): string {

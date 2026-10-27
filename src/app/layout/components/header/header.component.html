@@ -22,7 +22,7 @@
   <div class="header-actions">
     <button mat-icon-button class="notification-btn" aria-label="Notifications" type="button">
       <mat-icon class="material-symbol">notifications</mat-icon>
-      <span class="notification-dot" aria-hidden="true"></span>
+<!--      <span class="notification-dot" aria-hidden="true"></span>-->
     </button>
 
     <button
@@ -31,7 +31,13 @@
       [matMenuTriggerFor]="profileMenu"
       aria-label="User profile menu"
     >
-      <div class="user-avatar-bubble">
+      <div
+        class="user-avatar-bubble"
+        matBadge="{{showNotificationCount()}}"
+        matBadgeSize="small"
+        matBadgeColor="warn"
+        [matBadgeHidden]="!showNotificationCount()"
+      >
         <span class="avatar-initials">{{ userInitials() }}</span>
       </div>
       <span class="user-name">{{ userName() }}</span>

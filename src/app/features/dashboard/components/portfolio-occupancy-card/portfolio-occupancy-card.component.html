@@ -1,0 +1,26 @@
+<mat-card appearance="outlined" class="summary-card">
+  <mat-card-content class="card-content">
+    <div class="card-header">
+      <div class="title-value-group">
+        <span class="card-title">Portfolio Occupancy</span>
+        <div class="card-value-container">
+          <span class="card-value">{{ value() }}</span>
+          <span class="unit-detail">{{ unitDetail() }}</span>
+        </div>
+      </div>
+
+      <div class="icon-bubble icon-secondary">
+        <mat-icon class="card-icon">domain</mat-icon>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="footer-badge">
+        <span class="status-pill">
+          <mat-icon class="badge-icon">check_circle</mat-icon>
+          <span>{{ footerText() }}</span>
+        </span>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
