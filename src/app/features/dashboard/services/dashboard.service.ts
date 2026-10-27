@@ -17,11 +17,24 @@ export class DashboardService {
   private readonly portfolioOccupancyCache = signal<PortfolioOccupancyResponse | null>(null);
 
   getTotalRentOwed(fromDate: Date, toDate: Date): Observable<TotalRentOwedResponse> {
+    const adjustedFromDate = new Date(fromDate);
+    adjustedFromDate.setHours(0, 0, 0, 0);
+
+    const adjustedToDate = new Date(toDate);
+    adjustedToDate.setHours(23, 59, 59, 999);
+
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
     const params = new HttpParams()
       .set('page', 1)
       .set('limit', 10)
-      .set('fromDate', fromDate.toISOString().slice(0, 10))
-      .set('toDate', toDate.toISOString().slice(0, 10));
+      .set('fromDate', formatDate(adjustedFromDate))
+      .set('toDate', formatDate(adjustedToDate));
 
     return this.http.get<TotalRentOwedResponse>(
       `${environment.apiUrl}/reports/total-rent-owed`,
@@ -32,11 +45,24 @@ export class DashboardService {
   }
 
   getAllPropertiesIncome(fromDate: Date, toDate: Date): Observable<AllPropertiesIncomeResponse> {
+    const adjustedFromDate = new Date(fromDate);
+    adjustedFromDate.setHours(0, 0, 0, 0);
+
+    const adjustedToDate = new Date(toDate);
+    adjustedToDate.setHours(23, 59, 59, 999);
+
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
     const params = new HttpParams()
       .set('page', 1)
       .set('limit', 10)
-      .set('fromDate', fromDate.toISOString().slice(0, 10))
-      .set('toDate', toDate.toISOString().slice(0, 10));
+      .set('fromDate', formatDate(adjustedFromDate))
+      .set('toDate', formatDate(adjustedToDate));
 
     return this.http.get<AllPropertiesIncomeResponse>(
       `${environment.apiUrl}/reports/all-properties-income`,
