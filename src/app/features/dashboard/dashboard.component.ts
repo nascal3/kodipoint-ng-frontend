@@ -19,6 +19,10 @@ export class DashboardComponent implements OnInit {
   private readonly dashboardService = inject(DashboardService);
   private readonly snackbarService = inject(SnackbarService);
 
+  readonly maxDate = new Date();
+  readonly dateRangeStart = signal<Date | null>(new Date(this.maxDate.getFullYear(), 6, 1));
+  readonly dateRangeEnd = signal<Date | null>(this.maxDate);
+
   readonly totalRentOwed = signal('Loading...');
 
   readonly portfolioOccupancyValue = signal('Loading...');
@@ -29,10 +33,6 @@ export class DashboardComponent implements OnInit {
   readonly totalRemittanceFooter = signal('Based on last 3 months');
 
   ngOnInit(): void {
-    const toDate = new Date();
-    const fromDate = new Date(toDate);
-    fromDate.setMonth(fromDate.getMonth() - 3);
-
     this.dashboardService.getPortfolioOccupancy().subscribe({
       next: ({ occupancyPercentage, occupiedUnits, totalUnits }) => {
         this.portfolioOccupancyValue.set(`${occupiedUnits}`);
@@ -47,7 +47,18 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    this.dashboardService.getTotalRentOwed(fromDate, toDate).subscribe({
+    this.fetchDashboardData();
+  }
+
+  private fetchDashboardData(): void {
+    const startDate = this.dateRangeStart();
+    const endDate = this.dateRangeEnd();
+
+    if (!startDate || !endDate) {
+      return;
+    }
+
+    this.dashboardService.getTotalRentOwed(startDate, endDate).subscribe({
       next: ({ summary }) => {
         const amount = new Intl.NumberFormat('en-KE', {
           minimumFractionDigits: 2,
@@ -62,7 +73,7 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    this.dashboardService.getAllPropertiesIncome(fromDate, toDate).subscribe({
+    this.dashboardService.getAllPropertiesIncome(startDate, endDate).subscribe({
       next: ({ summary }) => {
         const amount = new Intl.NumberFormat('en-KE', {
           minimumFractionDigits: 2,
@@ -76,5 +87,10 @@ export class DashboardComponent implements OnInit {
         this.snackbarService.error('Failed to load total remittance.');
       },
     });
+  }
+
+  onDateRangeChange(range: { start: Date | null; end: Date | null }): void {
+    this.dateRangeStart.set(range.start);
+    this.dateRangeEnd.set(range.end);
   }
 }

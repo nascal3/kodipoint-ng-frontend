@@ -5,8 +5,9 @@ import {
   ElementRef,
   afterNextRender,
   inject,
-  signal,
-  viewChild,
+  input,
+  output,
+  viewChild, signal,
 } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import * as echarts from 'echarts';
@@ -30,9 +31,10 @@ export class FinancialChartComponent {
 
   private chartInstance: echarts.ECharts | null = null;
 
-  readonly maxDate = new Date();
-  readonly dateRangeStart = signal<Date | null>(new Date(this.maxDate.getFullYear(), 6, 1));
-  readonly dateRangeEnd = signal<Date | null>(this.maxDate);
+  readonly dateRangeStart = input.required<Date | null>();
+  readonly dateRangeEnd = input.required<Date | null>();
+  readonly maxDate = input<Date>(new Date());
+  readonly dateRangeChange = output<{ start: Date | null; end: Date | null }>();
   readonly showCollected = signal(true);
   readonly showOverdue = signal(true);
   readonly isLoading = signal(false);
@@ -121,7 +123,8 @@ export class FinancialChartComponent {
     }
   }
 
-  onDateRangeChange(): void {
+  onDateRangeChange(start: Date | null, end: Date | null): void {
+    this.dateRangeChange.emit({ start, end });
     this.fetchChartData();
   }
 
