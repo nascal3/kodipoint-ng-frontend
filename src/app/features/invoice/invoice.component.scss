@@ -1360,6 +1360,87 @@
   }
 }
 
+:host-context(html.dark-theme) .inspector-content {
+  color: #e2e8f0;
+
+  .invoice-number,
+  .tenant-name,
+  .breakdown-row.total .label,
+  .delivery-contact {
+    color: #f1f5f9;
+  }
+
+  .billing-cycle,
+  .issue-date,
+  .tenant-section .property-unit,
+  .breakdown-row .label,
+  .section-title {
+    color: #94a3b8;
+  }
+
+  .divider ::ng-deep .mdc-divider {
+    border-color: #263447;
+  }
+
+  .tenant-section,
+  .billing-breakdown {
+    background: #172638;
+    border-color: #263447;
+  }
+
+  .tenant-avatar-large {
+    background: rgba(59, 130, 246, 0.16);
+    color: #60a5fa;
+  }
+
+  .breakdown-row .amount {
+    color: #e2e8f0;
+  }
+
+  .breakdown-row:nth-child(3) .amount,
+  .channel-icon,
+  .delivery-status.delivered {
+    color: #34d399;
+  }
+
+  .breakdown-row.total {
+    border-top-color: #263447;
+  }
+
+  .breakdown-row.total .amount {
+    color: #60a5fa;
+  }
+
+  .delivery-section {
+    background: #111c2a;
+    border-color: #263447;
+  }
+
+  .action-btn.secondary {
+    background: #172638;
+    border-color: #334155;
+    color: #e2e8f0;
+
+    &:hover {
+      background: #1e3247;
+      border-color: #475569;
+    }
+  }
+
+  .action-btn.primary {
+    background: #3b82f6;
+    border-color: #3b82f6;
+  }
+
+  .action-btn.danger {
+    color: #fb7185;
+
+    &:hover {
+      background: rgba(244, 63, 94, 0.12);
+    }
+  }
+}
+
 @media (max-width: 1023px) {
   .document-inspector {
     position: static;
