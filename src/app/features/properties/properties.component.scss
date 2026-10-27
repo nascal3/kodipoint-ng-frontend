@@ -176,6 +176,77 @@
   color: #64748b;
 }
 
+:host-context(html.dark-theme) .kpi-card {
+  background: #0f1d30;
+  border-color: #1d2b40;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+
+  &:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+  }
+
+  .kpi-title,
+  .kpi-sub-text,
+  .kpi-unit-ratio,
+  .kpi-period-note {
+    color: #9aabbd;
+  }
+
+  .currency-prefix,
+  .amount-val {
+    color: #f1f5f9 !important;
+  }
+
+  .kpi-sub-text .sub-bold,
+  .kpi-dot-row,
+  .stat-amount {
+    color: #f1f5f9;
+  }
+
+  .kpi-icon-bubble {
+    &.bubble-purple,
+    &.bubble-lavender {
+      background: rgba(59, 130, 246, 0.16);
+      color: #60a5fa;
+    }
+
+    &.bubble-green {
+      background: rgba(16, 185, 129, 0.16);
+      color: #10b981;
+    }
+  }
+
+  .kpi-progress-track,
+  .kpi-segmented-progress {
+    background: #1d3042;
+  }
+
+  .kpi-progress-fill.fill-purple {
+    background: #60a5fa;
+  }
+
+  .kpi-split-stats {
+    .stat-label {
+      color: #34d399;
+    }
+
+    .stat-owed .stat-label,
+    .stat-amount.owed-color {
+      color: #fb7185;
+    }
+  }
+
+  .kpi-segmented-progress {
+    .segment-collected {
+      background: #10b981;
+    }
+
+    .segment-owed {
+      background: #fb7185;
+    }
+  }
+}
+
 /* --- Controls Toolbar --- */
 .controls-toolbar {
   display: flex;
@@ -262,6 +333,67 @@
     }
 
     .view-icon { font-size: 18px; width: 18px; height: 18px; }
+  }
+}
+
+:host-context(html.dark-theme) .controls-card {
+  background: #0f1d30;
+  border-color: #1d2b40;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+:host-context(html.dark-theme) .search-input-wrapper {
+  --mat-form-field-outlined-outline-color: #294056;
+  --mat-form-field-outlined-hover-outline-color: #47627b;
+  --mat-form-field-outlined-focus-outline-color: #60a5fa;
+  --mat-form-field-outlined-input-text-color: #e2e8f0;
+  --mat-form-field-outlined-label-text-color: #94a3b8;
+  --mdc-outlined-text-field-input-text-color: #e2e8f0;
+  --mdc-outlined-text-field-label-text-color: #94a3b8;
+  --mdc-outlined-text-field-outline-color: #294056;
+  --mdc-outlined-text-field-hover-outline-color: #47627b;
+  --mdc-outlined-text-field-focus-outline-color: #60a5fa;
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    background: #0a1928;
+  }
+}
+
+:host-context(html.dark-theme) .search-icon {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .search-input {
+  color: #e2e8f0;
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+}
+
+:host-context(html.dark-theme) .dropdown-wrapper .custom-select {
+  --mat-select-enabled-trigger-text-color: #e2e8f0;
+  --mat-select-enabled-arrow-color: #94a3b8;
+  background: #0a1928;
+  border-color: #294056;
+  color: #e2e8f0;
+
+  &:hover {
+    border-color: #47627b;
+  }
+}
+
+:host-context(html.dark-theme) .view-toggle-group {
+  background: #0a1928;
+  border-color: #294056;
+
+  .view-toggle-btn {
+    color: #94a3b8;
+
+    &.active {
+      background: rgba(59, 130, 246, 0.16);
+      color: #60a5fa;
+    }
   }
 }
 
@@ -783,6 +915,162 @@
 
     &:hover { background: #f8fafc; }
     .btn-icon { font-size: 18px; width: 18px; height: 18px; color: #64748b; }
+  }
+}
+
+:host-context(html.dark-theme) .properties-grid {
+  .property-card {
+    background: #162333;
+    border-color: #223247;
+  }
+
+  .property-card-body,
+  .property-card-actions {
+    background: #162333;
+  }
+
+  .property-name {
+    color: #f8fafc !important;
+  }
+
+  .property-rent {
+    color: #3d81f6;
+  }
+
+  .property-rent .rent-amount {
+    color: #3d81f6 !important;
+  }
+
+  .property-rent .rent-period,
+  .property-subtitle {
+    color: #93a2b7 !important;
+  }
+
+  .occupancy-badge,
+  .bookmark-btn {
+    background: rgba(22, 35, 51, 0.92);
+    color: #e2e8f0;
+  }
+
+  .bookmark-btn {
+    &:hover {
+      background: #26374b;
+      color: #f8fafc;
+    }
+  }
+
+  .allocation-box {
+    background: #131d2a;
+
+    .alloc-label,
+    .yield-tag {
+      color: #93a2b7;
+    }
+
+    .alloc-fraction {
+      color: #f8fafc;
+    }
+
+    .alloc-track {
+      background: #22354a;
+
+      .alloc-fill {
+        background: #3d81f6;
+      }
+    }
+
+    .vacant-status {
+      &.vacant-teal {
+        color: #37d298;
+      }
+
+      &.vacant-warning {
+        color: #fbbf24;
+      }
+
+      &.vacant-danger {
+        color: #fb7185;
+      }
+    }
+  }
+
+  .avatar-counter {
+    background: #24364b;
+    border-color: #162333;
+    color: #cbd5e1;
+  }
+
+  .card-footer {
+    border-color: #26384a;
+
+    .btn-assign,
+    .btn-icon-square:not(.btn-settings-icon) {
+      background: transparent;
+      border-color: #304459;
+      color: #cbd5e1;
+
+      &:hover {
+        background: #1d3045;
+        color: #f8fafc;
+      }
+    }
+
+    .action-btn-icon {
+      color: #93a2b7;
+    }
+
+    .btn-settings-icon {
+      background: transparent;
+      color: #93a2b7;
+
+      &:hover {
+        background: #1d3045;
+        color: #60a5fa;
+      }
+    }
+  }
+
+  .register-new-card {
+    background: #162333;
+    border-color: #223247;
+
+    .register-icon-wrapper {
+      background: rgba(59, 130, 246, 0.16);
+      color: #60a5fa;
+    }
+
+    .register-card-title {
+      color: #f8fafc !important;
+    }
+
+    .register-card-desc {
+      color: #93a2b7 !important;
+    }
+
+    .btn-import-csv {
+      background: transparent;
+      border-color: #304459;
+      color: #cbd5e1;
+
+      &:hover {
+        background: #1d3045;
+      }
+
+      .btn-icon {
+        color: #93a2b7;
+      }
+    }
+  }
+
+  .load-more-btn {
+    background: #162333;
+    border-color: #304459;
+    color: #60a5fa;
+
+    &:hover {
+      background: #1d3045;
+      border-color: #3d81f6;
+    }
   }
 }
 
