@@ -37,6 +37,30 @@
           <h2 class="section-title">{{ section.title }}</h2>
         }
         <ul class="nav-list">
+          @if (section.title === 'OTHER') {
+            <li class="nav-list-item">
+              <button
+                type="button"
+                class="theme-switch"
+                role="switch"
+                aria-label="Dark Mode"
+                [attr.aria-checked]="darkMode()"
+                [class.is-on]="darkMode()"
+                [matTooltip]="'Dark Mode'"
+                [matTooltipDisabled]="!collapsed()"
+                matTooltipPosition="right"
+                (click)="toggleDarkMode()"
+              >
+                <mat-icon class="theme-icon">dark_mode</mat-icon>
+                @if (!collapsed()) {
+                  <span class="theme-label">Dark Mode</span>
+                  <span class="theme-switch-control" aria-hidden="true">
+                    <mat-icon class="theme-switch-check">check</mat-icon>
+                  </span>
+                }
+              </button>
+            </li>
+          }
           @for (item of section.items; track item.path) {
             <li class="nav-list-item">
               <a

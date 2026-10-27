@@ -98,11 +98,24 @@ describe('SidebarComponent', () => {
     expect(messages).toContain('Reports & Analytics');
     expect(messages).toContain('Performance');
     expect(messages).toContain('Support');
+    expect(messages).toContain('Dark Mode');
 
     // Tooltips are enabled when collapsed
     for (const tooltip of tooltipDirectives.filter((t) => t.message !== 'KodiPoint')) {
       expect(tooltip.disabled).toBe(false);
     }
+  });
+
+  it('should toggle dark mode when the switch is clicked', () => {
+    const themeSwitch = fixture.nativeElement.querySelector('.theme-switch') as HTMLButtonElement;
+
+    expect(themeSwitch.getAttribute('aria-checked')).toBe('false');
+    themeSwitch.click();
+    fixture.detectChanges();
+
+    expect(component.darkMode()).toBe(true);
+    expect(themeSwitch.getAttribute('aria-checked')).toBe('true');
+    expect(themeSwitch.classList.contains('is-on')).toBe(true);
   });
 
   it('should contain router links pointing to correct routes', () => {

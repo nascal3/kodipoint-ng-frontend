@@ -27,6 +27,7 @@ export interface NavSection {
 })
 export class SidebarComponent {
   readonly collapsed = model(false);
+  readonly darkMode = signal(false);
   readonly toggleCollapsed = output<void>();
 
   readonly navSections = signal<NavSection[]>([
@@ -56,5 +57,9 @@ export class SidebarComponent {
   toggleCollapse(): void {
     this.collapsed.update((value) => !value);
     this.toggleCollapsed.emit();
+  }
+
+  toggleDarkMode(): void {
+    this.darkMode.update((value) => !value);
   }
 }
