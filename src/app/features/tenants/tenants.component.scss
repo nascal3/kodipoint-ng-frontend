@@ -169,6 +169,12 @@
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
+:host-context(html.dark-theme) .table-card {
+  border-color: #1d2b40;
+  background: #0f1d30;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
 .controls-toolbar {
   display: flex;
   min-height: 62px;
@@ -176,6 +182,57 @@
   gap: 8px;
   box-sizing: border-box;
   margin-bottom: 20px;
+}
+
+:host-context(html.dark-theme) .ledger-select-wrapper,
+:host-context(html.dark-theme) .search-input-wrapper {
+  --mat-form-field-outlined-outline-color: #294056;
+  --mat-form-field-outlined-hover-outline-color: #47627b;
+  --mat-form-field-outlined-focus-outline-color: #60a5fa;
+  --mat-form-field-outlined-input-text-color: #e2e8f0;
+  --mat-form-field-outlined-label-text-color: #94a3b8;
+  --mdc-outlined-text-field-input-text-color: #e2e8f0;
+  --mdc-outlined-text-field-label-text-color: #94a3b8;
+  --mdc-outlined-text-field-outline-color: #294056;
+  --mdc-outlined-text-field-hover-outline-color: #47627b;
+  --mdc-outlined-text-field-focus-outline-color: #60a5fa;
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    background: #0a1928;
+  }
+
+  ::ng-deep .mdc-notched-outline__leading,
+  ::ng-deep .mdc-notched-outline__notch,
+  ::ng-deep .mdc-notched-outline__trailing {
+    border-color: #203447;
+  }
+}
+
+:host-context(html.dark-theme) .ledger-select-value,
+:host-context(html.dark-theme) .search-input-wrapper input {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .ledger-select-label,
+:host-context(html.dark-theme) .ledger-filter-icon,
+:host-context(html.dark-theme) .search-icon {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .search-input-wrapper input::placeholder {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .download-btn,
+:host-context(html.dark-theme) .action-btn {
+  border-color: #294056;
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .download-btn:hover,
+:host-context(html.dark-theme) .action-btn:hover {
+  background: #1a2c43;
+  color: #60a5fa;
 }
 
 .ledger-select-wrapper,
@@ -349,6 +406,11 @@
   border-radius: 13px;
 }
 
+:host-context(html.dark-theme) .table-scroll {
+  border-color: #1d2b40;
+  scrollbar-color: #536274 transparent;
+}
+
 .tenants-table {
   width: 100%;
   min-width: 1097px;
@@ -403,6 +465,29 @@
     white-space: normal;
   }
 
+  :host-context(html.dark-theme) & {
+    ::ng-deep .mat-mdc-header-row {
+      background: #14243a;
+    }
+
+    ::ng-deep .mat-mdc-header-cell {
+      border-bottom-color: #1d2b40;
+      color: #8492a8;
+    }
+
+    ::ng-deep .mat-mdc-row {
+      border-bottom-color: #1d2b40;
+
+      &:hover {
+        background: #14243a;
+      }
+    }
+
+    ::ng-deep .mat-mdc-cell {
+      color: #cbd5e1;
+    }
+  }
+
   ::ng-deep .mat-mdc-row {
     border-bottom: 1px solid #f1f5f9;
 
@@ -441,6 +526,11 @@
   font-weight: 600;
 }
 
+:host-context(html.dark-theme) .tenant-avatar {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
 ::ng-deep .mat-mdc-row:nth-child(3n + 1) .tenant-avatar {
   background: #d1fae5;
   color: #047857;
@@ -454,6 +544,21 @@
 ::ng-deep .mat-mdc-row:nth-child(4n) .tenant-avatar {
   background: #fee2e2;
   color: #b91c1c;
+}
+
+:host-context(html.dark-theme) ::ng-deep .mat-mdc-row:nth-child(3n + 1) .tenant-avatar {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+}
+
+:host-context(html.dark-theme) ::ng-deep .mat-mdc-row:nth-child(3n + 2) .tenant-avatar {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+}
+
+:host-context(html.dark-theme) ::ng-deep .mat-mdc-row:nth-child(4n) .tenant-avatar {
+  background: rgba(244, 63, 94, 0.18);
+  color: #fb7185;
 }
 
 .tenant-info,
@@ -490,6 +595,23 @@
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+:host-context(html.dark-theme) .tenant-name,
+:host-context(html.dark-theme) .premises-name,
+:host-context(html.dark-theme) .start-date,
+:host-context(html.dark-theme) .rent-amount,
+:host-context(html.dark-theme) .emergency-name {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .tenant-contact,
+:host-context(html.dark-theme) .unit-detail,
+:host-context(html.dark-theme) .tenure-type,
+:host-context(html.dark-theme) .rent-period,
+:host-context(html.dark-theme) .emergency-phone,
+:host-context(html.dark-theme) .unit-type {
+  color: #8492a8;
 }
 
 .unit-type {
@@ -533,6 +655,29 @@
   flex: 0 0 15px;
   font-size: 15px;
   line-height: 15px;
+}
+
+:host-context(html.dark-theme) .ledger-balance.balance-overdue {
+  color: #fb7185;
+  background: rgba(244, 63, 94, 0.16);
+}
+
+:host-context(html.dark-theme) .status-badge.status-notice {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.18);
+}
+
+:host-context(html.dark-theme) .ledger-balance.balance-settled,
+:host-context(html.dark-theme) .status-badge.status-active {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.16);
+}
+
+:host-context(html.dark-theme) .ledger-balance.balance-credit,
+:host-context(html.dark-theme) .ledger-balance.balance-escrow,
+:host-context(html.dark-theme) .status-badge.status-pending {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.16);
 }
 
 .tenancy-status {
@@ -607,6 +752,16 @@
   ::ng-deep .mat-mdc-paginator-page-size-label,
   ::ng-deep .mat-mdc-paginator-range-label {
     font-size: 12px;
+  }
+}
+
+:host-context(html.dark-theme) .table-pagination {
+  border-top-color: #1d2b40;
+
+  ::ng-deep .mat-mdc-paginator {
+    --mat-paginator-enabled-icon-color: #e2e8f0;
+    --mat-paginator-disabled-icon-color: #536274;
+    color: #8492a8;
   }
 }
 
