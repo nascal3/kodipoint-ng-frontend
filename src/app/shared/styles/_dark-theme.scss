@@ -430,12 +430,33 @@ html.dark-theme {
     color: #e2e8f0;
   }
 
+  .mat-datepicker-content {
+    --mat-datepicker-calendar-header-text-color: #d7e0eb;
+    --mat-datepicker-calendar-period-button-text-color: #d7e0eb;
+    --mat-datepicker-calendar-period-button-icon-color: #d7e0eb;
+    --mat-datepicker-calendar-navigation-button-icon-color: #d7e0eb;
+    --mat-datepicker-calendar-date-today-outline-color: #d7e0eb;
+    --mat-datepicker-calendar-date-today-selected-state-outline-color: #d7e0eb;
+  }
+
   .mat-mdc-option,
   .mat-mdc-menu-item,
   .mat-calendar-body-cell-content,
   .mat-calendar-body-label,
-  .mat-calendar-table-header {
-    color: #d7e0eb;
+  .mat-calendar-table-header,
+  .mat-calendar-table-header th,
+  .mat-calendar-table-header th abbr,
+  .mat-calendar-period-button {
+    color: #d7e0eb !important;
+  }
+
+  .mat-calendar-period-button .mat-calendar-arrow {
+    fill: #d7e0eb !important;
+  }
+
+  .mat-calendar-body-cell-preview,
+  .mat-calendar-body-preview {
+    border-color: #d7e0eb !important;
   }
 
   .mat-mdc-option:hover,
