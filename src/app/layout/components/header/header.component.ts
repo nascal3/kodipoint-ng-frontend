@@ -24,5 +24,5 @@ export class HeaderComponent {
   readonly profileSelected = output<void>();
   readonly settingsSelected = output<void>();
   readonly logout = output<void>();
-  readonly showNotification = this.settingsService.isDetailsInvalid;
+  readonly showNotificationCount = this.settingsService.showNotificationCount;
 }

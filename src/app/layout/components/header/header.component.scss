@@ -92,11 +92,12 @@
 }
 .settings-notification-dot {
   @extend .notification-dot;
-  top: 23px;
-  right: 292px;
+  top: 8px;
+  right: 149px;
 }
 
 .user-profile-trigger {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 10px;

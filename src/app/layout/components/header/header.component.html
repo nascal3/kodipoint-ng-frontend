@@ -31,12 +31,15 @@
       [matMenuTriggerFor]="profileMenu"
       aria-label="User profile menu"
     >
-      <div class="user-avatar-bubble">
+      <div
+        class="user-avatar-bubble"
+        matBadge="{{showNotificationCount()}}"
+        matBadgeSize="small"
+        matBadgeColor="warn"
+        [matBadgeHidden]="!showNotificationCount()"
+      >
         <span class="avatar-initials">{{ userInitials() }}</span>
       </div>
-      @if (showNotification()) {
-        <span class="settings-notification-dot" aria-hidden="true"></span>
-      }
       <span class="user-name">{{ userName() }}</span>
       <mat-icon class="chevron-icon">keyboard_arrow_down</mat-icon>
     </button>

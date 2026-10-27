@@ -10,14 +10,23 @@ import {UserProfileResponse, UpdateProfileRequest, ChangePasswordRequest} from '
 export class SettingsService {
   private readonly http = inject(HttpClient);
 
+  constructor() {
+  }
+
   private readonly apiUrl = environment.apiUrl;
   readonly userProfile = signal<UserProfileResponse | null>(null);
-  readonly isDetailsInvalid = computed(() => {
+  readonly showNotificationCount = computed(() => {
     const user = this.userProfile();
     const invalidPhoneNumber = !user?.phone || user.phone.trim() === '';
     const invalidAddress = !user?.address || user.address.trim() === '';
 
-    return invalidAddress || invalidPhoneNumber;
+    if (invalidPhoneNumber && invalidAddress) {
+      return 2;
+    } else if (invalidPhoneNumber || invalidAddress) {
+      return 1;
+    } else {
+      return 0;
+    }
   });
 
   loadUserProfile(): Observable<UserProfileResponse> {
