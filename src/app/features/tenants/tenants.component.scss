@@ -18,10 +18,10 @@
 .kpi-card {
   min-height: 140px;
   padding: 20px 22px;
-  border: 1px solid #eef2f6;
+  border: 1px solid #e0e0e0;
   border-radius: 14px;
   background: #ffffff;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -38,7 +38,7 @@
 .kpi-title {
   font-size: 13.5px;
   font-weight: 500;
-  color: #64748b;
+  color: #666;
 }
 
 .kpi-icon-bubble {
@@ -50,17 +50,17 @@
   justify-content: center;
   flex-shrink: 0;
 
-  &.bubble-green {
-    background: #d1fae5;
-    color: #059669;
-  }
-  &.bubble-purple {
-    background: #ede9fe;
+  &.icon-secondary {
+    background: #e0e7ff;
     color: #4f46e5;
   }
-  &.bubble-lavender {
-    background: #ede9fe;
-    color: #6366f1;
+  &.icon-primary {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+  &.icon-error {
+    background: #fee2e2;
+    color: #dc2626;
   }
 
   .kpi-icon {
@@ -88,13 +88,13 @@
 .currency-prefix {
   font-size: 14px;
   font-weight: 600;
-  color: #1e293b;
+  color: #333;
 }
 
 .amount-val {
   font-size: 28px;
   font-weight: 800;
-  color: #0f172a;
+  color: #333;
   line-height: 1;
   letter-spacing: -0.02em;
 }
@@ -103,12 +103,56 @@
   padding-top: 12px;
   border-top: 1px solid #f1f5f9;
   font-size: 12.5px;
-  color: #64748b;
+  color: #666;
 
   strong {
-    color: #0f172a;
+    color: #333;
     font-weight: 700;
     margin-left: 4px;
+  }
+}
+
+:host-context(html.dark-theme) .kpi-card {
+  border-color: #1d2b40;
+  background: #0f1d30;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+
+  &:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+  }
+
+  .kpi-title,
+  .kpi-detail {
+    color: #9aabbd;
+  }
+
+  .kpi-detail {
+    border-top-color: #1d2b40;
+  }
+
+  .amount-val,
+  .currency-prefix,
+  .kpi-detail strong {
+    color: #f1f5f9;
+  }
+
+  .icon-secondary {
+    background: rgba(16, 185, 129, 0.16);
+    color: #10b981;
+  }
+
+  .icon-primary {
+    background: rgba(59, 130, 246, 0.16);
+    color: #60a5fa;
+  }
+
+  .icon-error {
+    background: rgba(244, 63, 94, 0.16);
+    color: #fb7185;
+  }
+
+  &.kpi-card-error .amount-val {
+    color: #fb7185;
   }
 }
 
