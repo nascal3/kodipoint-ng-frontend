@@ -574,6 +574,8 @@
 }
 
 :host-context(html.dark-theme) .custom-paginator {
+  --mat-paginator-enabled-icon-color: #e2e8f0;
+  --mat-paginator-disabled-icon-color: #536274;
   border-color: #1d2b40;
   color: #8492a8;
 }
