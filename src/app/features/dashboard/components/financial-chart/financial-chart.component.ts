@@ -30,6 +30,11 @@ export class FinancialChartComponent {
   private readonly dashboardService = inject(DashboardService);
 
   private chartInstance: echarts.ECharts | null = null;
+  private themeObserver: MutationObserver | null = null;
+  private chartData: {
+    income: Array<{ month: string; total: string }>;
+    owed: Array<{ month: string; total: string }>;
+  } | null = null;
 
   readonly dateRangeStart = input.required<Date | null>();
   readonly dateRangeEnd = input.required<Date | null>();
@@ -54,6 +59,8 @@ export class FinancialChartComponent {
         }
         this.chartInstance = null;
       }
+      this.themeObserver?.disconnect();
+      this.themeObserver = null;
       if (typeof window !== 'undefined') {
         window.removeEventListener('resize', this.onResize);
       }
@@ -93,6 +100,17 @@ export class FinancialChartComponent {
       const option: echarts.EChartsOption = {};
 
       this.chartInstance.setOption(option);
+      if (typeof document !== 'undefined' && typeof MutationObserver !== 'undefined') {
+        this.themeObserver = new MutationObserver(() => {
+          if (this.chartData) {
+            this.updateChart(this.chartData.income, this.chartData.owed);
+          }
+        });
+        this.themeObserver.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['class'],
+        });
+      }
       if (typeof window !== 'undefined') {
         window.addEventListener('resize', this.onResize);
       }
@@ -160,6 +178,13 @@ export class FinancialChartComponent {
       return;
     }
 
+    this.chartData = { income: incomeData, owed: owedData };
+    const isDarkTheme = typeof document !== 'undefined' &&
+      document.documentElement.classList.contains('dark-theme');
+    const textColor = isDarkTheme ? '#8492a8' : '#464555';
+    const axisLineColor = isDarkTheme ? '#26364b' : '#c7c4d8';
+    const gridLineColor = isDarkTheme ? '#1d2b40' : '#e2e7ff';
+
     const months = incomeData.map(item => {
       const date = new Date(item.month + '-01');
       return date.toLocaleString('default', { month: 'short' });
@@ -222,12 +247,12 @@ export class FinancialChartComponent {
         axisTick: { show: false },
         axisLine: {
           lineStyle: {
-            color: '#c7c4d8',
+            color: axisLineColor,
             opacity: 0.5,
           },
         },
         axisLabel: {
-          color: '#464555',
+          color: textColor,
           fontFamily: 'Plus Jakarta Sans, sans-serif',
           fontSize: 12,
           fontWeight: 500,
@@ -241,7 +266,7 @@ export class FinancialChartComponent {
         splitLine: {
           lineStyle: {
             type: 'dashed',
-            color: '#e2e7ff',
+            color: gridLineColor,
             opacity: 0.8,
           },
         },
@@ -249,7 +274,7 @@ export class FinancialChartComponent {
         axisTick: { show: false },
         axisLabel: {
           formatter: '{value}',
-          color: '#777587',
+          color: textColor,
           fontFamily: 'Plus Jakarta Sans, sans-serif',
           fontSize: 11,
           fontWeight: 500,
@@ -263,12 +288,12 @@ export class FinancialChartComponent {
           barWidth: 20,
           barGap: '30%',
           itemStyle: {
-            color: '#4f46e5',
+            color: isDarkTheme ? '#3b82f6' : '#4f46e5',
             borderRadius: [6, 6, 0, 0],
           },
           emphasis: {
             itemStyle: {
-              color: '#3525cd',
+              color: isDarkTheme ? '#2563eb' : '#3525cd',
             },
           },
           data: collectedValues,
@@ -278,12 +303,12 @@ export class FinancialChartComponent {
           type: 'bar',
           barWidth: 20,
           itemStyle: {
-            color: '#f43f5e',
+            color: isDarkTheme ? '#f87171' : '#f43f5e',
             borderRadius: [6, 6, 0, 0],
           },
           emphasis: {
             itemStyle: {
-              color: '#e11d48',
+              color: isDarkTheme ? '#ef4444' : '#e11d48',
             },
           },
           data: overdueValues,

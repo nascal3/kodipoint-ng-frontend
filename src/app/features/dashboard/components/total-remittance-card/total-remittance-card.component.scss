@@ -118,4 +118,32 @@
       font-size: 16px;
     }
   }
+
+  :host-context(html.dark-theme) .summary-card {
+    background: #0f1d30;
+    border-color: #1d2b40;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+
+    &:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+    }
+
+    .card-title,
+    .footer-text {
+      color: #9aabbd;
+    }
+
+    .card-value {
+      color: #f1f5f9;
+    }
+
+    .icon-bubble.icon-primary {
+      background: rgba(59, 130, 246, 0.16);
+    }
+
+    .icon-primary .card-icon,
+    .footer-icon {
+      color: #60a5fa;
+    }
+  }
 }

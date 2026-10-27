@@ -407,3 +407,173 @@
   color: #64748b;
   font-size: 12px;
 }
+
+:host-context(html.dark-theme) .table-card {
+  background: #0f1d30;
+  border-color: #1d2b40;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+:host-context(html.dark-theme) .table-title {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .table-subtitle {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .search-icon {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .search-input {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .search-input::placeholder {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .search-input-wrapper,
+:host-context(html.dark-theme) .date-filter-field {
+  --mat-form-field-outlined-outline-color: #294056;
+  --mat-form-field-outlined-hover-outline-color: #47627b;
+  --mat-form-field-outlined-focus-outline-color: #60a5fa;
+  --mat-form-field-outlined-input-text-color: #e2e8f0;
+  --mat-form-field-outlined-label-text-color: #94a3b8;
+  --mdc-outlined-text-field-input-text-color: #e2e8f0;
+  --mdc-outlined-text-field-label-text-color: #94a3b8;
+  --mdc-outlined-text-field-outline-color: #294056;
+  --mdc-outlined-text-field-hover-outline-color: #47627b;
+  --mdc-outlined-text-field-focus-outline-color: #60a5fa;
+}
+
+:host-context(html.dark-theme) .search-input-wrapper ::ng-deep .mat-mdc-text-field-wrapper,
+:host-context(html.dark-theme) .date-filter-field ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #0a1928;
+}
+
+:host-context(html.dark-theme) .search-input-wrapper ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .search-input-wrapper ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .search-input-wrapper ::ng-deep .mdc-notched-outline__trailing,
+:host-context(html.dark-theme) .date-filter-field ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .date-filter-field ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .date-filter-field ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #203447;
+}
+
+:host-context(html.dark-theme) .date-filter-field ::ng-deep .mat-date-range-input-container {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .date-filter-field ::ng-deep .mat-date-range-input-separator {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .calendar-icon {
+  color: #3b82f6;
+}
+
+:host-context(html.dark-theme) .table-responsive-wrapper {
+  border-color: #1d2b40;
+}
+
+:host-context(html.dark-theme) .avatar-bubble {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+:host-context(html.dark-theme) .mat-mdc-row:nth-child(3n + 1) .avatar-bubble {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+}
+
+:host-context(html.dark-theme) .mat-mdc-row:nth-child(3n + 2) .avatar-bubble {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+}
+
+:host-context(html.dark-theme) .mat-mdc-row:nth-child(4n) .avatar-bubble {
+  background: rgba(244, 63, 94, 0.18);
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .invoice-number {
+  color: #60a5fa;
+}
+
+:host-context(html.dark-theme) .tenant-name,
+:host-context(html.dark-theme) .total-amount,
+:host-context(html.dark-theme) .method-name {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .bullet-dot,
+:host-context(html.dark-theme) .unit-location,
+:host-context(html.dark-theme) .reference-code,
+:host-context(html.dark-theme) .date-time-text,
+:host-context(html.dark-theme) .balance-text {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .paid-success {
+  color: #34d399;
+}
+
+:host-context(html.dark-theme) .paid-warning {
+  color: #fbbf24;
+}
+
+:host-context(html.dark-theme) .chip-fully-paid {
+  background: rgba(16, 185, 129, 0.16);
+  color: #34d399;
+}
+
+:host-context(html.dark-theme) .chip-partially-paid {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+}
+
+:host-context(html.dark-theme) .chip-overdue {
+  background: rgba(244, 63, 94, 0.16);
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .dot-fully-paid,
+:host-context(html.dark-theme) .method-dot-mpesa {
+  background: #34d399;
+}
+
+:host-context(html.dark-theme) .dot-partially-paid {
+  background: #fbbf24;
+}
+
+:host-context(html.dark-theme) .dot-overdue {
+  background: #fb7185;
+}
+
+:host-context(html.dark-theme) .method-dot-rtgs {
+  background: #60a5fa;
+}
+
+:host-context(html.dark-theme) .method-dot-bank {
+  background: #94a3b8;
+}
+
+:host-context(html.dark-theme) .balance-high {
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .action-btn {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .action-btn:hover {
+  background: #1a2c43;
+  color: #60a5fa;
+}
+
+:host-context(html.dark-theme) .custom-paginator {
+  border-color: #1d2b40;
+  color: #8492a8;
+}
