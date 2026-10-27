@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
+import { DateRange } from '@angular/material/datepicker';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import type { InvoiceRecord } from '../../models/dashboard.model';
+import type { InvoiceData, InvoiceRecord } from '../../models/dashboard.model';
 import { DATE_RANGE_DATE_PROVIDERS } from '../date-range-date-adapter';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
+import { DashboardService } from '../../services/dashboard.service';
 
 export type { InvoiceRecord };
 
@@ -22,130 +24,128 @@ export type { InvoiceRecord };
   styleUrl: './invoice-table.component.scss',
 })
 export class InvoiceTableComponent {
+  private readonly dashboardService = inject(DashboardService);
+
   readonly paginator = viewChild(MatPaginator);
   readonly sort = viewChild(MatSort);
   readonly maxDate = new Date();
-  readonly dateRangeStart = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), 1);
-  readonly dateRangeEnd = this.maxDate;
+  readonly dateRangeStart = signal(new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), 1));
+  readonly dateRangeEnd = signal(this.maxDate);
 
   readonly displayedColumns: string[] = ['invoice', 'amounts', 'status', 'payment', 'date', 'action'];
 
-  protected readonly rawData = signal<InvoiceRecord[]>([
-    {
-      id: '1',
-      initials: 'SW',
-      avatarVariant: 'primary',
-      invoiceNumber: 'INV-2024-089',
-      tenant: 'Sarah Wanjiku',
-      propertyUnit: 'Unit 12A • Kilimani Heights',
-      total: 85000,
-      amountPaid: 85000,
-      balance: 0,
-      status: 'fully-paid',
-      paymentMethod: 'M-Pesa',
-      methodVariant: 'mpesa',
-      reference: 'QHX4910LK7',
-      dateTime: 'Today, 11:42 AM',
-    },
-    {
-      id: '2',
-      initials: 'DK',
-      avatarVariant: 'secondary',
-      invoiceNumber: 'INV-2024-090',
-      tenant: 'David Kimani',
-      propertyUnit: 'Penthouse 3 • Riverside Crest',
-      total: 220000,
-      amountPaid: 220000,
-      balance: 0,
-      status: 'fully-paid',
-      paymentMethod: 'Stanbic RTGS',
-      methodVariant: 'rtgs',
-      reference: 'TX-902348',
-      dateTime: 'Today, 09:15 AM',
-    },
-    {
-      id: '3',
-      initials: 'BM',
-      avatarVariant: 'tertiary',
-      invoiceNumber: 'INV-2024-091',
-      tenant: 'Brenda Mutua',
-      propertyUnit: 'Unit 5D • Westlands Park',
-      total: 90000,
-      amountPaid: 65000,
-      balance: 25000,
-      status: 'partially-paid',
-      paymentMethod: 'M-Pesa',
-      methodVariant: 'mpesa',
-      reference: 'QKA882103V',
-      dateTime: 'Yesterday, 04:30 PM',
-    },
-    {
-      id: '4',
-      initials: 'JN',
-      avatarVariant: 'error',
-      invoiceNumber: 'INV-2024-092',
-      tenant: 'Joseph Njoroge',
-      propertyUnit: 'Unit 8B • Silver Oaks',
-      total: 120000,
-      amountPaid: 30000,
-      balance: 90000,
-      status: 'partially-paid',
-      paymentMethod: 'Bank Transfer',
-      methodVariant: 'bank',
-      reference: 'Ref #Pending',
-      dateTime: 'Oct 01, 2024 10:15 AM',
-    },
-    {
-      id: '5',
-      initials: 'AK',
-      avatarVariant: 'indigo',
-      invoiceNumber: 'INV-2024-093',
-      tenant: 'Amina Khalfan',
-      propertyUnit: 'Studio 201 • Lavington Lofts',
-      total: 52000,
-      amountPaid: 52000,
-      balance: 0,
-      status: 'fully-paid',
-      paymentMethod: 'M-Pesa',
-      methodVariant: 'mpesa',
-      reference: 'QKC30291PL',
-      dateTime: 'Oct 02, 2024, 02:20 PM',
-    },
-    {
-      id: '6',
-      initials: 'MO',
-      avatarVariant: 'primary',
-      invoiceNumber: 'INV-2024-094',
-      tenant: 'Michael Otieno',
-      propertyUnit: 'Unit 3A • Parkview Suites',
-      total: 75000,
-      amountPaid: 75000,
-      balance: 0,
-      status: 'fully-paid',
-      paymentMethod: 'M-Pesa',
-      methodVariant: 'mpesa',
-      reference: 'QKD992311X',
-      dateTime: 'Oct 02, 2024, 11:10 AM',
-    },
-    {
-      id: '7',
-      initials: 'EK',
-      avatarVariant: 'secondary',
-      invoiceNumber: 'INV-2024-095',
-      tenant: 'Esther Kariuki',
-      propertyUnit: 'Unit 14C • Kilimani Heights',
-      total: 95000,
-      amountPaid: 45000,
-      balance: 50000,
-      status: 'partially-paid',
-      paymentMethod: 'Stanbic RTGS',
-      methodVariant: 'rtgs',
-      reference: 'TX-902401',
-      dateTime: 'Oct 01, 2024, 03:45 PM',
-    },
-  ]);
+  protected readonly rawData = signal<InvoiceRecord[]>([]);
+  protected readonly totalRecordsSignal = signal(0);
+  readonly totalRecords = computed(() => this.totalRecordsSignal());
+  protected readonly currentPage = signal(1);
+  protected readonly pageSize = signal(10);
 
-  readonly totalRecords = computed(() => 48);
+  constructor() {
+    this.loadInvoices();
+  }
+
+  private loadInvoices(): void {
+    this.dashboardService.getInvoices(
+      this.currentPage(),
+      this.pageSize(),
+      'DESC',
+      this.dateRangeStart(),
+      this.dateRangeEnd(),
+    ).subscribe({
+      next: (response) => {
+        const transformedData = response.data.map((data) => this.transformInvoiceData(data));
+        this.rawData.set(transformedData);
+        this.totalRecordsSignal.set(response.pagination.total);
+      },
+      error: (error) => {
+        console.error('Error loading invoices:', error);
+      },
+    });
+  }
+
+  private transformInvoiceData(data: InvoiceData): InvoiceRecord {
+    const tenantName = data.tenant.name || 'Unknown Tenant';
+    const initials = tenantName
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+
+    const avatarVariants: Array<'primary' | 'secondary' | 'tertiary' | 'error' | 'indigo'> = [
+      'primary', 'secondary', 'tertiary', 'error', 'indigo',
+    ];
+    const avatarVariant = avatarVariants[data.id.charCodeAt(0) % avatarVariants.length];
+
+    const paymentMethod = data.payment?.method || 'N/A';
+    const methodVariant = this.getMethodVariant(paymentMethod);
+
+    const status = this.mapPaymentStatus(data.paymentStatus);
+
+    const propertyUnit = data.property.unit && data.property.name
+      ? `Unit ${data.property.unit} • ${data.property.name}`
+      : data.property.unit || data.property.name || 'Unknown Property';
+
+    return {
+      id: data.id,
+      initials,
+      avatarVariant,
+      invoiceNumber: data.invoiceNumber,
+      tenant: tenantName,
+      propertyUnit,
+      total: parseFloat(data.totalAmount),
+      amountPaid: parseFloat(data.amountPaid),
+      balance: parseFloat(data.balanceDue),
+      status,
+      paymentMethod,
+      methodVariant,
+      reference: data.payment?.reference || 'N/A',
+      dateTime: this.formatDateTime(data.dateTime),
+    };
+  }
+
+  private getMethodVariant(method: string): 'mpesa' | 'rtgs' | 'bank' {
+    const lowerMethod = method.toLowerCase();
+    if (lowerMethod.includes('mpesa') || lowerMethod.includes('m-pesa')) {
+      return 'mpesa';
+    }
+    if (lowerMethod.includes('rtgs')) {
+      return 'rtgs';
+    }
+    return 'bank';
+  }
+
+  private mapPaymentStatus(status: string): 'fully-paid' | 'partially-paid' | 'overdue' {
+    switch (status) {
+      case 'PAID':
+        return 'fully-paid';
+      case 'PARTIALLY_PAID':
+        return 'partially-paid';
+      case 'UNPAID':
+        return 'overdue';
+      default:
+        return 'overdue';
+    }
+  }
+
+  private formatDateTime(date: Date): string {
+    const now = new Date();
+    const invoiceDate = new Date(date);
+    const diffMs = now.getTime() - invoiceDate.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return `Today, ${invoiceDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+    }
+    if (diffDays === 1) {
+      return `Yesterday, ${invoiceDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+    }
+    if (diffDays < 7) {
+      return `${diffDays} days ago`;
+    }
+    return invoiceDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+      `, ${invoiceDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+  }
 
   readonly dataSource = computed(() => {
     const dataSource = new MatTableDataSource(this.rawData());
@@ -171,5 +171,17 @@ export class InvoiceTableComponent {
     const filterValue = (event.target as HTMLInputElement).value;
     const dataSource = this.dataSource();
     dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  onDateRangeChange(range: DateRange<Date> | null): void {
+    const start = range?.start;
+    const end = range?.end;
+
+    if (start && end) {
+      this.dateRangeStart.set(start);
+      this.dateRangeEnd.set(end);
+      this.currentPage.set(1);
+      this.loadInvoices();
+    }
   }
 }

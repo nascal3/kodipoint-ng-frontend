@@ -79,3 +79,50 @@ export interface InvoiceRecord {
   reference: string;
   dateTime: string;
 }
+
+export type InvoiceStatus = 'PAID' | 'PARTIALLY_PAID' | 'UNPAID';
+
+export interface InvoicePayment {
+  method: string;
+  reference: string;
+  status: string;
+}
+
+export interface InvoiceTenant {
+  id: string;
+  name: string | null;
+}
+
+export interface InvoiceProperty {
+  unit: string | null;
+  name: string | null;
+  currency: string | null;
+}
+
+export interface InvoiceData {
+  id: string;
+  invoiceNumber: string;
+  tenant: InvoiceTenant;
+  property: InvoiceProperty;
+  totalAmount: string;
+  amountPaid: string;
+  balanceDue: string;
+  status: InvoiceStatus;
+  paymentStatus: 'PAID' | 'PARTIALLY_PAID' | 'UNPAID';
+  payment: InvoicePayment | null;
+  dateTime: Date;
+}
+
+export interface InvoicePagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface InvoicesResponse {
+  data: InvoiceData[];
+  pagination: InvoicePagination;
+}

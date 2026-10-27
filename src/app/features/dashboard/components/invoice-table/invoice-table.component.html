@@ -27,20 +27,21 @@
         appearance="outline"
         subscriptSizing="dynamic"
       >
-        <mat-date-range-input [rangePicker]="datePicker" [max]="maxDate">
+        <mat-date-range-input #dateRangeInput [rangePicker]="datePicker" [max]="maxDate">
           <input
             matStartDate
-            [value]="dateRangeStart"
+            [value]="dateRangeStart()"
             placeholder="Start date"
             aria-label="Start date"
             readonly
           />
           <input
             matEndDate
-            [value]="dateRangeEnd"
+            [value]="dateRangeEnd()"
             placeholder="End date"
             aria-label="End date"
             readonly
+            (dateChange)="onDateRangeChange(dateRangeInput.value)"
           />
         </mat-date-range-input>
         <mat-datepicker-toggle matIconPrefix [for]="datePicker">

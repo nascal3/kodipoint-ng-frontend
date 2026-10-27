@@ -4,6 +4,7 @@ import { Observable, shareReplay, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   AllPropertiesIncomeResponse,
+  InvoicesResponse,
   PortfolioOccupancyResponse,
   TotalRentOwedResponse,
 } from '../models/dashboard.model';
@@ -82,6 +83,41 @@ export class DashboardService {
       `${environment.apiUrl}/properties/portfolio-occupancy`,
     ).pipe(
       tap(data => this.portfolioOccupancyCache.set(data)),
+      shareReplay(1),
+    );
+  }
+
+  getInvoices(
+    page: number,
+    limit: number,
+    sortOrder: 'ASC' | 'DESC',
+    fromDate: Date,
+    toDate: Date,
+  ): Observable<InvoicesResponse> {
+    const adjustedFromDate = new Date(fromDate);
+    adjustedFromDate.setHours(0, 0, 0, 0);
+
+    const adjustedToDate = new Date(toDate);
+    adjustedToDate.setHours(23, 59, 59, 999);
+
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const params = new HttpParams()
+      .set('page', page)
+      .set('limit', limit)
+      .set('sortOrder', sortOrder)
+      .set('fromDate', formatDate(adjustedFromDate))
+      .set('toDate', formatDate(adjustedToDate));
+
+    return this.http.get<InvoicesResponse>(
+      `${environment.apiUrl}/reports/invoices`,
+      { params },
+    ).pipe(
       shareReplay(1),
     );
   }
