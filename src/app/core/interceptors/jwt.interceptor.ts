@@ -5,6 +5,7 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthTokenService } from '../services/auth-token.service';
+import { DARK_MODE_STORAGE_KEY } from '../services/theme.service';
 import { tap } from 'rxjs';
 
 export const jwtInterceptor: HttpInterceptorFn = (
@@ -27,7 +28,11 @@ export const jwtInterceptor: HttpInterceptorFn = (
       error: (error) => {
         if (error.status === 401) {
           authTokenService.removeToken();
+          const darkModePreference = localStorage.getItem(DARK_MODE_STORAGE_KEY);
           localStorage.clear();
+          if (darkModePreference !== null) {
+            localStorage.setItem(DARK_MODE_STORAGE_KEY, darkModePreference);
+          }
         }
       }
     })
