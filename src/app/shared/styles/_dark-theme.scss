@@ -32,11 +32,14 @@ html.dark-theme {
     color: #d7e0eb;
   }
 
-  .section-title,
+  .section-title {
+    color: #94a3b8;
+  }
+
   .nav-icon,
   .theme-icon,
   .toggle-btn {
-    color: #94a3b8;
+    color: #e2e8f0;
   }
 
   .nav-link:hover:not(.active),
@@ -45,18 +48,18 @@ html.dark-theme {
     color: #f1f5f9;
   }
 
-  .nav-link:hover:not(.active) .nav-icon {
-    color: #dbeafe;
-  }
-
   .nav-link.active {
     background: #3b82f6;
-    color: #ffffff;
     box-shadow: 0 6px 16px rgba(59, 130, 246, 0.22);
   }
 
-  .nav-link.active .nav-icon {
-    color: #ffffff;
+  .sidebar .nav-link:hover:not(.active),
+  .sidebar .nav-link:hover:not(.active) .nav-icon,
+  .sidebar .nav-link:hover:not(.active) .nav-label,
+  .sidebar .nav-link.active,
+  .sidebar .nav-link.active .nav-icon,
+  .sidebar .nav-link.active .nav-label {
+    color: #d7e0eb;
   }
 
   .app-header {
