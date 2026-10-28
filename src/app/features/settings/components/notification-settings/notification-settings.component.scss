@@ -104,3 +104,41 @@
 .primary-button.mat-mdc-unelevated-button:hover {
   background-color: #2d1db7;
 }
+
+:host-context(html.dark-theme) {
+  color: #d7e0eb;
+}
+
+:host-context(html.dark-theme) .panel {
+  background: #0f2030;
+  border-color: #1d3042;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+:host-context(html.dark-theme) .alternate-panel h1 .material-symbol {
+  color: #93c5fd;
+}
+
+:host-context(html.dark-theme) .panel-description,
+:host-context(html.dark-theme) .preference-row span {
+  color: #899bad;
+}
+
+:host-context(html.dark-theme) .preference-row {
+  border-color: #203447;
+}
+
+:host-context(html.dark-theme) .preference-row div {
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .primary-button,
+:host-context(html.dark-theme) .primary-button.mat-mdc-unelevated-button {
+  background-color: #2563eb;
+  color: #fff;
+}
+
+:host-context(html.dark-theme) .primary-button:hover,
+:host-context(html.dark-theme) .primary-button.mat-mdc-unelevated-button:hover {
+  background-color: #1d4ed8;
+}
