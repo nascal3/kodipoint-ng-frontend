@@ -947,10 +947,14 @@
   ::ng-deep .mat-date-range-input-container {
     color: #e2e8f0;
   }
+
+  ::ng-deep .mat-date-range-input-separator {
+    color: #e2e8f0;
+  }
 }
 
 :host-context(html.dark-theme) .calendar-icon {
-  color: #8492a8;
+  color: #3b82f6;
 }
 
 :host-context(html.dark-theme) .refresh-button {
