@@ -186,8 +186,10 @@ html.dark-theme {
   .invoice-container .amount-val.green,
   .invoice-container .green,
   .settlement-note,
-  .delivery-card > div > strong {
+  .delivery-card > div > strong,
+  .delivery-status.delivered {
     color: #34d399 !important;
+    --mdc-chip-label-text-color: #34d399 !important;
   }
 
   .invoice-id,

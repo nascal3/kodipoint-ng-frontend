@@ -949,6 +949,58 @@
   background: #E0E7FF !important;
 }
 
+:host-context(html.dark-theme) .status-chip {
+  padding: 4px 8px !important;
+  border: 1px solid transparent !important;
+}
+
+:host-context(html.dark-theme) .status-chip.status-overdue {
+  --mdc-chip-label-text-color: #fb7185;
+  color: #fb7185 !important;
+  background: rgba(244, 63, 94, 0.16) !important;
+}
+
+:host-context(html.dark-theme) .status-chip.status-paid {
+  --mdc-chip-label-text-color: #37d298;
+  color: #37d298 !important;
+  background: #163d40 !important;
+}
+
+:host-context(html.dark-theme) .status-chip.status-paid .status-chip-content,
+:host-context(html.dark-theme) .status-chip.status-paid .status-chip-content span,
+:host-context(html.dark-theme) .status-chip.status-paid .ledger-balance-icon {
+  color: #37d298 !important;
+}
+
+:host-context(html.dark-theme) .status-chip.status-sent {
+  --mdc-chip-label-text-color: #60a5fa;
+  color: #60a5fa !important;
+  background: rgba(59, 130, 246, 0.16) !important;
+}
+
+:host-context(html.dark-theme) .status-chip.status-draft {
+  --mdc-chip-label-text-color: #60a5fa;
+  color: #60a5fa !important;
+  background: rgba(59, 130, 246, 0.16) !important;
+}
+
+:host-context(html.dark-theme) .status-chip.status-overdue .status-chip-content,
+:host-context(html.dark-theme) .status-chip.status-overdue .status-chip-content * {
+  color: #fb7185 !important;
+}
+
+:host-context(html.dark-theme) .status-chip.status-paid .status-chip-content,
+:host-context(html.dark-theme) .status-chip.status-paid .status-chip-content * {
+  color: #37d298 !important;
+}
+
+:host-context(html.dark-theme) .status-chip.status-sent .status-chip-content,
+:host-context(html.dark-theme) .status-chip.status-sent .status-chip-content *,
+:host-context(html.dark-theme) .status-chip.status-draft .status-chip-content,
+:host-context(html.dark-theme) .status-chip.status-draft .status-chip-content * {
+  color: #60a5fa !important;
+}
+
 .ledger-balance-icon {
   width: 15px;
   height: 15px;
@@ -1293,10 +1345,12 @@
 
   &.delivered {
     color: #047857;
+    --mdc-chip-label-text-color: #047857;
   }
 
   &.pending {
     color: #d97706;
+    --mdc-chip-label-text-color: #d97706;
   }
 }
 
@@ -1330,9 +1384,9 @@
 
   &.danger {
     grid-column: 1 / -1;
-    height: 32px;
+    height: 40px;
     color: #dc2626;
-    border-color: transparent;
+    border: none;
     background: transparent;
 
     &:hover {
@@ -1403,12 +1457,27 @@
     color: #34d399;
   }
 
+  .delivery-status.delivered {
+    --mdc-chip-label-text-color: #34d399;
+    color: #34d399 !important;
+
+    ::ng-deep .mdc-evolution-chip__text-label,
+    ::ng-deep .mat-mdc-chip-action-label,
+    span {
+      color: #34d399 !important;
+    }
+  }
+
   .breakdown-row.total {
     border-top-color: #263447;
   }
 
+  .breakdown-row.total .label {
+    color: #cbd5e1 !important;
+  }
+
   .breakdown-row.total .amount {
-    color: #60a5fa;
+    color: #60a5fa !important;
   }
 
   .delivery-section {
