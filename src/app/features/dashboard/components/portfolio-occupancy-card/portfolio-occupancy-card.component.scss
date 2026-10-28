@@ -120,4 +120,36 @@
       top: 5px;
     }
   }
+
+  :host-context(html.dark-theme) .summary-card {
+    background: #0f1d30;
+    border-color: #1d2b40;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+
+    &:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+    }
+
+    .card-title,
+    .unit-detail {
+      color: #9aabbd;
+    }
+
+    .card-value {
+      color: #f1f5f9;
+    }
+
+    .icon-bubble.icon-secondary {
+      background: rgba(16, 185, 129, 0.16);
+    }
+
+    .icon-secondary .card-icon {
+      color: #10b981;
+    }
+
+    .status-pill {
+      background: rgba(16, 185, 129, 0.16);
+      color: #34d399;
+    }
+  }
 }

@@ -141,3 +141,131 @@ mat-progress-bar {
     gap: 8px;
   }
 }
+
+:host-context(html.dark-theme) .signup-card {
+  background: #0f2030;
+  border-color: #1d3042;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+:host-context(html.dark-theme) .brand-name {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .brand-name > span {
+  color: #93c5fd;
+}
+
+:host-context(html.dark-theme) .auth-heading h1 {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .auth-heading p {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .google-button {
+  background: #1a2c3e;
+  border-color: #294056;
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .google-button:hover {
+  background: #203447;
+}
+
+:host-context(html.dark-theme) .divider {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .divider::before,
+:host-context(html.dark-theme) .divider::after {
+  background: #203447;
+}
+
+:host-context(html.dark-theme) .material-symbol {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .auth-form .auth-input mat-label {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .auth-form .auth-input input {
+  color: #d7e0eb;
+}
+
+:host-context(html.dark-theme) .auth-form .auth-input ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #0a1928;
+}
+
+:host-context(html.dark-theme) .auth-form .auth-input ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .auth-form .auth-input ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .auth-form .auth-input ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #203447;
+}
+
+:host-context(html.dark-theme) .field-help {
+  color: #899bad;
+}
+
+:host-context(html.dark-theme) .visibility-toggle svg {
+  stroke: #94a3b8;
+}
+
+:host-context(html.dark-theme) .terms-row {
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .terms-row a {
+  color: #93c5fd;
+}
+
+:host-context(html.dark-theme) .submit-button {
+  --mat-button-filled-container-color: #2563eb;
+}
+
+:host-context(html.dark-theme) .submit-button:hover {
+  --mat-button-filled-container-color: #1d4ed8;
+}
+
+:host-context(html.dark-theme) .card-footer {
+  border-color: #203447;
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .card-footer a {
+  color: #93c5fd;
+}
+
+:host-context(html.dark-theme) .auth-footer {
+  color: #899bad;
+}
+
+:host-context(html.dark-theme) .footer-links a {
+  color: #899bad;
+}
+
+:host-context(html.dark-theme) .footer-links a:hover {
+  color: #93c5fd;
+}
+
+:host-context(html.dark-theme) .strength-label strong {
+  color: #34d399;
+}
+
+:host-context(html.dark-theme) mat-progress-bar {
+  --mdc-linear-progress-track-color: #203447;
+}
+
+:host-context(html.dark-theme) .suggestions {
+  color: #899bad;
+}
+
+:host-context(html.dark-theme) .strength-meter i {
+  background: #34d399;
+}
+
+:host-context(html.dark-theme) .strength-meter i:last-child {
+  background: #1d5b50;
+}

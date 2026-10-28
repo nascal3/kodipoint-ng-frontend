@@ -2,10 +2,10 @@
   <!-- Top KPI Summary Cards -->
   <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
     <!-- Card 1: Active Leasehold Rate -->
-    <div class="kpi-card">
+    <div class="kpi-card kpi-card-secondary">
       <div class="kpi-card-header">
         <span class="kpi-title">{{ activeLeaseholdRate().title }}</span>
-        <div class="kpi-icon-bubble bubble-purple">
+        <div class="kpi-icon-bubble icon-secondary">
           <mat-icon class="kpi-icon">home</mat-icon>
         </div>
       </div>
@@ -19,10 +19,10 @@
     </div>
 
     <!-- Card 2: Contracted Rent / Mo -->
-    <div class="kpi-card">
+    <div class="kpi-card kpi-card-primary">
       <div class="kpi-card-header">
         <span class="kpi-title">{{ contractedRent().title }}</span>
-        <div class="kpi-icon-bubble bubble-green">
+        <div class="kpi-icon-bubble icon-primary">
           <mat-icon class="kpi-icon">payments</mat-icon>
         </div>
       </div>
@@ -37,10 +37,10 @@
     </div>
 
     <!-- Card 3: Expiring in 30 Days -->
-    <div class="kpi-card">
+    <div class="kpi-card kpi-card-error">
       <div class="kpi-card-header">
         <span class="kpi-title">{{ expiringLeases().title }}</span>
-        <div class="kpi-icon-bubble bubble-lavender">
+        <div class="kpi-icon-bubble icon-error">
           <mat-icon class="kpi-icon">schedule</mat-icon>
         </div>
       </div>

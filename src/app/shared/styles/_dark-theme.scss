@@ -1,0 +1,517 @@
+html.dark-theme {
+  color-scheme: dark;
+  --mat-app-background-color: #071727;
+  --mat-app-text-color: #e2e8f0;
+  --mat-sys-surface: #0f2030;
+  --mat-sys-on-surface: #e2e8f0;
+
+  body {
+    background: #071727;
+    color: #e2e8f0;
+  }
+
+  .shell-layout,
+  .shell-content {
+    background-color: #071727;
+  }
+
+  .shell-content::before {
+    background: #071727;
+    filter: none;
+  }
+
+  .sidebar {
+    background: #0b1b2a;
+    border-color: #1d3042;
+  }
+
+  .brand-link,
+  .brand-name,
+  .nav-link,
+  .theme-switch {
+    color: #d7e0eb;
+  }
+
+  .section-title {
+    color: #94a3b8;
+  }
+
+  .nav-icon,
+  .theme-icon,
+  .toggle-btn {
+    color: #e2e8f0;
+  }
+
+  .nav-link:hover:not(.active),
+  .theme-switch:hover {
+    background: #14283a;
+    color: #f1f5f9;
+  }
+
+  .nav-link.active {
+    background: #3b82f6;
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.22);
+  }
+
+  .sidebar .nav-link:hover:not(.active),
+  .sidebar .nav-link:hover:not(.active) .nav-icon,
+  .sidebar .nav-link:hover:not(.active) .nav-label,
+  .sidebar .nav-link.active,
+  .sidebar .nav-link.active .nav-icon,
+  .sidebar .nav-link.active .nav-label {
+    color: #d7e0eb;
+  }
+
+  .app-header {
+    background: #0b1b2a;
+    color: #e2e8f0;
+    border-color: #1d3042;
+  }
+
+  .breadcrumb-root,
+  .user-name,
+  .notification-btn {
+    color: #e2e8f0;
+  }
+
+  .breadcrumb-current {
+    color: #93c5fd;
+  }
+
+  .breadcrumb-separator,
+  .chevron-icon {
+    color: #94a3b8;
+  }
+
+  .user-profile-trigger {
+    background: #102235;
+    border-color: #294056;
+  }
+
+  .user-profile-trigger:hover {
+    background: #162a3d;
+    border-color: #3a526a;
+  }
+
+  .summary-card,
+  .kpi-card,
+  .table-card,
+  .chart-card,
+  .mat-mdc-card,
+  .receipts-toolbar,
+  .transactions-card,
+  .receipt-inspector,
+  .invoice-list-section,
+  .document-inspector,
+  .property-card,
+  .controls-card,
+  .settings-tabs .mat-mdc-tab-header {
+    background: #0f2030;
+    border-color: #203447;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  }
+
+  .kpi-title,
+  .card-title,
+  .unit-detail,
+  .footer-text,
+  .table-subtitle,
+  .chart-subtitle,
+  .breadcrumb-current,
+  .kpi-detail,
+  .kpi-sub-text,
+  .kpi-unit-ratio,
+  .property-subtitle,
+  .tenant-contact,
+  .unit-detail,
+  .tenure-type,
+  .rent-period,
+  .emergency-phone,
+  .table-header-container .table-subtitle,
+  .channel-reference,
+  .reference-code,
+  .date-time-text,
+  .receipt-details dt,
+  .delivery-card h3,
+  .delivery-info,
+  .issue-date,
+  .billing-cycle,
+  .breakdown-row .label,
+  .section-title {
+    color: #9aabbd;
+  }
+
+  .card-value,
+  .amount-val,
+  .currency-prefix,
+  .table-title,
+  .chart-title,
+  .tenant-name,
+  .premises-name,
+  .start-date,
+  .rent-amount,
+  .emergency-name,
+  .total-amount,
+  .receipt-number,
+  .inspector-receipt-number,
+  .billing-breakdown .amount,
+  .receipt-details dd,
+  .allocation-line strong,
+  .allocation-balance,
+  .allocation-card > header h3,
+  .transactions-header h1,
+  .property-name,
+  .register-card-title,
+  .invoice-header,
+  .tenant-details,
+  .tenant-property-content,
+  .method-name,
+  .ledger-select-value,
+  .tenant-description strong,
+  .tenant-primary-line .tenant-name,
+  .property-unit,
+  .unit-location,
+  .reference-code,
+  .date-time-text,
+  .empty-text,
+  .empty-cell {
+    color: #e2e8f0 !important;
+  }
+
+  .invoice-container .amount-val.default {
+    color: #f1f5f9 !important;
+  }
+
+  .invoice-container .amount-val.red {
+    color: #fb7185 !important;
+  }
+
+  .invoice-container .amount-val.green,
+  .invoice-container .green,
+  .settlement-note,
+  .delivery-card > div > strong,
+  .delivery-status.delivered {
+    color: #34d399 !important;
+    --mdc-chip-label-text-color: #34d399 !important;
+  }
+
+  .invoice-id,
+  .invoice-container .invoice-number {
+    color: #60a5fa !important;
+  }
+
+  .invoice-container .invoice-header .invoice-number,
+  .inspector-receipt-number {
+    color: #e2e8f0 !important;
+  }
+
+  .kpi-title,
+  .card-title,
+  .unit-detail,
+  .footer-text,
+  .property-subtitle,
+  .tenant-contact,
+  .unit-detail,
+  .tenure-type,
+  .rent-period,
+  .emergency-phone,
+  .unit-location,
+  .property-unit,
+  .issue-date,
+  .billing-cycle,
+  .breakdown-row .label,
+  .receipt-details dt,
+  .delivery-info,
+  .reference-code,
+  .date-time-text,
+  .invoice-container .kpi-detail,
+  .invoice-container .operations-subtitle,
+  .invoice-container .property-unit {
+    color: #9aabbd !important;
+  }
+
+  .property-card-body,
+  .property-card-actions,
+  .property-card .allocation-box,
+  .mat-mdc-table,
+  .mat-mdc-paginator {
+    background: #0f2030;
+  }
+
+  .kpi-detail,
+  .card-footer,
+  .table-pagination,
+  .custom-paginator,
+  .receipt-details > div,
+  .allocation-balance,
+  .invoice-inspector .divider,
+  .document-inspector .divider {
+    border-color: #22374b;
+  }
+
+  .table-scroll,
+  .table-responsive-wrapper,
+  .table-responsive-wrapper,
+  .table-data-row,
+  .invoice-table-container,
+  .table-container,
+  .table-card {
+    border-color: #203447;
+  }
+
+  .mat-mdc-header-row,
+  .invoices-table .mat-mdc-header-row,
+  .tenants-table .mat-mdc-header-row,
+  .transactions-table .mat-mdc-header-row,
+  .invoice-table .mat-mdc-header-row {
+    background: #0a1928 !important;
+  }
+
+  .mat-mdc-header-cell {
+    color: #9aabbd !important;
+    border-color: #203447 !important;
+  }
+
+  .mat-mdc-cell {
+    color: #cbd5e1 !important;
+    border-color: #1d3042 !important;
+  }
+
+  .invoice-table .mat-mdc-row:hover,
+  .table-data-row:hover {
+    background: #12263a !important;
+  }
+
+  .invoice-table .mat-mdc-row.selected-row,
+  .selected-row {
+    background: #122344 !important;
+  }
+
+  .invoice-number,
+  .selected-row .receipt-number {
+    color: #60a5fa;
+  }
+
+  .theme-switch-control {
+    background: #3b82f6;
+  }
+
+  .theme-switch-control::before {
+    background: #ffffff;
+  }
+
+  .theme-switch-check {
+    color: #2563eb;
+  }
+
+  .kpi-progress-track,
+  .alloc-track {
+    background: #1d3042;
+  }
+
+  .operations-title,
+  .operations-heading,
+  .inspector-title,
+  .inspector-heading,
+  .section-title,
+  .transactions-header,
+  .property-card-body {
+    color: #e2e8f0;
+  }
+
+  .operations-subtitle,
+  .property-subtitle,
+  .property-rent .rent-period,
+  .alloc-label,
+  .alloc-row-bottom,
+  .invoice-number-cell,
+  .property-unit,
+  .days-info {
+    color: #9aabbd;
+  }
+
+  .operation-btn.secondary:hover,
+  .action-btn:not(.primary):hover,
+  .btn-icon-square:hover,
+  .btn-import-csv:hover,
+  .load-more-btn:hover {
+    background: #162a3d;
+  }
+
+  .operation-btn.primary,
+  .operation-btn.secondary,
+  .action-btn.secondary,
+  .action-btn:not(.primary),
+  .btn-icon-square,
+  .btn-import-csv,
+  .load-more-btn {
+    background: #0b1b2a;
+    border-color: #294056;
+    color: #cbd5e1;
+  }
+
+  .operation-btn.primary,
+  .record-payment-button,
+  .action-btn.primary,
+  .btn-add-property,
+  .btn-launch-wizard {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #ffffff;
+  }
+
+  .document-inspector .inspector-content,
+  .billing-breakdown,
+  .delivery-section,
+  .payment-total,
+  .allocation-card,
+  .delivery-card,
+  .invoice-header,
+  .tenant-section,
+  .tenant-section .tenant-info,
+  .property-card .allocation-box {
+    border-color: #203447;
+  }
+
+  .document-inspector .divider,
+  .inspector-receipt-number,
+  .billing-breakdown .breakdown-row,
+  .receipt-details > div,
+  .allocation-card,
+  .delivery-card {
+    border-color: #203447;
+  }
+
+  .receipt-details dd,
+  .delivery-card > div > span {
+    color: #cbd5e1;
+  }
+
+  .search-shortcut,
+  .download-btn,
+  .record-payment-button:not(.primary),
+  .action-btn.secondary {
+    background: #0b1b2a;
+    border-color: #294056;
+    color: #cbd5e1;
+  }
+
+  .mat-mdc-form-field {
+    --mat-form-field-outlined-outline-color: #294056;
+    --mat-form-field-outlined-hover-outline-color: #47627b;
+    --mat-form-field-outlined-focus-outline-color: #60a5fa;
+    --mat-form-field-outlined-input-text-color: #e2e8f0;
+    --mat-form-field-outlined-label-text-color: #94a3b8;
+    --mat-select-enabled-trigger-text-color: #e2e8f0;
+    --mat-select-enabled-arrow-color: #94a3b8;
+    --mdc-outlined-text-field-input-text-color: #e2e8f0;
+    --mdc-outlined-text-field-label-text-color: #94a3b8;
+    --mdc-outlined-text-field-outline-color: #294056;
+    --mdc-outlined-text-field-hover-outline-color: #47627b;
+    --mdc-outlined-text-field-focus-outline-color: #60a5fa;
+  }
+
+  input,
+  textarea,
+  .mat-date-range-input-container,
+  .search-input,
+  .search-field input,
+  .filter-field input {
+    color: #e2e8f0 !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #7f92a6;
+  }
+
+  .mat-mdc-select-panel,
+  .mat-mdc-menu-panel,
+  .mat-mdc-dialog-surface,
+  .mat-datepicker-content,
+  .mat-mdc-autocomplete-panel {
+    background: #102235;
+    color: #e2e8f0;
+  }
+
+  .mat-datepicker-content {
+    --mat-datepicker-calendar-header-text-color: #d7e0eb;
+    --mat-datepicker-calendar-period-button-text-color: #d7e0eb;
+    --mat-datepicker-calendar-period-button-icon-color: #d7e0eb;
+    --mat-datepicker-calendar-navigation-button-icon-color: #d7e0eb;
+    --mat-datepicker-calendar-date-today-outline-color: #d7e0eb;
+    --mat-datepicker-calendar-date-today-selected-state-outline-color: #d7e0eb;
+  }
+
+  .mat-mdc-option,
+  .mat-mdc-menu-item,
+  .mat-calendar-body-cell-content,
+  .mat-calendar-body-label,
+  .mat-calendar-table-header,
+  .mat-calendar-table-header th,
+  .mat-calendar-table-header th abbr,
+  .mat-calendar-period-button {
+    color: #d7e0eb !important;
+  }
+
+  .mat-calendar-period-button .mat-calendar-arrow {
+    fill: #d7e0eb !important;
+  }
+
+  .mat-calendar-body-cell-preview,
+  .mat-calendar-body-preview {
+    border-color: #d7e0eb !important;
+  }
+
+  .mat-mdc-option:hover,
+  .mat-mdc-menu-item:hover,
+  .mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
+    background: #1a3045;
+  }
+
+  .mat-mdc-paginator,
+  .mat-mdc-paginator-container,
+  .mat-mdc-paginator-page-size,
+  .mat-mdc-paginator-range-label,
+  .mat-mdc-icon-button {
+    color: #9aabbd !important;
+  }
+
+  .mat-mdc-raised-button.mat-primary,
+  .mat-mdc-unelevated-button.mat-primary {
+    background: #3b82f6 !important;
+    color: #ffffff !important;
+  }
+
+  .mat-mdc-tab-header,
+  .mat-mdc-tab-body-wrapper {
+    color: #d7e0eb;
+  }
+
+  .mat-mdc-tab .mdc-tab__text-label {
+    color: #9aabbd;
+  }
+
+  .settings-tabs .mat-mdc-tab--active .mdc-tab__text-label {
+    color: #93c5fd;
+  }
+
+  .user-profile-menu-panel.mat-mdc-menu-panel {
+    background: #102235;
+    border-color: #294056;
+  }
+
+  .user-profile-menu-panel .header-name,
+  .user-profile-menu-panel .profile-menu-item {
+    color: #e2e8f0 !important;
+  }
+
+  .user-profile-menu-panel .header-email,
+  .user-profile-menu-panel .profile-menu-item .mat-icon {
+    color: #9aabbd !important;
+  }
+
+  .user-profile-menu-panel .menu-divider {
+    border-color: #294056 !important;
+  }
+}
