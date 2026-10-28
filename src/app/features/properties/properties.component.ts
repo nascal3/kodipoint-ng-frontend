@@ -228,6 +228,7 @@ export class PropertiesComponent implements OnInit {
           this.projectedRent.update((current) => ({
             ...current,
             amount: summary.totalProjectedRent.toLocaleString(),
+            valuation: `KES ${summary.totalPotentialRent}`,
           }));
         }
       },

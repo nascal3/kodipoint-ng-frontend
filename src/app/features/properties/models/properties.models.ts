@@ -12,6 +12,7 @@ export interface ProjectedRentProperty {
 export interface ProjectedRentResponse {
   summary: {
     totalProjectedRent: string;
+    totalPotentialRent: string;
     totalOccupiedUnits: number;
     totalVacantUnits: number;
     totalProperties: number;
