@@ -169,7 +169,7 @@
         <!-- Top Image Area -->
         <div class="property-image-container">
           <img
-            [src]="property.image"
+            src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=80"
             [alt]="property.name"
             class="property-image"
             loading="lazy"
@@ -179,9 +179,9 @@
           <div class="occupancy-badge">
             <span
               class="badge-dot"
-              [class]="'dot-' + property.occupancyStatus"
+              [class]="`dot-${property.status.toLowerCase()}`"
             ></span>
-            <span class="badge-text">{{ property.occupancy }}</span>
+            <span class="badge-text">{{ property.status }}</span>
           </div>
 
           <!-- Floating Bookmark Button -->
@@ -195,7 +195,7 @@
 
           <!-- Location Overlay -->
           <div class="location-overlay">
-            <span class="location-text">{{ property.location }}</span>
+            <span class="location-text">{{ property.addressLine1 }}</span>
           </div>
         </div>
 
@@ -205,26 +205,30 @@
             <div class="title-price-row">
               <h3 class="property-name">{{ property.name }}</h3>
               <div class="property-rent">
-                <span class="rent-amount">{{ property.rentRange }}</span>
-                <span class="rent-period">{{ property.rentPeriod }}</span>
+                <span class="rent-amount">
+                  {{ property.currency }} {{ property.minRent }} - {{ property.maxRent }}
+                </span>
+                <span class="rent-period">/mo</span>
               </div>
             </div>
 
-            <p class="property-subtitle">{{ property.subtitle }}</p>
+            <p class="property-subtitle">{{ property.description }}</p>
           </div>
 
           <!-- Allocation Metric Box -->
           <div class="allocation-box">
             <div class="alloc-row-top">
-              <span class="alloc-label">{{ property.allocationLabel }}</span>
-              <span class="alloc-fraction">{{ property.allocationDisplay }}</span>
+              <span class="alloc-label">Unit Allocation</span>
+              <span class="alloc-fraction">
+                {{ property.occupiedUnits }} / {{ property.unitCount }} Units
+              </span>
             </div>
 
             <div class="alloc-track">
               <div
                 class="alloc-fill"
                 [style.width.%]="
-                  (property.allocatedUnits / property.totalUnits) * 100
+                  property.occupancyRate
                 "
               ></div>
             </div>
@@ -232,11 +236,11 @@
             <div class="alloc-row-bottom">
               <span
                 class="vacant-status"
-                [class]="'vacant-' + property.vacantType"
+                [class]="'vacant-teal'"
               >
-                {{ property.vacantDisplay }}
+                {{ property.vacantUnits }} Units Vacant
               </span>
-              <span class="yield-tag">Yield: {{ property.yield }}</span>
+<!--              <span class="yield-tag">Yield: {{ property.yield }}</span>-->
             </div>
           </div>
 
@@ -244,7 +248,7 @@
             <!-- Tenant Avatar Stack -->
             <div class="tenant-stack-row">
               <div class="avatar-stack">
-                @for (avatar of property.tenantAvatars; track $index) {
+                @for (avatar of tenantAvatars(); track $index) {
                   <img
                     [src]="avatar"
                     alt="Tenant"
@@ -252,7 +256,7 @@
                     loading="lazy"
                   />
                 }
-                <div class="avatar-counter">{{ property.additionalTenants }}</div>
+                <div class="avatar-counter">{{ property.occupiedUnits }}</div>
               </div>
             </div>
 

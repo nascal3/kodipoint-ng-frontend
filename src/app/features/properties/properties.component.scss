@@ -618,9 +618,9 @@
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      &.dot-success { background: #10b981; }
+      &.dot-active { background: #10b981; }
       &.dot-warning { background: #f59e0b; }
-      &.dot-danger { background: #ef4444; }
+      &.dot-inactive { background: #ef4444; }
     }
   }
 

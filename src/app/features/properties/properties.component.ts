@@ -2,30 +2,31 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
-import { ReportsService } from '@app/features/properties/services/properties.service';
+import { PropertyService } from '@app/features/properties/services/properties.service';
 import { DashboardService } from '@app/features/dashboard/services/dashboard.service';
+import { PropertyItem } from '@app/features/properties/models/properties.models';
 import { forkJoin } from 'rxjs';
 
-export interface PropertyItem {
-  id: number;
-  name: string;
-  subtitle: string;
-  location: string;
-  image: string;
-  occupancy: string;
-  occupancyStatus: 'success' | 'warning' | 'danger';
-  rentRange: string;
-  rentPeriod: string;
-  allocationLabel: string;
-  allocatedUnits: number;
-  totalUnits: number;
-  allocationDisplay: string;
-  vacantDisplay: string;
-  vacantType: 'teal' | 'warning' | 'danger';
-  yield: string;
-  tenantAvatars: string[];
-  additionalTenants: string;
-}
+// export interface PropertyItem {
+//   id: number;
+//   name: string;
+//   subtitle: string;
+//   location: string;
+//   image: string;
+//   occupancy: string;
+//   occupancyStatus: 'success' | 'warning' | 'danger';
+//   rentRange: string;
+//   rentPeriod: string;
+//   allocationLabel: string;
+//   allocatedUnits: number;
+//   totalUnits: number;
+//   allocationDisplay: string;
+//   vacantDisplay: string;
+//   vacantType: 'teal' | 'warning' | 'danger';
+//   yield: string;
+//   tenantAvatars: string[];
+//   additionalTenants: string;
+// }
 
 @Component({
   selector: 'app-properties',
@@ -40,7 +41,7 @@ export interface PropertyItem {
   styleUrl: './properties.component.scss',
 })
 export class PropertiesComponent implements OnInit {
-  private readonly reportsService = inject(ReportsService);
+  private readonly propertyService = inject(PropertyService);
   private readonly dashboardService = inject(DashboardService);
 
   readonly projectedRent = signal({
@@ -72,125 +73,13 @@ export class PropertiesComponent implements OnInit {
     periodNote: 'Based on the last 30 days',
   });
 
-  readonly properties = signal<PropertyItem[]>([
-    {
-      id: 1,
-      name: 'Highland Residency',
-      subtitle: 'Multi-Family Residential Estate',
-      location: 'South B • Plainsview Road, Nairobi',
-      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=80',
-      occupancy: '94% Occupied',
-      occupancyStatus: 'success',
-      rentRange: 'KES 65K – 85K',
-      rentPeriod: '/mo',
-      allocationLabel: 'Unit Allocation',
-      allocatedUnits: 32,
-      totalUnits: 34,
-      allocationDisplay: '32 / 34 Units',
-      vacantDisplay: '2 Units Vacant',
-      vacantType: 'teal',
-      yield: '11.2% p.a.',
-      tenantAvatars: [
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
-      ],
-      additionalTenants: '+29',
-    },
-    {
-      id: 2,
-      name: 'Apex Commercial Plaza',
-      subtitle: 'Grade-A Commercial Complex',
-      location: 'Upper Hill • 3rd Ngong Avenue, Nairobi',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
-      occupancy: '89.5% Occupied',
-      occupancyStatus: 'success',
-      rentRange: 'KES 120K – 240K',
-      rentPeriod: '/mo',
-      allocationLabel: 'Suite Allocation',
-      allocatedUnits: 25,
-      totalUnits: 28,
-      allocationDisplay: '25 / 28 Units',
-      vacantDisplay: '3 Suites Vacant',
-      vacantType: 'teal',
-      yield: '10.8% p.a.',
-      tenantAvatars: [
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-      ],
-      additionalTenants: '+22',
-    },
-    {
-      id: 3,
-      name: 'Riverside Garden',
-      subtitle: 'Premium 2 & 3 Bed Apartments',
-      location: 'Ruaka Bypass • Kiambu County',
-      image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=80',
-      occupancy: '84.4% Occupied',
-      occupancyStatus: 'warning',
-      rentRange: 'KES 70K – 95K',
-      rentPeriod: '/mo',
-      allocationLabel: 'Unit Allocation',
-      allocatedUnits: 38,
-      totalUnits: 45,
-      allocationDisplay: '38 / 45 Units',
-      vacantDisplay: '7 units Vacant',
-      vacantType: 'warning',
-      yield: '9.8% p.a.',
-      tenantAvatars: [
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
-      ],
-      additionalTenants: '+36',
-    },
-    {
-      id: 4,
-      name: 'Kilimani Heights',
-      subtitle: 'Executive Serviced Residences',
-      location: 'Argwings Kodhek • Kilimani, Nairobi',
-      image: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?w=600&auto=format&fit=crop&q=80',
-      occupancy: '94.4% Occupied',
-      occupancyStatus: 'success',
-      rentRange: 'KES 90K – 135K',
-      rentPeriod: '/mo',
-      allocationLabel: 'Unit Allocation',
-      allocatedUnits: 34,
-      totalUnits: 36,
-      allocationDisplay: '34 / 36 Units',
-      vacantDisplay: '1 Unit vacant',
-      vacantType: 'danger',
-      yield: '12.4% p.a.',
-      tenantAvatars: [
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-      ],
-      additionalTenants: '+32',
-    },
-    {
-      id: 5,
-      name: 'Karen Executive Villas',
-      subtitle: 'Gated Residential Luxury Villas',
-      location: 'Miotoni Road • Karen, Nairobi',
-      image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&auto=format&fit=crop&q=80',
-      occupancy: '83.3% Occupied',
-      occupancyStatus: 'success',
-      rentRange: 'KES 160K – 180K',
-      rentPeriod: '/mo',
-      allocationLabel: 'Villa Allocation',
-      allocatedUnits: 10,
-      totalUnits: 12,
-      allocationDisplay: '10 / 12 Villas Full',
-      vacantDisplay: '2 Units Vacant',
-      vacantType: 'teal',
-      yield: '8.5% p.a.',
-      tenantAvatars: [
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-      ],
-      additionalTenants: '+8',
-    },
+  readonly tenantAvatars = signal([
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
   ]);
 
+  readonly properties = signal<PropertyItem[]>([]);
   readonly selectedCounty = signal('All Counties');
   readonly selectedStatus = signal('Status: All Statuses');
   readonly searchQuery = signal('');
@@ -218,10 +107,11 @@ export class PropertiesComponent implements OnInit {
     this.loadProjectedRent();
     this.loadOccupancyData();
     this.loadTotalRentOwed();
+    this.loadProperties();
   }
 
   private loadProjectedRent(): void {
-    this.reportsService.getProjectedRent(1, 10, 'DESC').subscribe({
+    this.propertyService.getProjectedRent(1, 10, 'DESC').subscribe({
       next: (response) => {
         const summary = response.summary;
         if (summary) {
@@ -285,6 +175,20 @@ export class PropertiesComponent implements OnInit {
       },
       error: (error) => {
         console.error('Failed to load total rent owed data:', error);
+      },
+    });
+  }
+
+  private loadProperties(): void {
+    this.propertyService.getProperties(1, 10, 'createdAt', 'DESC').subscribe({
+      next: (response) => {
+        const propertiesData = response.data;
+        this.properties.update((current) => ({
+          ...propertiesData
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to load properties data:', error);
       },
     });
   }

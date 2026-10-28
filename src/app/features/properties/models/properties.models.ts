@@ -27,3 +27,39 @@ export interface ProjectedRentResponse {
     hasPreviousPage: boolean
   };
 }
+
+export interface PropertyItem {
+  id: string;
+  managerId: string;
+  name: string;
+  addressLine1: string;
+  addressLine2: string | null;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  description: string | null;
+  currency: string;
+  monthlyRent: string;
+  unitCount: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  occupancyRate: number;
+  occupiedUnits: number;
+  vacantUnits: number;
+  minRent: number;
+  maxRent: number;
+}
+
+export interface PropertiesResponse {
+  data: PropertyItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean,
+    hasPreviousPage: boolean
+  };
+}
