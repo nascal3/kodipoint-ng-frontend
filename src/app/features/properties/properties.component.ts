@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
+import { ReportsService } from '@app/features/properties/services/properties.service';
+import { DashboardService } from '@app/features/dashboard/services/dashboard.service';
+import { forkJoin } from 'rxjs';
 
 export interface PropertyItem {
   id: number;
@@ -36,7 +39,10 @@ export interface PropertyItem {
   templateUrl: './properties.component.html',
   styleUrl: './properties.component.scss',
 })
-export class PropertiesComponent {
+export class PropertiesComponent implements OnInit {
+  private readonly reportsService = inject(ReportsService);
+  private readonly dashboardService = inject(DashboardService);
+
   readonly projectedRent = signal({
     title: 'Projected Monthly Rent',
     currency: 'KES',
@@ -206,5 +212,79 @@ export class PropertiesComponent {
 
   setView(view: 'grid' | 'list'): void {
     this.currentView.set(view);
+  }
+
+  ngOnInit(): void {
+    this.loadProjectedRent();
+    this.loadOccupancyData();
+    this.loadTotalRentOwed();
+  }
+
+  private loadProjectedRent(): void {
+    this.reportsService.getProjectedRent(1, 10, 'DESC').subscribe({
+      next: (response) => {
+        const summary = response.summary;
+        if (summary) {
+          this.projectedRent.update((current) => ({
+            ...current,
+            amount: summary.totalProjectedRent.toLocaleString(),
+          }));
+        }
+      },
+      error: (error) => {
+        console.error('Failed to load projected rent data:', error);
+      },
+    });
+  }
+
+  private loadOccupancyData(): void {
+    this.dashboardService.getPortfolioOccupancy().subscribe({
+      next: (response) => {
+        const { occupancyPercentage, totalUnits, vacantUnits, occupiedUnits} = response;
+        this.occupancyKpi.update((current) => ({
+          ...current,
+          percentage: `${occupancyPercentage}%`,
+          unitRatio: `${occupiedUnits} / ${totalUnits} Units`,
+          progress: occupancyPercentage,
+          vacantText: `${vacantUnits} Vacant Units`,
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to load projected rent data:', error);
+      },
+    });
+  }
+
+  private loadTotalRentOwed(): void {
+    const fromDate = new Date();
+    fromDate.setMonth(fromDate.getMonth() - 1);
+    const toDate = new Date();
+
+    forkJoin({
+      owed: this.dashboardService.getTotalRentOwed(fromDate, toDate),
+      collected: this.dashboardService.getAllPropertiesIncome(fromDate, toDate),
+    }).subscribe({
+      next: ({ owed, collected }) => {
+        const totalOwed = Number(owed.summary.totalOwed);
+        const totalCollected = Number(collected.summary.totalIncome);
+        const totalAmount = totalOwed + totalCollected;
+
+        const owedPercent = totalAmount > 0 ? (totalOwed / totalAmount) * 100 : 0;
+        const collectedPercent = totalAmount > 0 ? (totalCollected / totalAmount) * 100 : 0;
+
+        this.collectedVsOwed.update((current) => ({
+          ...current,
+          collectedLabel: `Collected (${collectedPercent.toFixed(1)}%)`,
+          collectedAmount: totalCollected.toLocaleString(),
+          owedAmount: totalOwed.toLocaleString(),
+          collectedPercent,
+          owedPercent,
+          owedLabel: `Owed (${owedPercent.toFixed(1)}%)`,
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to load total rent owed data:', error);
+      },
+    });
   }
 }
