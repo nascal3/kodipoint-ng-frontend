@@ -514,4 +514,14 @@ html.dark-theme {
   .user-profile-menu-panel .menu-divider {
     border-color: #294056 !important;
   }
+
+  .user-profile-menu-panel .profile-menu-item:hover,
+  .user-profile-menu-panel .profile-menu-item.logout-item:hover {
+    background-color: #14283a !important;
+  }
+
+  .user-profile-menu-panel .profile-menu-item:not(.logout-item):hover,
+  .user-profile-menu-panel .profile-menu-item:not(.logout-item):hover .mat-icon {
+    color: #d7e0eb !important;
+  }
 }
