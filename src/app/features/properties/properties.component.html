@@ -312,9 +312,11 @@
     </div>
 
     <!-- Load More Button -->
-    <button type="button" class="load-more-btn">
-      <mat-icon class="load-more-icon">expand_more</mat-icon>
-      <span>Load more</span>
-    </button>
+    @if (properties().length > 10) {
+      <button type="button" class="load-more-btn">
+        <mat-icon class="load-more-icon">expand_more</mat-icon>
+        <span>Load more</span>
+      </button>
+    }
   </section>
 </div>
