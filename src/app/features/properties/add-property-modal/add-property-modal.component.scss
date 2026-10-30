@@ -311,6 +311,17 @@
   color: #e2e8f0;
 }
 
+:host-context(html.dark-theme) .property-form .auth-input input::placeholder,
+:host-context(html.dark-theme) .property-form .auth-input textarea::placeholder {
+  color: #94a3b8;
+  opacity: 0;
+}
+
+:host-context(html.dark-theme) .property-form .auth-input input:focus::placeholder,
+:host-context(html.dark-theme) .property-form .auth-input textarea:focus::placeholder {
+  opacity: 1;
+}
+
 :host-context(html.dark-theme) .property-form .auth-input ::ng-deep .mat-mdc-text-field-wrapper {
   background: #0a1928;
 }
