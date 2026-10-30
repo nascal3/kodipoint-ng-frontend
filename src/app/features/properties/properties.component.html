@@ -107,8 +107,9 @@
           [ngModel]="selectedCounty()"
           (ngModelChange)="selectedCounty.set($event)"
         >
-          @for (county of counties; track county) {
-            <mat-option [value]="county">{{ county }}</mat-option>
+          <mat-option value="All Countries">All Countries</mat-option>
+          @for (country of countries(); track country.id) {
+            <mat-option [value]="country.id">{{ country.name }}</mat-option>
           }
         </mat-select>
       </div>
@@ -120,7 +121,7 @@
           (ngModelChange)="selectedStatus.set($event)"
         >
           @for (status of statuses; track status) {
-            <mat-option [value]="status">{{ status }}</mat-option>
+            <mat-option [value]="status.code">{{ status.label }}</mat-option>
           }
         </mat-select>
       </div>
@@ -315,5 +316,5 @@
 </div>
 
 @if (isAddPropertyModalOpen()) {
-  <app-add-property-modal (closed)="closeAddPropertyModal()" (created)="onPropertyCreated()" />
+  <app-add-property-modal [countries]="countries()" (closed)="closeAddPropertyModal()" (created)="onPropertyCreated()" />
 }

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { PropertyService } from '@app/features/properties/services/properties.service';
 import { DashboardService } from '@app/features/dashboard/services/dashboard.service';
-import { PropertyItem } from '@app/features/properties/models/properties.models';
+import { Country, PropertyItem } from '@app/features/properties/models/properties.models';
 import { forkJoin } from 'rxjs';
 import { AddPropertyModalComponent } from '@app/features/properties/add-property-modal/add-property-modal.component';
 
@@ -83,23 +83,17 @@ export class PropertiesComponent implements OnInit {
 
   readonly properties = signal<PropertyItem[]>([]);
   readonly isAddPropertyModalOpen = signal(false);
-  readonly selectedCounty = signal('All Counties');
-  readonly selectedStatus = signal('Status: All Statuses');
+  readonly selectedCounty = signal('All Countries');
+  readonly selectedStatus = signal('ALL');
   readonly searchQuery = signal('');
   readonly currentView = signal<'grid' | 'list'>('grid');
-
-  readonly counties = [
-    'All Counties',
-    'Nairobi',
-    'Kiambu',
-    'Mombasa',
-  ];
+  readonly countries = signal<Country[]>([]);
 
   readonly statuses = [
-    'Status: All Statuses',
-    'Status: Fully Occupied',
-    'Status: Partially Occupied',
-    'Status: Vacant',
+    { code: 'ALL', label: 'All Statuses' },
+    { code: 'ACTIVE', label: 'Active' },
+    { code: 'MAINTENANCE', label: 'Under Maintenance' },
+    { code: 'INACTIVE', label: 'Inactive' },
   ];
 
   setView(view: 'grid' | 'list'): void {
@@ -120,10 +114,22 @@ export class PropertiesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadCountries();
     this.loadProjectedRent();
     this.loadOccupancyData();
     this.loadTotalRentOwed();
     this.loadProperties();
+  }
+
+  private loadCountries(): void {
+    this.propertyService.getCountries().subscribe({
+      next: (countries) => {
+        this.countries.set(countries);
+      },
+      error: (error) => {
+        console.error('Failed to load countries:', error);
+      },
+    });
   }
 
   private loadProjectedRent(): void {

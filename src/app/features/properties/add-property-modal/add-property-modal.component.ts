@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, input, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { MatRadioModule } from '@angular/material/radio';
@@ -13,7 +13,7 @@ import { PropertyService } from '@app/features/properties/services/properties.se
   templateUrl: './add-property-modal.component.html',
   styleUrl: './add-property-modal.component.scss',
 })
-export class AddPropertyModalComponent implements OnInit {
+export class AddPropertyModalComponent {
   private readonly propertyService = inject(PropertyService);
 
   @Output() readonly closed = new EventEmitter<void>();
@@ -37,8 +37,8 @@ export class AddPropertyModalComponent implements OnInit {
     status: new FormControl('ACTIVE', { nonNullable: true, validators: Validators.required }),
   });
 
-  readonly countries = signal<Country[]>([]);
-  readonly states = ['Nairobi County', 'Kiambu County', 'Mombasa County'];
+  readonly countries = input<Country[]>([]);
+  readonly states = [];
   readonly cities = signal<City[]>([]);
   readonly currencies = [
     { code: 'KES', label: 'KES (Kenyan Shilling)' },
@@ -46,21 +46,6 @@ export class AddPropertyModalComponent implements OnInit {
     { code: 'EUR', label: 'EUR (Euro)' },
   ];
   readonly propertyStatuses = ['ACTIVE', 'MAINTENANCE', 'INACTIVE'];
-
-  ngOnInit(): void {
-    this.loadCountries();
-  }
-
-  loadCountries(): void {
-    this.propertyService.getCountries().subscribe({
-      next: (countries) => {
-        this.countries.set(countries);
-      },
-      error: (error) => {
-        console.error('Failed to load countries:', error);
-      },
-    });
-  }
 
   onCountrySelected(countryId: string): void {
     this.propertyForm.controls.city.reset('');
