@@ -4,6 +4,7 @@ import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { MatRadioModule } from '@angular/material/radio';
 import { City, CreatePropertyRequest, Country } from '@app/features/properties/models/properties.models';
 import { PropertyService } from '@app/features/properties/services/properties.service';
+import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-add-property-modal',
@@ -15,6 +16,7 @@ import { PropertyService } from '@app/features/properties/services/properties.se
 })
 export class AddPropertyModalComponent {
   private readonly propertyService = inject(PropertyService);
+  private readonly snackbarService = inject(SnackbarService);
 
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly created = new EventEmitter<void>();
@@ -68,6 +70,7 @@ export class AddPropertyModalComponent {
       },
       error: (error) => {
         console.error('Failed to load cities:', error);
+        this.snackbarService.error('Could not load cities for this country. Please try again.');
         if (this.propertyForm.controls.countryId.value === countryId) {
           this.isLoadingCities.set(false);
         }
@@ -97,6 +100,7 @@ export class AddPropertyModalComponent {
       error: (error) => {
         console.error('Failed to create property:', error);
         this.propertyCreationError.set('Could not create property. Please check the details and try again.');
+        this.snackbarService.error('Could not create property. Please check the details and try again.');
         this.isCreatingProperty.set(false);
       },
     });

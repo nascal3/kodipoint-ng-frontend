@@ -1,8 +1,14 @@
 import {inject, Injectable} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { City, CreatePropertyRequest, ProjectedRentResponse, PropertiesResponse, Country } from '@app/features/properties/models/properties.models';
+import {
+  City,
+  CreatePropertyRequest,
+  ProjectedRentResponse,
+  PropertiesResponse,
+  Country
+} from '@app/features/properties/models/properties.models';
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +29,19 @@ export class PropertyService {
   getProperties(
     page: number = 1,
     limit: number = 10,
-    createdAt: string = 'createdAt',
-    sortOrder: 'ASC' | 'DESC' = 'DESC'
+    sortOrder: 'ASC' | 'DESC' = 'DESC',
+    filters: { country?: string; status?: string; name?: string } = {}
   ): Observable<PropertiesResponse> {
-    return this.http.get<PropertiesResponse>(
-      `${environment.apiUrl}/properties?page=${page}&limit=${limit}&sortBy=${createdAt}&sortOrder=${sortOrder}`
-    );
+    let params = new HttpParams()
+      .set('page', page)
+      .set('limit', limit)
+      .set('sortOrder', sortOrder);
+
+    if (filters.country) params = params.set('country', filters.country);
+    if (filters.status) params = params.set('status', filters.status);
+    if (filters.name) params = params.set('name', filters.name);
+
+    return this.http.get<PropertiesResponse>(`${environment.apiUrl}/properties`, { params });
   }
 
   createProperty(property: CreatePropertyRequest): Observable<void> {

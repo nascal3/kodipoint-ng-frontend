@@ -97,15 +97,15 @@
           placeholder="Search properties by name"
           aria-label="Search properties"
           [ngModel]="searchQuery()"
-          (ngModelChange)="searchQuery.set($event)"
+          (ngModelChange)="onSearchQueryChange($event)"
         />
       </mat-form-field>
 
       <div class="dropdown-wrapper">
         <mat-select
           class="custom-select"
-          [ngModel]="selectedCounty()"
-          (ngModelChange)="selectedCounty.set($event)"
+          [ngModel]="selectedCountry()"
+          (ngModelChange)="onCountryChange($event)"
         >
           <mat-option value="All Countries">All Countries</mat-option>
           @for (country of countries(); track country.id) {
@@ -118,7 +118,7 @@
         <mat-select
           class="custom-select"
           [ngModel]="selectedStatus()"
-          (ngModelChange)="selectedStatus.set($event)"
+          (ngModelChange)="onStatusChange($event)"
         >
           @for (status of statuses; track status) {
             <mat-option [value]="status.code">{{ status.label }}</mat-option>
