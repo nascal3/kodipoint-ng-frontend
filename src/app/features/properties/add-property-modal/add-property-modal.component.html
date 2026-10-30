@@ -117,6 +117,9 @@
             @if (propertyForm.controls.monthlyRent.hasError('required') && propertyForm.controls.monthlyRent.touched) {
               <mat-error>Monthly rent is required.</mat-error>
             }
+            @if (propertyForm.controls.monthlyRent.hasError('min') && propertyForm.controls.monthlyRent.touched) {
+              <mat-error>Monthly rent must be at minimum 0.</mat-error>
+            }
           </mat-form-field>
         </div>
         <div class="form-field third-width">
