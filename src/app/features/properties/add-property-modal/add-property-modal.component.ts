@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
+import { MatRadioModule } from '@angular/material/radio';
 import { CreatePropertyRequest } from '@app/features/properties/models/properties.models';
 import { PropertyService } from '@app/features/properties/services/properties.service';
 
 @Component({
   selector: 'app-add-property-modal',
   standalone: true,
-  imports: [FormsModule, ...MATERIAL_MODULES],
+  imports: [FormsModule, MatRadioModule, ...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './add-property-modal.component.html',
   styleUrl: './add-property-modal.component.scss',
