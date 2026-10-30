@@ -17,14 +17,14 @@
       </button>
     </header>
 
-    <form #propertyForm="ngForm" class="property-form auth-form" (ngSubmit)="createProperty(propertyForm)">
+    <form [formGroup]="propertyForm" class="property-form auth-form" (ngSubmit)="createProperty()">
       <div class="property-form-fields">
         <div class="form-field full-width">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Property Name</mat-label>
             <mat-icon class="material-symbol" matPrefix>domain</mat-icon>
-            <input matInput id="property-name" name="name" [(ngModel)]="newProperty.name" required placeholder="Emerald Peak Residency" />
-            @if (propertyForm.controls['name']?.hasError('required') && propertyForm.controls['name']?.touched) {
+            <input matInput id="property-name" formControlName="name" placeholder="Emerald Peak Residency" />
+            @if (propertyForm.controls.name.hasError('required') && propertyForm.controls.name.touched) {
               <mat-error>Property name is required.</mat-error>
             }
           </mat-form-field>
@@ -35,8 +35,8 @@
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Address Line 1</mat-label>
             <mat-icon class="material-symbol" matPrefix>location_on</mat-icon>
-            <input matInput id="property-address-line-1" name="addressLine1" [(ngModel)]="newProperty.addressLine1" required placeholder="Street address" />
-            @if (propertyForm.controls['addressLine1']?.hasError('required') && propertyForm.controls['addressLine1']?.touched) {
+            <input matInput id="property-address-line-1" formControlName="addressLine1" placeholder="Street address" />
+            @if (propertyForm.controls.addressLine1.hasError('required') && propertyForm.controls.addressLine1.touched) {
               <mat-error>Address line 1 is required.</mat-error>
             }
           </mat-form-field>
@@ -45,7 +45,7 @@
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Address Line 2</mat-label>
             <mat-icon class="material-symbol" matPrefix>signpost</mat-icon>
-            <input matInput id="property-address-line-2" name="addressLine2" [(ngModel)]="newProperty.addressLine2" placeholder="Building, floor, suite" />
+            <input matInput id="property-address-line-2" formControlName="addressLine2" placeholder="Building, floor, suite" />
           </mat-form-field>
         </div>
 
@@ -53,12 +53,12 @@
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Country</mat-label>
             <mat-icon class="material-symbol" matPrefix>public</mat-icon>
-            <mat-select id="property-country" name="country" [(ngModel)]="newProperty.country" required>
-              @for (country of countries; track country.code) {
-                <mat-option [value]="country.name">{{ country.name }} ({{ country.code }})</mat-option>
+            <mat-select id="property-country" formControlName="countryId" (selectionChange)="onCountrySelected($event.value)">
+              @for (country of countries(); track country.id) {
+                <mat-option [value]="country.id">{{ country.name }}</mat-option>
               }
             </mat-select>
-            @if (propertyForm.controls['country']?.hasError('required') && propertyForm.controls['country']?.touched) {
+            @if (propertyForm.controls.countryId.hasError('required') && propertyForm.controls.countryId.touched) {
               <mat-error>Country is required.</mat-error>
             }
           </mat-form-field>
@@ -67,14 +67,7 @@
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>State / County</mat-label>
             <mat-icon class="material-symbol" matPrefix>map</mat-icon>
-            <mat-select id="property-state" name="state" [(ngModel)]="newProperty.state" required>
-              @for (state of states; track state) {
-                <mat-option [value]="state">{{ state }}</mat-option>
-              }
-            </mat-select>
-            @if (propertyForm.controls['state']?.hasError('required') && propertyForm.controls['state']?.touched) {
-              <mat-error>State or county is required.</mat-error>
-            }
+            <input matInput id="property-state" formControlName="state" placeholder="State / County" />
           </mat-form-field>
         </div>
 
@@ -82,8 +75,8 @@
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Postal Code</mat-label>
             <mat-icon class="material-symbol" matPrefix>local_post_office</mat-icon>
-            <input matInput id="property-postal-code" name="postalCode" [(ngModel)]="newProperty.postalCode" required placeholder="Postal code" />
-            @if (propertyForm.controls['postalCode']?.hasError('required') && propertyForm.controls['postalCode']?.touched) {
+            <input matInput id="property-postal-code" formControlName="postalCode" placeholder="Postal code" />
+            @if (propertyForm.controls.postalCode.hasError('required') && propertyForm.controls.postalCode.touched) {
               <mat-error>Postal code is required.</mat-error>
             }
           </mat-form-field>
@@ -92,12 +85,12 @@
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>City</mat-label>
             <mat-icon class="material-symbol" matPrefix>location_city</mat-icon>
-            <mat-select id="property-city" name="city" [(ngModel)]="newProperty.city" required>
-              @for (city of cities; track city) {
-                <mat-option [value]="city">{{ city }}</mat-option>
+            <mat-select id="property-city" formControlName="city">
+              @for (city of cities(); track city.id) {
+                <mat-option [value]="city.name">{{ city.name }}</mat-option>
               }
             </mat-select>
-            @if (propertyForm.controls['city']?.hasError('required') && propertyForm.controls['city']?.touched) {
+            @if (propertyForm.controls.city.hasError('required') && propertyForm.controls.city.touched) {
               <mat-error>City is required.</mat-error>
             }
           </mat-form-field>
@@ -107,8 +100,8 @@
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Total Units</mat-label>
             <mat-icon class="material-symbol" matPrefix>tag</mat-icon>
-            <input matInput id="property-unit-count" name="unitCount" type="number" min="1" step="1" [(ngModel)]="newProperty.unitCount" required />
-            @if (propertyForm.controls['unitCount']?.hasError('required') && propertyForm.controls['unitCount']?.touched) {
+            <input matInput id="property-unit-count" formControlName="unitCount" type="number" min="1" step="1" />
+            @if (propertyForm.controls.unitCount.hasError('required') && propertyForm.controls.unitCount.touched) {
               <mat-error>Total units is required.</mat-error>
             }
           </mat-form-field>
@@ -117,8 +110,8 @@
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Monthly Rent</mat-label>
             <mat-icon class="material-symbol" matPrefix>payments</mat-icon>
-            <input matInput id="property-monthly-rent" name="monthlyRent" type="number" min="0" step="0.01" [(ngModel)]="newProperty.monthlyRent" required />
-            @if (propertyForm.controls['monthlyRent']?.hasError('required') && propertyForm.controls['monthlyRent']?.touched) {
+            <input matInput id="property-monthly-rent" formControlName="monthlyRent" type="number" min="0" step="0.01" />
+            @if (propertyForm.controls.monthlyRent.hasError('required') && propertyForm.controls.monthlyRent.touched) {
               <mat-error>Monthly rent is required.</mat-error>
             }
           </mat-form-field>
@@ -127,12 +120,12 @@
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Currency</mat-label>
             <mat-icon class="material-symbol" matPrefix>paid</mat-icon>
-            <mat-select id="property-currency" name="currency" [(ngModel)]="newProperty.currency" required>
+            <mat-select id="property-currency" formControlName="currency">
               @for (currency of currencies; track currency.code) {
                 <mat-option [value]="currency.code">{{ currency.label }}</mat-option>
               }
             </mat-select>
-            @if (propertyForm.controls['currency']?.hasError('required') && propertyForm.controls['currency']?.touched) {
+            @if (propertyForm.controls.currency.hasError('required') && propertyForm.controls.currency.touched) {
               <mat-error>Currency is required.</mat-error>
             }
           </mat-form-field>
@@ -140,7 +133,7 @@
 
         <fieldset class="form-field full-width status-field">
           <legend>Operational Status</legend>
-          <mat-radio-group class="status-options" name="status" [(ngModel)]="newProperty.status" required>
+          <mat-radio-group class="status-options" formControlName="status">
             @for (status of propertyStatuses; track status) {
               <mat-radio-button class="status-option" [value]="status">{{ status }}</mat-radio-button>
             }
@@ -150,7 +143,7 @@
         <div class="form-field full-width description-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Property Description</mat-label>
-            <textarea matInput id="property-description" name="description" [(ngModel)]="newProperty.description" rows="3" placeholder="Add details about this property"></textarea>
+            <textarea matInput id="property-description" formControlName="description" rows="3" placeholder="Add details about this property"></textarea>
           </mat-form-field>
         </div>
       </div>
@@ -161,7 +154,7 @@
 
       <footer class="property-modal-footer">
         <button matButton="outlined" type="button" class="modal-cancel-button" (click)="close()">Cancel</button>
-        <button matButton="filled" type="submit" class="modal-submit-button" [disabled]="propertyForm.invalid || isCreatingProperty()">
+        <button matButton="filled" type="submit" class="modal-submit-button" [disabled]="propertyForm.invalid || propertyForm.controls.city.disabled || isCreatingProperty()">
           @if (isCreatingProperty()) {
             <mat-spinner diameter="18" aria-label="Creating property"></mat-spinner>
           } @else {

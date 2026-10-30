@@ -1,19 +1,19 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, signal } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, signal, OnInit } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { MatRadioModule } from '@angular/material/radio';
-import { CreatePropertyRequest } from '@app/features/properties/models/properties.models';
+import { City, CreatePropertyRequest, Country } from '@app/features/properties/models/properties.models';
 import { PropertyService } from '@app/features/properties/services/properties.service';
 
 @Component({
   selector: 'app-add-property-modal',
   standalone: true,
-  imports: [FormsModule, MatRadioModule, ...MATERIAL_MODULES],
+  imports: [ReactiveFormsModule, MatRadioModule, ...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './add-property-modal.component.html',
   styleUrl: './add-property-modal.component.scss',
 })
-export class AddPropertyModalComponent {
+export class AddPropertyModalComponent implements OnInit {
   private readonly propertyService = inject(PropertyService);
 
   @Output() readonly closed = new EventEmitter<void>();
@@ -21,48 +21,83 @@ export class AddPropertyModalComponent {
 
   readonly isCreatingProperty = signal(false);
   readonly propertyCreationError = signal('');
-  readonly newProperty: CreatePropertyRequest = {
-    name: '',
-    addressLine1: '',
-    addressLine2: null,
-    city: '',
-    state: '',
-    postalCode: '',
-    country: 'Kenya',
-    description: null,
-    currency: 'KES',
-    monthlyRent: 0,
-    unitCount: 0,
-    status: 'Active',
-  };
+  readonly propertyForm = new FormGroup({
+    name: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    addressLine1: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    addressLine2: new FormControl<string | null>(null),
+    city: new FormControl({ value: '', disabled: true }, { nonNullable: true, validators: Validators.required }),
+    state: new FormControl('', { nonNullable: true }),
+    postalCode: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    countryId: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    description: new FormControl<string | null>(null),
+    currency: new FormControl('KES', { nonNullable: true, validators: Validators.required }),
+    monthlyRent: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
+    unitCount: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
+    status: new FormControl('ACTIVE', { nonNullable: true, validators: Validators.required }),
+  });
 
-  readonly countries = [
-    { name: 'Kenya', code: 'KE' },
-    { name: 'Uganda', code: 'UG' },
-    { name: 'Tanzania', code: 'TZ' },
-  ];
+  readonly countries = signal<Country[]>([]);
   readonly states = ['Nairobi County', 'Kiambu County', 'Mombasa County'];
-  readonly cities = ['Nairobi', 'Kiambu', 'Mombasa'];
+  readonly cities = signal<City[]>([]);
   readonly currencies = [
     { code: 'KES', label: 'KES (Kenyan Shilling)' },
     { code: 'USD', label: 'USD (US Dollar)' },
     { code: 'EUR', label: 'EUR (Euro)' },
   ];
-  readonly propertyStatuses = ['Active', 'Maintenance', 'Inactive'];
+  readonly propertyStatuses = ['ACTIVE', 'MAINTENANCE', 'INACTIVE'];
+
+  ngOnInit(): void {
+    this.loadCountries();
+  }
+
+  loadCountries(): void {
+    this.propertyService.getCountries().subscribe({
+      next: (countries) => {
+        this.countries.set(countries);
+      },
+      error: (error) => {
+        console.error('Failed to load countries:', error);
+      },
+    });
+  }
+
+  onCountrySelected(countryId: string): void {
+    this.propertyForm.controls.city.reset('');
+    this.loadCities(countryId);
+  }
+
+  private loadCities(countryId: string): void {
+    this.cities.set([]);
+    this.propertyForm.controls.city.disable();
+    if (!countryId) return;
+
+    this.propertyService.getCities(countryId).subscribe({
+      next: (cities) => {
+        if (this.propertyForm.controls.countryId.value !== countryId) return;
+
+        this.cities.set(cities);
+        if (cities.length > 0) this.propertyForm.controls.city.enable();
+      },
+      error: (error) => {
+        console.error('Failed to load cities:', error);
+      },
+    });
+  }
 
   close(): void {
     if (!this.isCreatingProperty()) this.closed.emit();
   }
 
-  createProperty(form: NgForm): void {
-    if (form.invalid || this.isCreatingProperty()) return;
+  createProperty(): void {
+    if (this.propertyForm.invalid || this.propertyForm.controls.city.disabled || this.isCreatingProperty()) return;
 
     this.isCreatingProperty.set(true);
     this.propertyCreationError.set('');
+    const formValue = this.propertyForm.getRawValue();
     this.propertyService.createProperty({
-      ...this.newProperty,
-      addressLine2: this.newProperty.addressLine2 || null,
-      description: this.newProperty.description || null,
+      ...formValue,
+      addressLine2: formValue.addressLine2 || null,
+      description: formValue.description || null,
     }).subscribe({
       next: () => {
         this.isCreatingProperty.set(false);

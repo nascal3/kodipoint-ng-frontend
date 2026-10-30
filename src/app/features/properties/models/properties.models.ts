@@ -52,6 +52,21 @@ export interface PropertyItem {
   maxRent: number;
 }
 
+export interface Country {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface City {
+  id: string;
+  name: string;
+  countryId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CreatePropertyRequest {
   name: string;
   addressLine1: string;
@@ -59,7 +74,7 @@ export interface CreatePropertyRequest {
   city: string;
   state: string;
   postalCode: string;
-  country: string;
+  countryId: string;
   description: string | null;
   currency: string;
   monthlyRent: number;
