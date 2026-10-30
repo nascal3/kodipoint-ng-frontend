@@ -1,0 +1,152 @@
+<div class="property-modal-backdrop" (click)="close()" (keydown.escape)="close()">
+  <section
+    class="property-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="add-property-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="property-modal-header">
+      <div class="modal-heading-icon"><mat-icon>domain_add</mat-icon></div>
+      <div class="modal-heading-copy">
+        <h2 id="add-property-title">Add New Property</h2>
+        <p>Register a new real estate complex or residential unit</p>
+      </div>
+      <button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <form #propertyForm="ngForm" class="property-form" (ngSubmit)="createProperty(propertyForm)">
+      <div class="property-form-fields">
+        <label class="form-field full-width">
+          <span>Property Name <strong>*</strong></span>
+          <span class="input-with-icon">
+            <mat-icon>domain</mat-icon>
+            <input name="name" [(ngModel)]="newProperty.name" required placeholder="e.g. Emerald Peak Residency" />
+          </span>
+          <small>Official title of building, complex, or commercial facility</small>
+        </label>
+
+        <label class="form-field">
+          <span>Address Line 1 <strong>*</strong></span>
+          <span class="input-with-icon">
+            <mat-icon>location_on</mat-icon>
+            <input name="addressLine1" [(ngModel)]="newProperty.addressLine1" required placeholder="Street address" />
+          </span>
+        </label>
+        <label class="form-field">
+          <span>Address Line 2 (Optional)</span>
+          <span class="input-with-icon">
+            <mat-icon>signpost</mat-icon>
+            <input name="addressLine2" [(ngModel)]="newProperty.addressLine2" placeholder="Building, floor, suite" />
+          </span>
+        </label>
+
+        <label class="form-field">
+          <span>Country <strong>*</strong></span>
+          <span class="input-with-icon select-input">
+            <mat-icon>public</mat-icon>
+            <select name="country" [(ngModel)]="newProperty.country" required>
+              <option value="" disabled>Select country</option>
+              @for (country of countries; track country.code) {
+                <option [value]="country.name">{{ country.name }} ({{ country.code }})</option>
+              }
+            </select>
+          </span>
+        </label>
+        <label class="form-field">
+          <span>State / County <strong>*</strong></span>
+          <span class="input-with-icon select-input">
+            <mat-icon>map</mat-icon>
+            <select name="state" [(ngModel)]="newProperty.state" required>
+              <option value="" disabled>Select state or county</option>
+              @for (state of states; track state) {
+                <option [value]="state">{{ state }}</option>
+              }
+            </select>
+          </span>
+        </label>
+
+        <label class="form-field">
+          <span>Postal Code <strong>*</strong></span>
+          <span class="input-with-icon">
+            <mat-icon>local_post_office</mat-icon>
+            <input name="postalCode" [(ngModel)]="newProperty.postalCode" required placeholder="Postal code" />
+          </span>
+        </label>
+        <label class="form-field">
+          <span>City <strong>*</strong></span>
+          <span class="input-with-icon select-input">
+            <mat-icon>location_city</mat-icon>
+            <select name="city" [(ngModel)]="newProperty.city" required>
+              <option value="" disabled>Select city</option>
+              @for (city of cities; track city) {
+                <option [value]="city">{{ city }}</option>
+              }
+            </select>
+          </span>
+        </label>
+
+        <label class="form-field">
+          <span>Total Units <strong>*</strong></span>
+          <span class="input-with-icon">
+            <mat-icon>tag</mat-icon>
+            <input name="unitCount" type="number" min="1" step="1" [(ngModel)]="newProperty.unitCount" required />
+          </span>
+        </label>
+        <label class="form-field">
+          <span>Monthly Rent <strong>*</strong></span>
+          <span class="input-with-icon">
+            <mat-icon>payments</mat-icon>
+            <input name="monthlyRent" type="number" min="0" step="0.01" [(ngModel)]="newProperty.monthlyRent" required />
+          </span>
+        </label>
+        <label class="form-field">
+          <span>Currency <strong>*</strong></span>
+          <span class="input-with-icon select-input">
+            <mat-icon>paid</mat-icon>
+            <select name="currency" [(ngModel)]="newProperty.currency" required>
+              @for (currency of currencies; track currency.code) {
+                <option [value]="currency.code">{{ currency.label }}</option>
+              }
+            </select>
+          </span>
+        </label>
+
+        <fieldset class="form-field full-width status-field">
+          <legend>Operational Status <strong>*</strong></legend>
+          <div class="status-options">
+            @for (status of propertyStatuses; track status) {
+              <label class="status-option" [class.selected]="newProperty.status === status">
+                <input type="radio" name="status" [value]="status" [(ngModel)]="newProperty.status" required />
+                <span>{{ status }}</span>
+              </label>
+            }
+          </div>
+        </fieldset>
+
+        <label class="form-field full-width description-field">
+          <span>Property Description</span>
+          <textarea name="description" [(ngModel)]="newProperty.description" rows="3" placeholder="Add details about this property"></textarea>
+        </label>
+      </div>
+
+      @if (propertyCreationError()) {
+        <p class="property-form-error" role="alert">{{ propertyCreationError() }}</p>
+      }
+
+      <footer class="property-modal-footer">
+        <button type="button" class="modal-cancel-button" (click)="close()">Cancel</button>
+        <button type="submit" class="modal-submit-button" [disabled]="propertyForm.invalid || isCreatingProperty()">
+          @if (isCreatingProperty()) {
+            <mat-spinner diameter="18" aria-label="Creating property"></mat-spinner>
+          } @else {
+            <mat-icon>add_circle_outline</mat-icon>
+          }
+          <span>{{ isCreatingProperty() ? 'Creating...' : 'Create Property' }}</span>
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

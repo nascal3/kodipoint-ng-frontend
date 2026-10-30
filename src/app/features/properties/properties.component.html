@@ -151,7 +151,7 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
 
-      <button type="button" mat-raised-button class="btn-add-property" color="primary">
+      <button type="button" mat-raised-button class="btn-add-property" color="primary" (click)="openAddPropertyModal()">
         <mat-icon class="add-icon">add</mat-icon>
         <span>Add Property</span>
       </button>
@@ -300,7 +300,7 @@
         KodiPoint.
       </p>
 
-      <button type="button" mat-raised-button class="btn-launch-wizard" color="primary">
+      <button type="button" mat-raised-button class="btn-launch-wizard" color="primary" (click)="openAddPropertyModal()">
         <mat-icon class="add-icon">play_arrow</mat-icon>
         <span>LAUNCH SETUP WIZARD</span>
       </button>
@@ -320,3 +320,7 @@
     }
   </section>
 </div>
+
+@if (isAddPropertyModalOpen()) {
+  <app-add-property-modal (closed)="closeAddPropertyModal()" (created)="onPropertyCreated()" />
+}

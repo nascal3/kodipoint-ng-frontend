@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { ProjectedRentResponse, PropertiesResponse } from '@app/features/properties/models/properties.models';
+import { CreatePropertyRequest, ProjectedRentResponse, PropertiesResponse } from '@app/features/properties/models/properties.models';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +29,9 @@ export class PropertyService {
     return this.http.get<PropertiesResponse>(
       `${environment.apiUrl}/properties?page=${page}&limit=${limit}&sortBy=${createdAt}&sortOrder=${sortOrder}`
     );
+  }
+
+  createProperty(property: CreatePropertyRequest): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/properties`, property);
   }
 }

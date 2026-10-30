@@ -6,6 +6,7 @@ import { PropertyService } from '@app/features/properties/services/properties.se
 import { DashboardService } from '@app/features/dashboard/services/dashboard.service';
 import { PropertyItem } from '@app/features/properties/models/properties.models';
 import { forkJoin } from 'rxjs';
+import { AddPropertyModalComponent } from '@app/features/properties/add-property-modal/add-property-modal.component';
 
 // export interface PropertyItem {
 //   id: number;
@@ -35,6 +36,7 @@ import { forkJoin } from 'rxjs';
     CommonModule,
     FormsModule,
     ...MATERIAL_MODULES,
+    AddPropertyModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './properties.component.html',
@@ -80,6 +82,7 @@ export class PropertiesComponent implements OnInit {
   ]);
 
   readonly properties = signal<PropertyItem[]>([]);
+  readonly isAddPropertyModalOpen = signal(false);
   readonly selectedCounty = signal('All Counties');
   readonly selectedStatus = signal('Status: All Statuses');
   readonly searchQuery = signal('');
@@ -101,6 +104,19 @@ export class PropertiesComponent implements OnInit {
 
   setView(view: 'grid' | 'list'): void {
     this.currentView.set(view);
+  }
+
+  openAddPropertyModal(): void {
+    this.isAddPropertyModalOpen.set(true);
+  }
+
+  closeAddPropertyModal(): void {
+    this.isAddPropertyModalOpen.set(false);
+  }
+
+  onPropertyCreated(): void {
+    this.closeAddPropertyModal();
+    this.loadProperties();
   }
 
   ngOnInit(): void {
@@ -183,9 +199,7 @@ export class PropertiesComponent implements OnInit {
     this.propertyService.getProperties(1, 10, 'createdAt', 'DESC').subscribe({
       next: (response) => {
         const propertiesData = response.data;
-        this.properties.update((current) => ({
-          ...propertiesData
-        }));
+        this.properties.set(propertiesData);
       },
       error: (error) => {
         console.error('Failed to load properties data:', error);

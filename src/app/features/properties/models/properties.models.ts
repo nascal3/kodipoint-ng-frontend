@@ -52,6 +52,21 @@ export interface PropertyItem {
   maxRent: number;
 }
 
+export interface CreatePropertyRequest {
+  name: string;
+  addressLine1: string;
+  addressLine2: string | null;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  description: string | null;
+  currency: string;
+  monthlyRent: number;
+  unitCount: number;
+  status: string;
+}
+
 export interface PropertiesResponse {
   data: PropertyItem[];
   pagination: {
