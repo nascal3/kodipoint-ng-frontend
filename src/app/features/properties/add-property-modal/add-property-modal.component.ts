@@ -20,6 +20,7 @@ export class AddPropertyModalComponent implements OnInit {
   @Output() readonly created = new EventEmitter<void>();
 
   readonly isCreatingProperty = signal(false);
+  readonly isLoadingCities = signal(false);
   readonly propertyCreationError = signal('');
   readonly propertyForm = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: Validators.required }),
@@ -69,6 +70,7 @@ export class AddPropertyModalComponent implements OnInit {
   private loadCities(countryId: string): void {
     this.cities.set([]);
     this.propertyForm.controls.city.disable();
+    this.isLoadingCities.set(!!countryId);
     if (!countryId) return;
 
     this.propertyService.getCities(countryId).subscribe({
@@ -76,10 +78,14 @@ export class AddPropertyModalComponent implements OnInit {
         if (this.propertyForm.controls.countryId.value !== countryId) return;
 
         this.cities.set(cities);
+        this.isLoadingCities.set(false);
         if (cities.length > 0) this.propertyForm.controls.city.enable();
       },
       error: (error) => {
         console.error('Failed to load cities:', error);
+        if (this.propertyForm.controls.countryId.value === countryId) {
+          this.isLoadingCities.set(false);
+        }
       },
     });
   }

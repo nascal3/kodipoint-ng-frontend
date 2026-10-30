@@ -65,9 +65,19 @@
         </div>
         <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-            <mat-label>State / County</mat-label>
-            <mat-icon class="material-symbol" matPrefix>map</mat-icon>
-            <input matInput id="property-state" formControlName="state" placeholder="State / County" />
+            <mat-label>City</mat-label>
+            <mat-icon class="material-symbol" matPrefix>location_city</mat-icon>
+            <mat-select id="property-city" formControlName="city" [attr.aria-busy]="isLoadingCities()">
+              @for (city of cities(); track city.id) {
+                <mat-option [value]="city.name">{{ city.name }}</mat-option>
+              }
+            </mat-select>
+            @if (isLoadingCities()) {
+              <mat-spinner matSuffix diameter="18" aria-label="Loading cities"></mat-spinner>
+            }
+            @if (propertyForm.controls.city.hasError('required') && propertyForm.controls.city.touched) {
+              <mat-error>City is required.</mat-error>
+            }
           </mat-form-field>
         </div>
 
@@ -83,16 +93,9 @@
         </div>
         <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-            <mat-label>City</mat-label>
-            <mat-icon class="material-symbol" matPrefix>location_city</mat-icon>
-            <mat-select id="property-city" formControlName="city">
-              @for (city of cities(); track city.id) {
-                <mat-option [value]="city.name">{{ city.name }}</mat-option>
-              }
-            </mat-select>
-            @if (propertyForm.controls.city.hasError('required') && propertyForm.controls.city.touched) {
-              <mat-error>City is required.</mat-error>
-            }
+            <mat-label>State / County</mat-label>
+            <mat-icon class="material-symbol" matPrefix>map</mat-icon>
+            <input matInput id="property-state" formControlName="state" placeholder="State / County" />
           </mat-form-field>
         </div>
 
