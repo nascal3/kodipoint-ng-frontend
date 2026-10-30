@@ -94,7 +94,7 @@
           matInput
           type="text"
           class="search-input"
-          placeholder="Search properties"
+          placeholder="Search properties by name"
           aria-label="Search properties"
           [ngModel]="searchQuery()"
           (ngModelChange)="searchQuery.set($event)"
@@ -197,6 +197,7 @@
           <!-- Location Overlay -->
           <div class="location-overlay">
             <span class="location-text">{{ property.addressLine1 }}</span>
+            <div class="location-text">{{ property.city }}</div>
           </div>
         </div>
 

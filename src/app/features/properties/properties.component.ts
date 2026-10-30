@@ -94,6 +94,7 @@ export class PropertiesComponent implements OnInit {
     { code: 'ACTIVE', label: 'Active' },
     { code: 'MAINTENANCE', label: 'Under Maintenance' },
     { code: 'INACTIVE', label: 'Inactive' },
+    { code: 'ARCHIVED', label: 'Deleted' },
   ];
 
   setView(view: 'grid' | 'list'): void {
