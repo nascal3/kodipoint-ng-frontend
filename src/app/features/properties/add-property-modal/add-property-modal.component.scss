@@ -256,6 +256,123 @@
   font-size: 16px;
 }
 
+:host-context(html.dark-theme) .property-modal-backdrop {
+  background: rgba(3, 10, 18, 0.72);
+}
+
+:host-context(html.dark-theme) .property-modal {
+  color: #e2e8f0;
+  background: #0f2030;
+  border-color: #203447;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.48);
+}
+
+:host-context(html.dark-theme) .property-modal-header,
+:host-context(html.dark-theme) .property-modal-footer {
+  background: #0b1b2a;
+  border-color: #203447;
+}
+
+:host-context(html.dark-theme) .modal-heading-icon {
+  color: #93c5fd;
+  background: #14283a;
+}
+
+:host-context(html.dark-theme) .modal-heading-copy h2,
+:host-context(html.dark-theme) .field-label {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .modal-heading-copy p,
+:host-context(html.dark-theme) .field-hint,
+:host-context(html.dark-theme) .status-field legend {
+  color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .modal-close-button {
+  color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .modal-close-button:hover {
+  background: #14283a;
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .property-form .material-symbol {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .property-form .auth-input mat-label {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .property-form .auth-input input,
+:host-context(html.dark-theme) .property-form .auth-input textarea {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .property-form .auth-input ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #0a1928;
+}
+
+:host-context(html.dark-theme) .property-form .auth-input ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .property-form .auth-input ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .property-form .auth-input ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #294056;
+}
+
+:host-context(html.dark-theme) .property-form .auth-input:hover ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .property-form .auth-input:hover ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .property-form .auth-input:hover ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #47627b;
+}
+
+:host-context(html.dark-theme) .status-option {
+  background: #0a1928;
+  border-color: #294056;
+  --mat-radio-unselected-icon-color: #94a3b8;
+  --mat-radio-unselected-hover-icon-color: #cbd5e1;
+  --mat-radio-unselected-focus-icon-color: #cbd5e1;
+  --mat-radio-selected-icon-color: #60a5fa;
+  --mat-radio-selected-hover-icon-color: #93c5fd;
+  --mat-radio-selected-focus-icon-color: #93c5fd;
+  --mat-radio-selected-pressed-icon-color: #60a5fa;
+  --mat-radio-label-text-color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .status-option ::ng-deep .mdc-form-field {
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .property-form-error {
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .modal-cancel-button {
+  --mat-button-outlined-outline-color: #47627b;
+  --mat-button-outlined-label-text-color: #cbd5e1;
+  --mat-button-outlined-disabled-label-text-color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .modal-submit-button {
+  --mat-button-filled-container-color: #3b82f6;
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-disabled-container-color: #203447;
+  --mat-button-filled-disabled-label-text-color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .modal-submit-button:hover:not(:disabled) {
+  --mat-button-filled-container-color: #2563eb;
+}
+
+:host-context(html.dark-theme) .modal-submit-button:disabled {
+  opacity: 1;
+}
+
+:host-context(html.dark-theme) .property-form mat-spinner {
+  --mdc-circular-progress-active-indicator-color: #60a5fa;
+}
+
 @media (max-width: 600px) {
   .property-modal-backdrop {
     align-items: flex-end;
