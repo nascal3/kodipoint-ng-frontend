@@ -5,7 +5,7 @@ import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { PropertyService } from '@app/features/properties/services/properties.service';
 import { DashboardService } from '@app/features/dashboard/services/dashboard.service';
 import { Country, PropertyItem } from '@app/features/properties/models/properties.models';
-import { EMPTY, Subject, catchError, debounceTime, distinctUntilChanged, map, switchMap, forkJoin } from 'rxjs';
+import { EMPTY, Subject, catchError, debounceTime, map, merge, of, switchMap, forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddPropertyModalComponent } from '@app/features/properties/add-property-modal/add-property-modal.component';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
@@ -66,6 +66,8 @@ export class PropertiesComponent implements OnInit {
   ]);
 
   readonly properties = signal<PropertyItem[]>([]);
+  readonly isLoadingProperties = signal(true);
+  readonly propertyLoadingSkeletons = [0, 1, 2, 3, 4, 5];
   readonly isAddPropertyModalOpen = signal(false);
   readonly selectedCountry = signal('All Countries');
   readonly selectedStatus = signal('ALL');
@@ -110,7 +112,7 @@ export class PropertiesComponent implements OnInit {
 
   onPropertyCreated(): void {
     this.closeAddPropertyModal();
-    this.loadProperties();
+    this.propertyFiltersChanged.next();
   }
 
   ngOnInit(): void {
@@ -119,28 +121,29 @@ export class PropertiesComponent implements OnInit {
     this.loadProjectedRent();
     this.loadOccupancyData();
     this.loadTotalRentOwed();
-    this.loadProperties();
   }
 
   private watchPropertyFilters(): void {
-    this.propertyFiltersChanged.pipe(
-      debounceTime(300),
+    merge(
+      of(undefined),
+      this.propertyFiltersChanged.pipe(debounceTime(300))
+    ).pipe(
       map(() => this.getPropertyFilters()),
-      distinctUntilChanged((previous, current) =>
-        previous.country === current.country
-        && previous.status === current.status
-        && previous.name === current.name
-      ),
-      switchMap((filters) => this.propertyService.getProperties(1, 10, 'DESC', filters).pipe(
-        catchError((error: unknown) => {
-          console.error('Failed to load properties data:', error);
-          this.snackbarService.error('Could not load properties. Please try again.');
-          return EMPTY;
-        })
-      )),
+      switchMap((filters) => {
+        this.isLoadingProperties.set(true);
+        return this.propertyService.getProperties(1, 10, 'DESC', filters).pipe(
+          catchError((error: unknown) => {
+            console.error('Failed to load properties data:', error);
+            this.snackbarService.error('Could not load properties. Please try again.');
+            this.isLoadingProperties.set(false);
+            return EMPTY;
+          })
+        );
+      }),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe((response) => {
       this.properties.set(response.data);
+      this.isLoadingProperties.set(false);
     });
   }
 
@@ -236,19 +239,6 @@ export class PropertiesComponent implements OnInit {
       error: (error) => {
         console.error('Failed to load total rent owed data:', error);
         this.snackbarService.error('Could not load rent collection data.');
-      },
-    });
-  }
-
-  private loadProperties(): void {
-    this.propertyService.getProperties(1, 10, 'DESC', this.getPropertyFilters()).subscribe({
-      next: (response) => {
-        const propertiesData = response.data;
-        this.properties.set(propertiesData);
-      },
-      error: (error) => {
-        console.error('Failed to load properties data:', error);
-        this.snackbarService.error('Could not load properties. Please try again.');
       },
     });
   }

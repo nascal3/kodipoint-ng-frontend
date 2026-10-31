@@ -163,159 +163,193 @@
   <section
     class="properties-grid"
     [class.list-view]="currentView() === 'list'"
+    [attr.aria-busy]="isLoadingProperties()"
     aria-label="Properties Catalog"
   >
-    @for (property of properties(); track property.id) {
-      <div class="property-card">
-        <!-- Top Image Area -->
-        <div class="property-image-container">
-          <img
-            src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=80"
-            [alt]="property.name"
-            class="property-image"
-            loading="lazy"
-          />
+    @if (isLoadingProperties()) {
+      <div class="properties-loading-status" role="status">
+        <span class="properties-loading-spinner" aria-hidden="true"></span>
+        Loading properties...
+      </div>
 
-          <!-- Floating Occupancy Badge -->
-          <div class="occupancy-badge">
+      @for (skeleton of propertyLoadingSkeletons; track skeleton) {
+        <div class="property-card property-skeleton" aria-hidden="true">
+          <div class="property-image-container">
+            <div class="skeleton-placeholder skeleton-image"></div>
+          </div>
+
+          <div class="property-card-body">
+            <div class="property-details">
+              <div class="skeleton-placeholder skeleton-title"></div>
+              <div class="skeleton-placeholder skeleton-description"></div>
+            </div>
+
+            <div class="allocation-box skeleton-allocation">
+              <div class="skeleton-placeholder skeleton-allocation-label"></div>
+              <div class="skeleton-placeholder skeleton-allocation-track"></div>
+              <div class="skeleton-placeholder skeleton-allocation-footer"></div>
+            </div>
+
+            <div class="property-card-actions skeleton-actions">
+              <div class="skeleton-placeholder skeleton-avatar"></div>
+              <div class="skeleton-placeholder skeleton-action"></div>
+            </div>
+          </div>
+        </div>
+      }
+    } @else {
+      @for (property of properties(); track property.id) {
+        <div class="property-card">
+          <!-- Top Image Area -->
+          <div class="property-image-container">
+            <img
+              src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&auto=format&fit=crop&q=80"
+              [alt]="property.name"
+              class="property-image"
+              loading="lazy"
+            />
+
+            <!-- Floating Occupancy Badge -->
+            <div class="occupancy-badge">
             <span
               class="badge-dot"
               [class]="`dot-${property.status.toLowerCase()}`"
             ></span>
-            <span class="badge-text">{{ property.status }}</span>
+              <span class="badge-text">{{ property.status }}</span>
+            </div>
+
+            <!-- Floating Bookmark Button -->
+            <!--          <button-->
+            <!--            type="button"-->
+            <!--            class="bookmark-btn"-->
+            <!--            aria-label="Bookmark property"-->
+            <!--          >-->
+            <!--            <mat-icon class="bookmark-icon">bookmark_border</mat-icon>-->
+            <!--          </button>-->
+
+            <!-- Location Overlay -->
+            <div class="location-overlay">
+              <span class="location-text">{{ property.addressLine1 }}</span>
+              <div class="location-text">{{ property.city }}</div>
+            </div>
           </div>
 
-          <!-- Floating Bookmark Button -->
-<!--          <button-->
-<!--            type="button"-->
-<!--            class="bookmark-btn"-->
-<!--            aria-label="Bookmark property"-->
-<!--          >-->
-<!--            <mat-icon class="bookmark-icon">bookmark_border</mat-icon>-->
-<!--          </button>-->
-
-          <!-- Location Overlay -->
-          <div class="location-overlay">
-            <span class="location-text">{{ property.addressLine1 }}</span>
-            <div class="location-text">{{ property.city }}</div>
-          </div>
-        </div>
-
-        <!-- Property Card Body -->
-        <div class="property-card-body">
-          <div class="property-details">
-            <div class="title-price-row">
-              <h3 class="property-name">{{ property.name }}</h3>
-              <div class="property-rent">
+          <!-- Property Card Body -->
+          <div class="property-card-body">
+            <div class="property-details">
+              <div class="title-price-row">
+                <h3 class="property-name">{{ property.name }}</h3>
+                <div class="property-rent">
                 <span class="rent-amount">
                   {{ property.currency }} {{ property.minRent }} - {{ property.maxRent }}
                 </span>
-                <span class="rent-period">/mo</span>
+                  <span class="rent-period">/mo</span>
+                </div>
               </div>
+
+              <p class="property-subtitle">{{ property.description }}</p>
             </div>
 
-            <p class="property-subtitle">{{ property.description }}</p>
-          </div>
-
-          <!-- Allocation Metric Box -->
-          <div class="allocation-box">
-            <div class="alloc-row-top">
-              <span class="alloc-label">Unit Allocation</span>
-              <span class="alloc-fraction">
+            <!-- Allocation Metric Box -->
+            <div class="allocation-box">
+              <div class="alloc-row-top">
+                <span class="alloc-label">Unit Allocation</span>
+                <span class="alloc-fraction">
                 {{ property.occupiedUnits }} / {{ property.unitCount }} Units
               </span>
-            </div>
+              </div>
 
-            <div class="alloc-track">
-              <div
-                class="alloc-fill"
-                [style.width.%]="
+              <div class="alloc-track">
+                <div
+                  class="alloc-fill"
+                  [style.width.%]="
                   property.occupancyRate
                 "
-              ></div>
-            </div>
+                ></div>
+              </div>
 
-            <div class="alloc-row-bottom">
+              <div class="alloc-row-bottom">
               <span
                 class="vacant-status"
                 [class]="'vacant-teal'"
               >
                 {{ property.vacantUnits }} Units Vacant
               </span>
-<!--              <span class="yield-tag">Yield: {{ property.yield }}</span>-->
-            </div>
-          </div>
-
-          <div class="property-card-actions">
-            <!-- Tenant Avatar Stack -->
-            <div class="tenant-stack-row">
-              <div class="avatar-stack">
-                @for (avatar of tenantAvatars(); track $index) {
-                  <img
-                    [src]="avatar"
-                    alt="Tenant"
-                    class="tenant-avatar"
-                    loading="lazy"
-                  />
-                }
-                <div class="avatar-counter">{{ property.occupiedUnits }}</div>
+                <!--              <span class="yield-tag">Yield: {{ property.yield }}</span>-->
               </div>
             </div>
 
-            <!-- Card Actions Footer -->
-            <div class="card-footer">
-              <button type="button" class="btn-assign" matTooltip="Assign Tenant">
-                <mat-icon class="action-btn-icon">person_add</mat-icon>
-                <span>Assign</span>
-              </button>
+            <div class="property-card-actions">
+              <!-- Tenant Avatar Stack -->
+              <div class="tenant-stack-row">
+                <div class="avatar-stack">
+                  @for (avatar of tenantAvatars(); track $index) {
+                    <img
+                      [src]="avatar"
+                      alt="Tenant"
+                      class="tenant-avatar"
+                      loading="lazy"
+                    />
+                  }
+                  <div class="avatar-counter">{{ property.occupiedUnits }}</div>
+                </div>
+              </div>
 
-              <button
-                type="button"
-                class="btn-icon-square"
-                aria-label="edit property"
-                matTooltip="Edit Property"
-              >
-                <mat-icon class="action-btn-icon">edit_document</mat-icon>
-              </button>
+              <!-- Card Actions Footer -->
+              <div class="card-footer">
+                <button type="button" class="btn-assign" matTooltip="Assign Tenant">
+                  <mat-icon class="action-btn-icon">person_add</mat-icon>
+                  <span>Assign</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn-icon-square"
+                  aria-label="edit property"
+                  matTooltip="Edit Property"
+                >
+                  <mat-icon class="action-btn-icon">edit_document</mat-icon>
+                </button>
+              </div>
             </div>
           </div>
         </div>
+      }
+
+      <!-- Register New Property Card -->
+      <div class="property-card register-new-card">
+        <div class="register-icon-wrapper">
+          <mat-icon class="register-icon">home_work</mat-icon>
+        </div>
+
+        <h3 class="register-card-title">Register New Property</h3>
+        <p class="register-card-desc">
+          Onboard new multi-unit commercial or residential complexes into
+          KodiPoint.
+        </p>
+
+        <button type="button" mat-raised-button class="btn-launch-wizard" color="primary"
+                (click)="openAddPropertyModal()">
+          <mat-icon class="add-icon">play_arrow</mat-icon>
+          <span>LAUNCH SETUP WIZARD</span>
+        </button>
+
+        <button type="button" class="btn-import-csv">
+          <mat-icon class="btn-icon">upload</mat-icon>
+          <span>Import CSV Ledger</span>
+        </button>
       </div>
-    }
 
-    <!-- 6th Item in Grid: Register New Property Card -->
-    <div class="property-card register-new-card">
-      <div class="register-icon-wrapper">
-        <mat-icon class="register-icon">home_work</mat-icon>
-      </div>
-
-      <h3 class="register-card-title">Register New Property</h3>
-      <p class="register-card-desc">
-        Onboard new multi-unit commercial or residential complexes into
-        KodiPoint.
-      </p>
-
-      <button type="button" mat-raised-button class="btn-launch-wizard" color="primary" (click)="openAddPropertyModal()">
-        <mat-icon class="add-icon">play_arrow</mat-icon>
-        <span>LAUNCH SETUP WIZARD</span>
-      </button>
-
-      <button type="button" class="btn-import-csv">
-        <mat-icon class="btn-icon">upload</mat-icon>
-        <span>Import CSV Ledger</span>
-      </button>
-    </div>
-
-    <!-- Load More Button -->
-    @if (properties().length > 10) {
-      <button type="button" class="load-more-btn">
-        <mat-icon class="load-more-icon">expand_more</mat-icon>
-        <span>Load more</span>
-      </button>
+      @if (properties().length > 10) {
+        <button type="button" class="load-more-btn">
+          <mat-icon class="load-more-icon">expand_more</mat-icon>
+          <span>Load more</span>
+        </button>
+      }
     }
   </section>
 </div>
 
 @if (isAddPropertyModalOpen()) {
-  <app-add-property-modal [countries]="countries()" (closed)="closeAddPropertyModal()" (created)="onPropertyCreated()" />
+  <app-add-property-modal [countries]="countries()" (closed)="closeAddPropertyModal()" (created)="onPropertyCreated()"/>
 }
