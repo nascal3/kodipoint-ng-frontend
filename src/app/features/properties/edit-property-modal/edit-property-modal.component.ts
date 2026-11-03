@@ -52,6 +52,7 @@ export class EditPropertyModalComponent {
     effect(() => {
       const prop = this.property();
       if (prop) {
+        const countryId = this.resolveCountryId(prop.countryId ?? prop.country);
         this.propertyForm.patchValue({
           name: prop.name,
           addressLine1: prop.addressLine1,
@@ -59,19 +60,31 @@ export class EditPropertyModalComponent {
           city: prop.city,
           state: prop.state,
           postalCode: prop.postalCode,
-          countryId: prop.country,
+          countryId,
           description: prop.description || null,
           currency: prop.currency,
           monthlyRent: Number(prop.monthlyRent),
           unitCount: prop.unitCount,
           status: prop.status,
         });
-        // Load cities for the property's country
-        if (prop.country) {
-          this.loadCities(prop.country);
+        if (countryId) {
+          this.loadCities(countryId);
         }
       }
     });
+  }
+
+  private resolveCountryId(country: string | null | undefined): string {
+    const countryValue = country?.trim() ?? '';
+    if (!countryValue) return '';
+
+    const countries = this.countries();
+    const normalizedCountry = countryValue.toLocaleLowerCase();
+    const matchingCountry = countries.find(
+      (item) => item.id === countryValue || item.name.trim().toLocaleLowerCase() === normalizedCountry
+    );
+
+    return matchingCountry?.id ?? (countries.length > 0 ? countryValue : '');
   }
 
   onCountrySelected(countryId: string): void {

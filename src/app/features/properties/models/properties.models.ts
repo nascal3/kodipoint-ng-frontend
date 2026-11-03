@@ -37,7 +37,8 @@ export interface PropertyItem {
   city: string;
   state: string;
   postalCode: string;
-  country: string;
+  countryId?: string;
+  country?: string;
   description: string | null;
   currency: string;
   monthlyRent: string;
