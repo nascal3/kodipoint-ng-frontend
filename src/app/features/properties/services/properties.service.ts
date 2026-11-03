@@ -9,7 +9,8 @@ import {
   CreatePropertyResponse,
   ProjectedRentResponse,
   PropertiesResponse,
-  Country
+  Country,
+  PropertyChargesResponse
 } from '@app/features/properties/models/properties.models';
 
 @Injectable({
@@ -60,5 +61,16 @@ export class PropertyService {
 
   getCities(countryId: string): Observable<City[]> {
     return this.http.get<City[]>(`${environment.apiUrl}/locations/countries/${encodeURIComponent(countryId)}/cities`);
+  }
+
+  getPropertyCharges(
+    propertyId: string,
+    page: number = 1,
+    limit: number = 10,
+    sortOrder: 'ASC' | 'DESC' = 'DESC'
+  ): Observable<PropertyChargesResponse> {
+    return this.http.get<PropertyChargesResponse>(
+      `${environment.apiUrl}/properties/charges?page=${page}&limit=${limit}&sortOrder=${sortOrder}&propertyId=${propertyId}`
+    );
   }
 }

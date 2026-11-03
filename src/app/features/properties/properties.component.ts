@@ -8,6 +8,7 @@ import { Country, PropertyItem } from '@app/features/properties/models/propertie
 import { EMPTY, Subject, catchError, debounceTime, map, merge, of, switchMap, forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddPropertyModalComponent } from '@app/features/properties/add-property-modal/add-property-modal.component';
+import { PropertyChargesModalComponent } from '@app/features/properties/property-charges-modal/property-charges-modal.component';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 
 @Component({
@@ -18,6 +19,7 @@ import { SnackbarService } from '@app/shared/components/snackbar/snackbar.servic
     FormsModule,
     ...MATERIAL_MODULES,
     AddPropertyModalComponent,
+    PropertyChargesModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './properties.component.html',
@@ -69,6 +71,8 @@ export class PropertiesComponent implements OnInit {
   readonly isLoadingProperties = signal(true);
   readonly propertyLoadingSkeletons = [0, 1, 2, 3, 4, 5];
   readonly isAddPropertyModalOpen = signal(false);
+  readonly isChargesModalOpen = signal(false);
+  readonly selectedPropertyId = signal('');
   readonly selectedCountry = signal('All Countries');
   readonly selectedStatus = signal('ALL');
   readonly searchQuery = signal('');
@@ -113,6 +117,16 @@ export class PropertiesComponent implements OnInit {
   onPropertyCreated(): void {
     this.closeAddPropertyModal();
     this.propertyFiltersChanged.next();
+  }
+
+  openChargesModal(propertyId: string): void {
+    this.selectedPropertyId.set(propertyId);
+    this.isChargesModalOpen.set(true);
+  }
+
+  closeChargesModal(): void {
+    this.isChargesModalOpen.set(false);
+    this.selectedPropertyId.set('');
   }
 
   ngOnInit(): void {

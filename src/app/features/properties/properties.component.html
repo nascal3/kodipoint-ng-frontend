@@ -316,6 +316,7 @@
                   class="btn-icon-square btn-settings-icon"
                   aria-label="Property settings"
                   matTooltip="Property charges settings"
+                  (click)="openChargesModal(property.id)"
                 >
                   <mat-icon class="action-btn-icon">settings</mat-icon>
                 </button>
@@ -361,4 +362,8 @@
 
 @if (isAddPropertyModalOpen()) {
   <app-add-property-modal [countries]="countries()" (closed)="closeAddPropertyModal()" (created)="onPropertyCreated()"/>
+}
+
+@if (isChargesModalOpen()) {
+  <app-property-charges-modal [propertyId]="selectedPropertyId()" (closed)="closeChargesModal()"/>
 }

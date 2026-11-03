@@ -109,3 +109,27 @@ export interface PropertiesResponse {
     hasPreviousPage: boolean
   };
 }
+
+export interface PropertyCharge {
+  id: string;
+  managerId: string;
+  propertyId: string;
+  name: string;
+  description: string;
+  amount: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PropertyChargesResponse {
+  data: PropertyCharge[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalCount: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
