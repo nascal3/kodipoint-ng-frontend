@@ -13,6 +13,7 @@
 .charges-modal {
   --modal-text: #172033;
   --modal-muted: #64748b;
+  --modal-placeholder: #64748b;
   --modal-surface: #fff;
   --modal-subtle: #f7f9fc;
   --modal-card: #fff;
@@ -173,6 +174,59 @@
   gap: 14px;
 }
 
+.charges-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--modal-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.load-more-charges-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  gap: 8px;
+  min-height: 40px;
+  margin-top: 2px;
+  padding: 0 16px;
+  color: var(--modal-accent);
+  border-color: var(--modal-border);
+  font-weight: 600;
+}
+
+.load-more-charges-btn mat-icon {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.add-charge-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  color: var(--modal-accent);
+  border-color: var(--modal-border);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.add-charge-btn mat-icon {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 18px;
+}
+
 .charge-item {
   padding: 18px;
   background: var(--modal-card);
@@ -323,6 +377,7 @@
 }
 
 .form-field mat-form-field {
+  --mat-form-field-outlined-input-text-placeholder-color: var(--modal-placeholder);
   --mat-form-field-outlined-label-text-color: var(--modal-muted);
   --mat-form-field-outlined-hover-label-text-color: var(--modal-text);
   --mat-form-field-outlined-hover-outline-color: var(--modal-input-hover);
@@ -385,6 +440,7 @@
 :host-context(html.dark-theme) .charges-modal {
   --modal-text: #e5edf7;
   --modal-muted: #9aabbd;
+  --modal-placeholder: #9aabbd;
   --modal-surface: #101e2c;
   --modal-subtle: #0c1926;
   --modal-card: #142333;

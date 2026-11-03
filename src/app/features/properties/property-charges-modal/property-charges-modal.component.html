@@ -9,7 +9,10 @@
     <header class="charges-modal-header">
       <div class="modal-heading-icon"><mat-icon>receipt_long</mat-icon></div>
       <div class="modal-heading-copy">
-        @if (isEditing()) {
+        @if (isCreating()) {
+          <h2 id="charges-title">Add Charge</h2>
+          <p>Create a charge for this property</p>
+        } @else if (isEditing()) {
           <h2 id="charges-title">Edit Charge</h2>
           <p>Update charge details</p>
         } @else {
@@ -33,18 +36,13 @@
           <mat-icon class="error-icon">error_outline</mat-icon>
           <span>{{ error() }}</span>
         </div>
-      } @else if (charges().length === 0) {
-        <div class="charges-empty">
-          <mat-icon class="empty-icon">receipt_long</mat-icon>
-          <p>No charges found for this property</p>
-        </div>
-      } @else if (isEditing()) {
-        <form [formGroup]="editForm" class="edit-charge-form" (ngSubmit)="saveEdit()">
+      } @else if (isCreating() || isEditing()) {
+        <form [formGroup]="editForm" class="edit-charge-form" (ngSubmit)="isCreating() ? createCharge() : saveEdit()">
           <div class="form-field">
             <mat-form-field appearance="outline" subscriptSizing="dynamic">
               <mat-label>Charge Name</mat-label>
               <input matInput formControlName="name" placeholder="e.g., Maintenance Fee" />
-              @if (editForm.controls.name.hasError('required') && editForm.controls.name.touched) {
+              @if ((editForm.controls.name.hasError('required') || editForm.controls.name.hasError('pattern')) && editForm.controls.name.touched) {
                 <mat-error>Charge name is required.</mat-error>
               }
             </mat-form-field>
@@ -80,13 +78,29 @@
               @if (isSaving()) {
                 <mat-spinner diameter="18"></mat-spinner>
               } @else {
-                <span>Save Changes</span>
+                <span>{{ isCreating() ? 'Add Charge' : 'Save Changes' }}</span>
               }
             </button>
           </div>
         </form>
+      } @else if (charges().length === 0) {
+        <div class="charges-empty">
+          <mat-icon class="empty-icon">receipt_long</mat-icon>
+          <p>No charges found for this property</p>
+          <button type="button" matButton="outlined" class="add-charge-btn" (click)="startCreate()">
+            <mat-icon>add</mat-icon>
+            Add a charge
+          </button>
+        </div>
       } @else {
         <div class="charges-list">
+          <div class="charges-list-header">
+            <span>Charges</span>
+            <button type="button" matButton="outlined" class="add-charge-btn" (click)="startCreate()">
+              <mat-icon>add</mat-icon>
+              Add charge
+            </button>
+          </div>
           @for (charge of charges(); track charge.id) {
             <div class="charge-item">
               <div class="charge-header">
@@ -118,6 +132,22 @@
                 }
               </div>
             </div>
+          }
+          @if (hasMoreCharges()) {
+            <button
+              type="button"
+              matButton="outlined"
+              class="load-more-charges-btn"
+              (click)="loadMoreCharges()"
+              [disabled]="isLoadingMore()"
+            >
+              @if (isLoadingMore()) {
+                <mat-spinner diameter="18" aria-label="Loading more charges"></mat-spinner>
+                <span>Loading...</span>
+              } @else {
+                <span>Load more charges</span>
+              }
+            </button>
           }
         </div>
       }
