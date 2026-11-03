@@ -14,7 +14,7 @@
     <form [formGroup]="unitForm" class="unit-form" (ngSubmit)="createUnit()">
       <div class="unit-form-content">
         <div class="form-grid">
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
             <mat-label>Unit Number/Name</mat-label>
             <input matInput formControlName="unitNumber" placeholder="e.g. A101" />
             @if (unitForm.controls.unitNumber.invalid && unitForm.controls.unitNumber.touched) {
@@ -22,7 +22,7 @@
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
             <mat-label>Bedrooms</mat-label>
             <input matInput type="number" min="1" step="1" formControlName="bedroomCount" />
             @if (unitForm.controls.bedroomCount.hasError('pattern') && unitForm.controls.bedroomCount.touched) {
@@ -32,7 +32,7 @@
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
             <mat-label>Market Rent</mat-label>
             <input matInput type="number" min="0" step="0.01" formControlName="marketRent" />
             @if (unitForm.controls.marketRent.invalid && unitForm.controls.marketRent.touched) {
@@ -40,7 +40,7 @@
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
             <mat-label>Billing Frequency</mat-label>
             <mat-select formControlName="billingFrequency">
               @for (frequency of billingFrequencies; track frequency.value) {

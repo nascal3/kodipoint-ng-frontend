@@ -123,7 +123,7 @@ export class AddPropertyUnitModalComponent implements OnInit {
     });
   }
 
-  private loadCharges(): void {
+  loadCharges(): void {
     this.isLoadingCharges.set(true);
     this.chargesError.set('');
     this.propertyService.getPropertyCharges(this.propertyId(), 1, 100, 'ASC').pipe(
