@@ -214,6 +214,69 @@
   font-size: 12px;
 }
 
+.charge-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e7e5ff;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+}
+
+.edit-btn {
+  color: #4338ca;
+}
+
+.edit-btn:hover {
+  background: #e9e7ff;
+}
+
+.delete-btn {
+  color: #dc2626;
+}
+
+.delete-btn:hover {
+  background: #fee2e2;
+}
+
+.edit-charge-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-field mat-form-field {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cancel-btn {
+  --mat-button-ripple-color: #4338ca;
+  color: #4338ca;
+}
+
+.save-btn {
+  min-height: 40px;
+  padding: 0 20px;
+}
+
 .charges-modal-footer {
   flex: 0 0 auto;
   display: flex;
@@ -308,6 +371,30 @@
 
 :host-context(html.dark-theme) .charge-date {
   color: #64748b;
+}
+
+:host-context(html.dark-theme) .charge-actions {
+  border-color: #203447;
+}
+
+:host-context(html.dark-theme) .edit-btn {
+  color: #60a5fa;
+}
+
+:host-context(html.dark-theme) .edit-btn:hover {
+  background: #14283a;
+}
+
+:host-context(html.dark-theme) .delete-btn {
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .delete-btn:hover {
+  background: #1e1b4b;
+}
+
+:host-context(html.dark-theme) .cancel-btn {
+  color: #60a5fa;
 }
 
 :host-context(html.dark-theme) .charges-modal-footer {

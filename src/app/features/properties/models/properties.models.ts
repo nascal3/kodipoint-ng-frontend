@@ -133,3 +133,10 @@ export interface PropertyChargesResponse {
     hasPreviousPage: boolean;
   };
 }
+
+export interface UpdatePropertyCharge {
+  name?: string;
+  description?: string | null;
+  amount?: string;
+  isActive?: boolean;
+}

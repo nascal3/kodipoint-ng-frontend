@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, input, OnInit, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { PropertyService } from '@app/features/properties/services/properties.service';
 import { PropertyCharge } from '@app/features/properties/models/properties.models';
-import { EMPTY, catchError } from 'rxjs';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 
 @Component({
   selector: 'app-property-charges-modal',
   standalone: true,
-  imports: [CommonModule, ...MATERIAL_MODULES],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './property-charges-modal.component.html',
   styleUrl: './property-charges-modal.component.scss',
@@ -24,6 +24,17 @@ export class PropertyChargesModalComponent implements OnInit {
   readonly isLoading = signal(true);
   readonly charges = signal<PropertyCharge[]>([]);
   readonly error = signal('');
+  readonly isEditing = signal(false);
+  readonly editingChargeId = signal('');
+  readonly isSaving = signal(false);
+  readonly isDeleting = signal(false);
+  readonly deletingChargeId = signal('');
+  readonly editForm = new FormGroup({
+    name: new FormControl('', { nonNullable: true, validators: Validators.required }),
+    description: new FormControl<string | null>(null),
+    amount: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
+    isActive: new FormControl(true, { nonNullable: true }),
+  });
 
   ngOnInit(): void {
     this.loadCharges();
@@ -39,6 +50,66 @@ export class PropertyChargesModalComponent implements OnInit {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
+    });
+  }
+
+  startEdit(charge: PropertyCharge): void {
+    this.editingChargeId.set(charge.id);
+    this.editForm.patchValue({
+      name: charge.name,
+      description: charge.description,
+      amount: charge.amount,
+      isActive: charge.isActive,
+    });
+    this.isEditing.set(true);
+  }
+
+  cancelEdit(): void {
+    this.isEditing.set(false);
+    this.editingChargeId.set('');
+    this.editForm.reset();
+  }
+
+  saveEdit(): void {
+    if (this.editForm.invalid || this.isSaving()) return;
+
+    this.isSaving.set(true);
+    const chargeId = this.editingChargeId();
+    const updates = this.editForm.getRawValue();
+
+    this.propertyService.updatePropertyCharge(chargeId, updates).subscribe({
+      next: () => {
+        this.snackbarService.success('Charge updated successfully');
+        this.isSaving.set(false);
+        this.cancelEdit();
+        this.loadCharges();
+      },
+      error: (error) => {
+        console.error('Failed to update charge:', error);
+        this.snackbarService.error('Could not update charge. Please try again.');
+        this.isSaving.set(false);
+      },
+    });
+  }
+
+  deleteCharge(chargeId: string): void {
+    if (this.isDeleting()) return;
+
+    this.isDeleting.set(true);
+    this.deletingChargeId.set(chargeId);
+    this.propertyService.deletePropertyCharge(chargeId).subscribe({
+      next: () => {
+        this.snackbarService.success('Charge deactivated successfully');
+        this.isDeleting.set(false);
+        this.deletingChargeId.set('');
+        this.loadCharges();
+      },
+      error: (error) => {
+        console.error('Failed to delete charge:', error);
+        this.snackbarService.error('Could not deactivate charge. Please try again.');
+        this.isDeleting.set(false);
+        this.deletingChargeId.set('');
+      },
     });
   }
 

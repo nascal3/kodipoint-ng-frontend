@@ -9,8 +9,13 @@
     <header class="charges-modal-header">
       <div class="modal-heading-icon"><mat-icon>receipt_long</mat-icon></div>
       <div class="modal-heading-copy">
-        <h2 id="charges-title">Property Charges</h2>
-        <p>View all charges associated with this property</p>
+        @if (isEditing()) {
+          <h2 id="charges-title">Edit Charge</h2>
+          <p>Update charge details</p>
+        } @else {
+          <h2 id="charges-title">Property Charges</h2>
+          <p>View all charges associated with this property</p>
+        }
       </div>
       <button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()">
         <mat-icon>close</mat-icon>
@@ -33,6 +38,55 @@
           <mat-icon class="empty-icon">receipt_long</mat-icon>
           <p>No charges found for this property</p>
         </div>
+      } @else if (isEditing()) {
+        <form [formGroup]="editForm" class="edit-charge-form" (ngSubmit)="saveEdit()">
+          <div class="form-field">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Charge Name</mat-label>
+              <input matInput formControlName="name" placeholder="e.g., Maintenance Fee" />
+              @if (editForm.controls.name.hasError('required') && editForm.controls.name.touched) {
+                <mat-error>Charge name is required.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-field">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Amount</mat-label>
+              <input matInput formControlName="amount" type="number" step="0.01" placeholder="0.00" />
+              @if (editForm.controls.amount.hasError('required') && editForm.controls.amount.touched) {
+                <mat-error>Amount is required.</mat-error>
+              }
+              @if (editForm.controls.amount.hasError('min') && editForm.controls.amount.touched) {
+                <mat-error>Amount must be at least 0.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-field">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="3" placeholder="Optional description"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="form-field">
+            <mat-checkbox formControlName="isActive" color="primary">
+              Active
+            </mat-checkbox>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" mat-button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+            <button type="submit" mat-raised-button color="primary" class="save-btn" [disabled]="editForm.invalid || isSaving()">
+              @if (isSaving()) {
+                <mat-spinner diameter="18"></mat-spinner>
+              } @else {
+                <span>Save Changes</span>
+              }
+            </button>
+          </div>
+        </form>
       } @else {
         <div class="charges-list">
           @for (charge of charges(); track charge.id) {
@@ -50,6 +104,20 @@
                   <span class="status-text">{{ charge.isActive ? 'Active' : 'Inactive' }}</span>
                 </div>
                 <span class="charge-date">{{ formatDate(charge.createdAt) }}</span>
+              </div>
+              <div class="charge-actions">
+                <button type="button" mat-icon-button class="action-btn edit-btn" (click)="startEdit(charge)" matTooltip="Edit charge">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                @if (charge.isActive) {
+                  <button type="button" mat-icon-button class="action-btn delete-btn" (click)="deleteCharge(charge.id)" [disabled]="isDeleting()" matTooltip="Deactivate charge">
+                    @if (isDeleting() && deletingChargeId() === charge.id) {
+                      <mat-spinner diameter="18"></mat-spinner>
+                    } @else {
+                      <mat-icon>block</mat-icon>
+                    }
+                  </button>
+                }
               </div>
             </div>
           }

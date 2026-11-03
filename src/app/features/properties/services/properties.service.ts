@@ -10,7 +10,8 @@ import {
   ProjectedRentResponse,
   PropertiesResponse,
   Country,
-  PropertyChargesResponse
+  PropertyChargesResponse,
+  UpdatePropertyCharge
 } from '@app/features/properties/models/properties.models';
 
 @Injectable({
@@ -72,5 +73,13 @@ export class PropertyService {
     return this.http.get<PropertyChargesResponse>(
       `${environment.apiUrl}/properties/charges?page=${page}&limit=${limit}&sortOrder=${sortOrder}&propertyId=${propertyId}`
     );
+  }
+
+  updatePropertyCharge(chargeId: string, updates: UpdatePropertyCharge): Observable<void> {
+    return this.http.patch<void>(`${environment.apiUrl}/properties/charges/${chargeId}`, updates);
+  }
+
+  deletePropertyCharge(chargeId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/properties/charges/${chargeId}`);
   }
 }
