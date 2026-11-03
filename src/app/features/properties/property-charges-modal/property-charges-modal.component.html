@@ -1,0 +1,64 @@
+<div class="charges-modal-backdrop" (keydown.escape)="close()">
+  <section
+    class="charges-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="charges-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="charges-modal-header">
+      <div class="modal-heading-icon"><mat-icon>receipt_long</mat-icon></div>
+      <div class="modal-heading-copy">
+        <h2 id="charges-title">Property Charges</h2>
+        <p>View all charges associated with this property</p>
+      </div>
+      <button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <div class="charges-modal-content">
+      @if (isLoading()) {
+        <div class="charges-loading" role="status">
+          <mat-spinner diameter="32" aria-label="Loading charges"></mat-spinner>
+          <span>Loading charges...</span>
+        </div>
+      } @else if (error()) {
+        <div class="charges-error" role="alert">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <span>{{ error() }}</span>
+        </div>
+      } @else if (charges().length === 0) {
+        <div class="charges-empty">
+          <mat-icon class="empty-icon">receipt_long</mat-icon>
+          <p>No charges found for this property</p>
+        </div>
+      } @else {
+        <div class="charges-list">
+          @for (charge of charges(); track charge.id) {
+            <div class="charge-item">
+              <div class="charge-header">
+                <h3 class="charge-name">{{ charge.name }}</h3>
+                <div class="charge-amount">
+                  <span class="amount-value">{{ charge.amount }}</span>
+                </div>
+              </div>
+              <p class="charge-description">{{ charge.description || 'No description' }}</p>
+              <div class="charge-footer">
+                <div class="charge-status">
+                  <span class="status-dot" [class.active]="charge.isActive"></span>
+                  <span class="status-text">{{ charge.isActive ? 'Active' : 'Inactive' }}</span>
+                </div>
+                <span class="charge-date">{{ formatDate(charge.createdAt) }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <footer class="charges-modal-footer">
+      <button matButton="filled" type="button" class="modal-close-btn" (click)="close()">Close</button>
+    </footer>
+  </section>
+</div>
