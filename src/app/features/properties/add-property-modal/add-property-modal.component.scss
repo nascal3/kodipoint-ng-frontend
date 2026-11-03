@@ -202,93 +202,6 @@
   flex: 1;
   text-align: start;
 }
-.charge-intro {
-  margin: 0 0 2px;
-  color: #606579;
-  font-size: 13px;
-}
-.charge-fields > .full-width {
-  grid-column: 1 / -1;
-}
-.charge-list {
-  display: grid;
-  min-width: 0;
-  gap: 14px;
-}
-.charge-card {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
-  margin: 0;
-  padding: 14px;
-  border: 1px solid #e1dfef;
-  border-radius: 10px;
-}
-.charge-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.charge-card-header legend {
-  padding: 0;
-  color: #535365;
-  font-size: 12px;
-  font-weight: 600;
-}
-.charge-card-fields {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: 12px;
-}
-.charge-card-fields > .form-field {
-  grid-column: span 1;
-}
-.charge-card-fields > .form-field.full-width {
-  grid-column: 1 / -1;
-}
-.charge-active {
-  grid-column: 1 / -1;
-  color: #313146;
-  font-size: 12px;
-  --mat-checkbox-selected-icon-color: #3425d6;
-  --mat-checkbox-selected-checkmark-color: #fff;
-  --mat-checkbox-unselected-icon-color: #64748b;
-  --mat-checkbox-unselected-hover-icon-color: #475569;
-  --mat-checkbox-unselected-focus-icon-color: #475569;
-}
-.charge-active ::ng-deep .mdc-form-field,
-.charge-active ::ng-deep .mdc-label {
-  color: #313146;
-}
-.charge-remove-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  padding: 0;
-  color: #b91c1c;
-  background: transparent;
-  border: 0;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.charge-remove-button:hover {
-  background: #fef2f2;
-}
-.charge-add-button {
-  grid-column: 1 / -1;
-  justify-self: start;
-  color: #3425d6;
-  --mdc-outlined-button-outline-color: #c9c6e4;
-  --mdc-outlined-button-label-text-color: #3425d6;
-  --mdc-outlined-button-container-shape: 8px;
-}
-.charge-add-button ::ng-deep .mdc-button__label {
-  color: #3425d6;
-}
 .property-form-error {
   margin: 0 24px 12px;
   color: #b91c1c;
@@ -372,9 +285,7 @@
 
 :host-context(html.dark-theme) .modal-heading-copy p,
 :host-context(html.dark-theme) .field-hint,
-:host-context(html.dark-theme) .status-field legend,
-:host-context(html.dark-theme) .charge-intro,
-:host-context(html.dark-theme) .charge-card-header legend {
+:host-context(html.dark-theme) .status-field legend {
   color: #9aabbd;
 }
 
@@ -444,42 +355,6 @@
   color: #cbd5e1;
 }
 
-:host-context(html.dark-theme) .charge-card {
-  border-color: #294056;
-}
-
-:host-context(html.dark-theme) .charge-active {
-  color: #cbd5e1;
-  --mat-checkbox-selected-icon-color: #60a5fa;
-  --mat-checkbox-selected-checkmark-color: #0a1928;
-  --mat-checkbox-unselected-icon-color: #94a3b8;
-  --mat-checkbox-unselected-hover-icon-color: #cbd5e1;
-  --mat-checkbox-unselected-focus-icon-color: #cbd5e1;
-}
-
-:host-context(html.dark-theme) .charge-active ::ng-deep .mdc-form-field,
-:host-context(html.dark-theme) .charge-active ::ng-deep .mdc-label {
-  color: #e2e8f0;
-}
-
-:host-context(html.dark-theme) .charge-remove-button {
-  color: #fb7185;
-}
-
-:host-context(html.dark-theme) .charge-remove-button:hover {
-  background: #3b1e2b;
-}
-
-:host-context(html.dark-theme) .charge-add-button {
-  color: #93c5fd;
-  --mdc-outlined-button-outline-color: #47627b;
-  --mdc-outlined-button-label-text-color: #93c5fd;
-}
-
-:host-context(html.dark-theme) .charge-add-button ::ng-deep .mdc-button__label {
-  color: #93c5fd;
-}
-
 :host-context(html.dark-theme) .property-form-error {
   color: #fb7185;
 }
@@ -543,16 +418,6 @@
   .status-options {
     grid-template-columns: 1fr;
     gap: 7px;
-  }
-
-  .charge-card-fields {
-    grid-template-columns: 1fr;
-  }
-
-  .charge-card-fields > .form-field,
-  .charge-card-fields > .form-field.full-width,
-  .charge-active {
-    grid-column: 1 / -1;
   }
 
   .property-modal-footer {
