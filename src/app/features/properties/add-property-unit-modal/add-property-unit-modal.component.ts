@@ -106,7 +106,6 @@ export class AddPropertyUnitModalComponent implements OnInit {
       status: formValue.status,
       marketRent: formValue.marketRent,
       billingFrequency: formValue.billingFrequency,
-      propertyChargeIds: selectedCharges.map((charge) => charge.id),
       propertyCharges,
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {

@@ -152,7 +152,6 @@ export interface CreatePropertyUnitRequest {
   status: UnitStatus;
   marketRent: number;
   billingFrequency: UnitBillingFrequency;
-  propertyChargeIds: string[];
   propertyCharges: Array<{
     propertyChargeId: string;
     amount: number;
