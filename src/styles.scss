@@ -28,6 +28,11 @@ html, body {
   height: var(--mat-form-field-container-height, 42px);
 }
 
+app-property-charges-modal .mat-mdc-form-field.description-field .mdc-text-field--outlined {
+  height: auto;
+  min-height: 88px;
+}
+
 /* User Profile Menu Styling */
 .user-profile-menu-panel.mat-mdc-menu-panel {
   --mat-menu-container-shape: 14px;
