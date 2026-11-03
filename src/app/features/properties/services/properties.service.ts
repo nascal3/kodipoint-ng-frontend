@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   City,
+  CreatePropertyChargesRequest,
   CreatePropertyRequest,
+  CreatePropertyResponse,
   ProjectedRentResponse,
   PropertiesResponse,
   Country
@@ -44,8 +46,12 @@ export class PropertyService {
     return this.http.get<PropertiesResponse>(`${environment.apiUrl}/properties`, { params });
   }
 
-  createProperty(property: CreatePropertyRequest): Observable<void> {
-    return this.http.post<void>(`${environment.apiUrl}/properties`, property);
+  createProperty(property: CreatePropertyRequest): Observable<CreatePropertyResponse> {
+    return this.http.post<CreatePropertyResponse>(`${environment.apiUrl}/properties`, property);
+  }
+
+  createPropertyCharges(request: CreatePropertyChargesRequest): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/properties/charges`, request);
   }
 
   getCountries(): Observable<Country[]> {

@@ -9,14 +9,23 @@
     <header class="property-modal-header">
       <div class="modal-heading-icon"><mat-icon>domain_add</mat-icon></div>
       <div class="modal-heading-copy">
-        <h2 id="add-property-title">Add New Property</h2>
-        <p>Register a new real estate complex or residential unit</p>
+        @if (createdPropertyId()) {
+          <h2 id="add-property-title">Add Property Charges</h2>
+          <p>Set up recurring or one-time charges for this property</p>
+        } @else if (propertyCreated()) {
+          <h2 id="add-property-title">Property Created</h2>
+          <p>Charges could not be attached to this property</p>
+        } @else {
+          <h2 id="add-property-title">Add New Property</h2>
+          <p>Register a new real estate complex or residential unit</p>
+        }
       </div>
       <button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()">
         <mat-icon>close</mat-icon>
       </button>
     </header>
 
+    @if (!propertyCreated()) {
     <form [formGroup]="propertyForm" class="property-form auth-form" (ngSubmit)="createProperty()">
       <div class="property-form-fields">
         <div class="form-field full-width">
@@ -170,5 +179,85 @@
         </button>
       </footer>
     </form>
+    } @else if (createdPropertyId()) {
+      <form [formGroup]="chargesForm" class="property-form auth-form" (ngSubmit)="createCharges()">
+        <div class="property-form-fields charge-fields">
+          <p class="charge-intro full-width">Add one or more charges to the property you just created.</p>
+          <div formArrayName="charges" class="charge-list full-width">
+            @for (charge of charges.controls; track charge; let i = $index) {
+              <fieldset class="charge-card" [formGroupName]="i">
+                <div class="charge-card-header">
+                  <legend>Charge {{ i + 1 }}</legend>
+                  @if (charges.length > 1) {
+                    <button type="button" class="charge-remove-button" (click)="removeCharge(i)" aria-label="Remove charge">
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  }
+                </div>
+                <div class="charge-card-fields">
+                  <div class="form-field">
+                    <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>Charge Name</mat-label>
+                      <mat-icon class="material-symbol" matPrefix>receipt_long</mat-icon>
+                      <input matInput [id]="'property-charge-name-' + i" formControlName="name" placeholder="Parking Fee" />
+                      @if ((charge.controls.name.hasError('required') || charge.controls.name.hasError('pattern')) && charge.controls.name.touched) {
+                        <mat-error>Charge name is required.</mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+                  <div class="form-field">
+                    <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>Amount</mat-label>
+                      <mat-icon class="material-symbol" matPrefix>payments</mat-icon>
+                      <input matInput [id]="'property-charge-amount-' + i" formControlName="amount" type="number" min="0" step="0.01" />
+                      @if (charge.controls.amount.hasError('required') && charge.controls.amount.touched) {
+                        <mat-error>Amount is required.</mat-error>
+                      }
+                      @if (charge.controls.amount.hasError('min') && charge.controls.amount.touched) {
+                        <mat-error>Amount must be at least 0.</mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
+                  <div class="form-field full-width description-field">
+                    <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>Description (optional)</mat-label>
+                      <textarea matInput [id]="'property-charge-description-' + i" formControlName="description" rows="2" placeholder="Details about this charge"></textarea>
+                    </mat-form-field>
+                  </div>
+                  <mat-checkbox class="charge-active" formControlName="isActive">Active</mat-checkbox>
+                </div>
+              </fieldset>
+            }
+          </div>
+          <button matButton="outlined" type="button" class="charge-add-button full-width" (click)="addCharge()">
+            <mat-icon>add</mat-icon>
+            Add another charge
+          </button>
+        </div>
+
+        @if (chargesCreationError()) {
+          <p class="property-form-error" role="alert">{{ chargesCreationError() }}</p>
+        }
+
+        <footer class="property-modal-footer">
+          <button matButton="outlined" type="button" class="modal-cancel-button" (click)="close()" [disabled]="isCreatingCharges()">Finish without charges</button>
+          <button matButton="filled" type="submit" class="modal-submit-button" [disabled]="chargesForm.invalid || isCreatingCharges()">
+            @if (isCreatingCharges()) {
+              <mat-spinner diameter="18" aria-label="Saving property charges"></mat-spinner>
+            } @else {
+              <mat-icon>add_circle_outline</mat-icon>
+            }
+            <span>{{ isCreatingCharges() ? 'Saving...' : 'Save Charges' }}</span>
+          </button>
+        </footer>
+      </form>
+    } @else {
+      <div class="property-form">
+        <p class="property-form-error" role="alert">{{ propertyCreationError() }}</p>
+        <footer class="property-modal-footer">
+          <button matButton="filled" type="button" class="modal-submit-button" (click)="close()">Done</button>
+        </footer>
+      </div>
+    }
   </section>
 </div>

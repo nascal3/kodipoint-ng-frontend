@@ -82,6 +82,22 @@ export interface CreatePropertyRequest {
   status: string;
 }
 
+export interface CreatePropertyResponse {
+  id: string;
+}
+
+export interface CreatePropertyCharge {
+  propertyId: string;
+  name: string;
+  description?: string;
+  amount: number;
+  isActive: boolean;
+}
+
+export interface CreatePropertyChargesRequest {
+  charges: CreatePropertyCharge[];
+}
+
 export interface PropertiesResponse {
   data: PropertyItem[];
   pagination: {
