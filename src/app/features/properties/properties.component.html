@@ -307,6 +307,7 @@
                   class="btn-icon-square"
                   aria-label="edit property"
                   matTooltip="Edit Property"
+                  (click)="openEditPropertyModal(property)"
                 >
                   <mat-icon class="action-btn-icon">edit_document</mat-icon>
                 </button>
@@ -371,4 +372,8 @@
 
 @if (isChargesModalOpen()) {
   <app-property-charges-modal [propertyId]="selectedPropertyId()" (closed)="closeChargesModal()"/>
+}
+
+@if (isEditPropertyModalOpen()) {
+  <app-edit-property-modal [countries]="countries()" [property]="selectedProperty()" (closed)="closeEditPropertyModal()" (updated)="onPropertyUpdated()"/>
 }

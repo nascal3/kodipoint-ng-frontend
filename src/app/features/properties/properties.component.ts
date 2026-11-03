@@ -9,6 +9,7 @@ import { EMPTY, Subject, catchError, debounceTime, map, merge, of, switchMap, fo
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddPropertyModalComponent } from '@app/features/properties/add-property-modal/add-property-modal.component';
 import { PropertyChargesModalComponent } from '@app/features/properties/property-charges-modal/property-charges-modal.component';
+import { EditPropertyModalComponent } from '@app/features/properties/edit-property-modal/edit-property-modal.component';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 
 @Component({
@@ -20,6 +21,7 @@ import { SnackbarService } from '@app/shared/components/snackbar/snackbar.servic
     ...MATERIAL_MODULES,
     AddPropertyModalComponent,
     PropertyChargesModalComponent,
+    EditPropertyModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './properties.component.html',
@@ -75,7 +77,9 @@ export class PropertiesComponent implements OnInit {
   readonly hasNextPage = signal(false);
   readonly isAddPropertyModalOpen = signal(false);
   readonly isChargesModalOpen = signal(false);
+  readonly isEditPropertyModalOpen = signal(false);
   readonly selectedPropertyId = signal('');
+  readonly selectedProperty = signal<PropertyItem | null>(null);
   readonly selectedCountry = signal('All Countries');
   readonly selectedStatus = signal('ALL');
   readonly searchQuery = signal('');
@@ -130,6 +134,21 @@ export class PropertiesComponent implements OnInit {
   closeChargesModal(): void {
     this.isChargesModalOpen.set(false);
     this.selectedPropertyId.set('');
+  }
+
+  openEditPropertyModal(property: PropertyItem): void {
+    this.selectedProperty.set(property);
+    this.isEditPropertyModalOpen.set(true);
+  }
+
+  closeEditPropertyModal(): void {
+    this.isEditPropertyModalOpen.set(false);
+    this.selectedProperty.set(null);
+  }
+
+  onPropertyUpdated(): void {
+    this.closeEditPropertyModal();
+    this.propertyFiltersChanged.next();
   }
 
   loadMoreProperties(): void {

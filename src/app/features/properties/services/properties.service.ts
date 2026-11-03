@@ -82,4 +82,8 @@ export class PropertyService {
   deletePropertyCharge(chargeId: string): Observable<void> {
     return this.http.delete<void>(`${environment.apiUrl}/properties/charges/${chargeId}`);
   }
+
+  updateProperty(propertyId: string, property: CreatePropertyRequest): Observable<CreatePropertyResponse> {
+    return this.http.patch<CreatePropertyResponse>(`${environment.apiUrl}/properties/${propertyId}`, property);
+  }
 }
