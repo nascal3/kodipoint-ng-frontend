@@ -297,9 +297,9 @@
 
               <!-- Card Actions Footer -->
               <div class="card-footer">
-                <button type="button" class="btn-assign" matTooltip="Assign Tenant">
-                  <mat-icon class="action-btn-icon">person_add</mat-icon>
-                  <span>Assign</span>
+                <button type="button" class="btn-assign" matTooltip="Create a new Unit" (click)="openAddUnitModal(property)">
+                  <mat-icon class="action-btn-icon">add_home</mat-icon>
+                  <span>Add Unit</span>
                 </button>
 
                 <button
@@ -376,4 +376,13 @@
 
 @if (isEditPropertyModalOpen()) {
   <app-edit-property-modal [countries]="countries()" [property]="selectedProperty()" (closed)="closeEditPropertyModal()" (updated)="onPropertyUpdated()"/>
+}
+
+@if (isAddUnitModalOpen() && selectedProperty(); as property) {
+  <app-add-property-unit-modal
+    [propertyId]="property.id"
+    [propertyName]="property.name"
+    (closed)="closeAddUnitModal()"
+    (created)="onUnitCreated()"
+  />
 }

@@ -141,3 +141,20 @@ export interface UpdatePropertyCharge {
   amount?: string;
   isActive?: boolean;
 }
+
+export type UnitBillingFrequency = 'MONTHLY' | 'QUARTERLY' | 'BI_ANNUALLY' | 'ANNUALLY';
+export type UnitStatus = 'AVAILABLE' | 'MAINTENANCE';
+
+export interface CreatePropertyUnitRequest {
+  propertyId: string;
+  unitNumber: string;
+  bedroomCount: number;
+  status: UnitStatus;
+  marketRent: number;
+  billingFrequency: UnitBillingFrequency;
+  propertyChargeIds: string[];
+  propertyCharges: Array<{
+    propertyChargeId: string;
+    amount: number;
+  }>;
+}

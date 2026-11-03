@@ -7,6 +7,7 @@ import {
   CreatePropertyChargesRequest,
   CreatePropertyRequest,
   CreatePropertyResponse,
+  CreatePropertyUnitRequest,
   ProjectedRentResponse,
   PropertiesResponse,
   Country,
@@ -50,6 +51,10 @@ export class PropertyService {
 
   createProperty(property: CreatePropertyRequest): Observable<CreatePropertyResponse> {
     return this.http.post<CreatePropertyResponse>(`${environment.apiUrl}/properties`, property);
+  }
+
+  createPropertyUnit(unit: CreatePropertyUnitRequest): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/properties/units`, unit);
   }
 
   createPropertyCharges(request: CreatePropertyChargesRequest): Observable<void> {

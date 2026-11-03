@@ -10,6 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AddPropertyModalComponent } from '@app/features/properties/add-property-modal/add-property-modal.component';
 import { PropertyChargesModalComponent } from '@app/features/properties/property-charges-modal/property-charges-modal.component';
 import { EditPropertyModalComponent } from '@app/features/properties/edit-property-modal/edit-property-modal.component';
+import { AddPropertyUnitModalComponent } from '@app/features/properties/add-property-unit-modal/add-property-unit-modal.component';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 
 @Component({
@@ -22,6 +23,7 @@ import { SnackbarService } from '@app/shared/components/snackbar/snackbar.servic
     AddPropertyModalComponent,
     PropertyChargesModalComponent,
     EditPropertyModalComponent,
+    AddPropertyUnitModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './properties.component.html',
@@ -78,6 +80,7 @@ export class PropertiesComponent implements OnInit {
   readonly isAddPropertyModalOpen = signal(false);
   readonly isChargesModalOpen = signal(false);
   readonly isEditPropertyModalOpen = signal(false);
+  readonly isAddUnitModalOpen = signal(false);
   readonly selectedPropertyId = signal('');
   readonly selectedProperty = signal<PropertyItem | null>(null);
   readonly selectedCountry = signal('All Countries');
@@ -129,6 +132,21 @@ export class PropertiesComponent implements OnInit {
   openChargesModal(propertyId: string): void {
     this.selectedPropertyId.set(propertyId);
     this.isChargesModalOpen.set(true);
+  }
+
+  openAddUnitModal(property: PropertyItem): void {
+    this.selectedProperty.set(property);
+    this.isAddUnitModalOpen.set(true);
+  }
+
+  closeAddUnitModal(): void {
+    this.isAddUnitModalOpen.set(false);
+    this.selectedProperty.set(null);
+  }
+
+  onUnitCreated(): void {
+    this.closeAddUnitModal();
+    this.propertyFiltersChanged.next();
   }
 
   closeChargesModal(): void {
