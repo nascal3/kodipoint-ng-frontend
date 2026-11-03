@@ -69,7 +69,10 @@ export class PropertiesComponent implements OnInit {
 
   readonly properties = signal<PropertyItem[]>([]);
   readonly isLoadingProperties = signal(true);
+  readonly isLoadingMore = signal(false);
   readonly propertyLoadingSkeletons = [0, 1, 2, 3, 4, 5];
+  readonly currentPage = signal(1);
+  readonly hasNextPage = signal(false);
   readonly isAddPropertyModalOpen = signal(false);
   readonly isChargesModalOpen = signal(false);
   readonly selectedPropertyId = signal('');
@@ -129,6 +132,30 @@ export class PropertiesComponent implements OnInit {
     this.selectedPropertyId.set('');
   }
 
+  loadMoreProperties(): void {
+    if (this.isLoadingMore() || !this.hasNextPage()) {
+      return;
+    }
+
+    this.isLoadingMore.set(true);
+    const nextPage = this.currentPage() + 1;
+    const filters = this.getPropertyFilters();
+
+    this.propertyService.getProperties(nextPage, 10, 'DESC', filters).pipe(
+      catchError((error: unknown) => {
+        console.error('Failed to load more properties:', error);
+        this.snackbarService.error('Could not load more properties. Please try again.');
+        this.isLoadingMore.set(false);
+        return EMPTY;
+      })
+    ).subscribe((response) => {
+      this.properties.update((current) => [...current, ...response.data]);
+      this.currentPage.set(nextPage);
+      this.hasNextPage.set(response.pagination.hasNextPage);
+      this.isLoadingMore.set(false);
+    });
+  }
+
   ngOnInit(): void {
     this.watchPropertyFilters();
     this.loadCountries();
@@ -157,6 +184,8 @@ export class PropertiesComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe((response) => {
       this.properties.set(response.data);
+      this.currentPage.set(1);
+      this.hasNextPage.set(response.pagination.hasNextPage);
       this.isLoadingProperties.set(false);
     });
   }

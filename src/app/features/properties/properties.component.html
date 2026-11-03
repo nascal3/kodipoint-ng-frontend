@@ -350,10 +350,15 @@
         </button>
       </div>
 
-      @if (properties().length > 10) {
-        <button type="button" class="load-more-btn">
-          <mat-icon class="load-more-icon">expand_more</mat-icon>
-          <span>Load more</span>
+      @if (hasNextPage()) {
+        <button type="button" class="load-more-btn" (click)="loadMoreProperties()" [disabled]="isLoadingMore()">
+          @if (isLoadingMore()) {
+            <mat-icon class="load-more-icon spinning">refresh</mat-icon>
+            <span>Loading...</span>
+          } @else {
+            <mat-icon class="load-more-icon">expand_more</mat-icon>
+            <span>Load more</span>
+          }
         </button>
       }
     }
