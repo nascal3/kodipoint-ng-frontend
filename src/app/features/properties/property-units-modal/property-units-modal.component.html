@@ -1,0 +1,166 @@
+<div class="units-modal-backdrop" (click)="close()" (keydown.escape)="close()">
+  <section
+    class="units-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="units-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="units-modal-header">
+      <div class="modal-heading-icon"><mat-icon>apartment</mat-icon></div>
+      <div class="modal-heading-copy">
+        <div class="units-title-row">
+          <h2 id="units-title">{{ property().name }} — Units Management</h2>
+          @if (!isLoading() && units().length) {
+            <span class="occupancy-badge">
+              <span class="status-dot"></span>
+              {{ occupiedRate() }}% Occupied
+            </span>
+          }
+        </div>
+        <p>
+          <mat-icon>location_on</mat-icon>
+          {{ property().addressLine1 }} · {{ property().city }}
+          @if (!isLoading()) {
+            <div>
+              · Showing {{ units().length }} of {{ pagination().totalCount }} total units
+            </div>
+          }
+        </p>
+      </div>
+      <div class="header-actions">
+        <button matButton="filled" type="button" class="primary-action" (click)="addUnitRequested.emit()">
+          <mat-icon>add</mat-icon>
+          Add Unit
+        </button>
+        <button matButton="outlined" type="button" class="secondary-action" (click)="exportUnits()" [disabled]="isLoading() || !units().length">
+          <mat-icon>download</mat-icon>
+          Export
+        </button>
+        <button mat-icon-button type="button" class="icon-action" aria-label="Close dialog" (click)="close()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </header>
+
+    @if (!isLoading() && !error()) {
+      <section class="unit-summary" aria-label="Unit summary">
+        <mat-card class="summary-card">
+          <span class="summary-label">Total Units</span>
+          <strong>{{ pagination().totalCount }}</strong>
+          <span class="summary-note">Across this property</span>
+        </mat-card>
+        <mat-card class="summary-card">
+          <span class="summary-label occupied-value"><span class="status-dot occupied-dot"></span> Occupied</span>
+          <strong class="occupied-value">{{ occupiedCount() }}</strong>
+          <span class="summary-note">{{ occupiedRate() }}% of loaded units</span>
+        </mat-card>
+        <mat-card class="summary-card">
+          <span class="summary-label available-value"><span class="status-dot available-dot"></span> Vacant</span>
+          <strong class="available-value">{{ availableCount() }}</strong>
+          <span class="summary-note">Ready to lease</span>
+        </mat-card>
+        <mat-card class="summary-card">
+          <span class="summary-label">Projected Monthly Rent</span>
+          <strong class="rent-value">{{ property().currency }} {{ formatRent(pageRentTotal()) }}</strong>
+          <span class="summary-note">Sum of loaded units</span>
+        </mat-card>
+      </section>
+    }
+
+    <main class="units-modal-content">
+      @if (isLoading()) {
+        <div class="units-state" role="status">
+          <mat-spinner diameter="32" aria-label="Loading property units"></mat-spinner>
+          <span>Loading property units...</span>
+        </div>
+      } @else if (error()) {
+        <div class="units-state error-state" role="alert">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error() }}</span>
+          <button matButton="outlined" type="button" class="secondary-action" (click)="retry()">Retry</button>
+        </div>
+      } @else if (!units().length) {
+        <div class="units-state empty-state">
+          <mat-icon>apartment</mat-icon>
+          <strong>No units found</strong>
+          <span>This property does not have any units yet.</span>
+          <button matButton="filled" type="button" class="primary-action" (click)="addUnitRequested.emit()">
+            <mat-icon>add</mat-icon>
+            Add Unit
+          </button>
+        </div>
+      } @else {
+        <div class="units-table-scroll">
+          <table mat-table [dataSource]="units()" class="units-table">
+            <ng-container matColumnDef="unitNumber">
+              <th mat-header-cell *matHeaderCellDef>Unit Number</th>
+              <td mat-cell *matCellDef="let unit" class="unit-number">{{ unit.unitNumber }}</td>
+            </ng-container>
+            <ng-container matColumnDef="bedrooms">
+              <th mat-header-cell *matHeaderCellDef>Bedrooms</th>
+              <td mat-cell *matCellDef="let unit">
+                <mat-icon class="bed-icon">bed</mat-icon>{{ unit.bedroomCount }} Bed
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="unitType">
+              <th mat-header-cell *matHeaderCellDef>Unit Type</th>
+              <td mat-cell *matCellDef="let unit"><span class="unit-type">{{ unit.propertyUseType }}</span></td>
+            </ng-container>
+            <ng-container matColumnDef="marketRent">
+              <th mat-header-cell *matHeaderCellDef>Market Rent</th>
+              <td mat-cell *matCellDef="let unit" class="rent-cell">
+                <span class="currency">{{ property().currency }}</span> {{ formatRent(unit.marketRent) }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="billingFrequency">
+              <th mat-header-cell *matHeaderCellDef>Billing Frequency</th>
+              <td mat-cell *matCellDef="let unit">
+                <span class="frequency-pill">{{ formatFrequency(unit.billingFrequency) }}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let unit">
+                <span class="status-pill" [class]="unit.status.toLowerCase()">
+                  <span class="status-dot"></span>
+                  {{ unit.status }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="charges">
+              <th mat-header-cell *matHeaderCellDef>Charges</th>
+              <td mat-cell *matCellDef="let unit" class="charges-cell">
+                @if (unit.charges.length) {
+                  @for (charge of unit.charges; track charge.id) {
+                    <span class="charge-chip">{{ charge.name }} · {{ property().currency }} {{ formatRent(charge.effectiveAmount) }}</span>
+                  }
+                } @else {
+                  <span class="muted-value">No charges</span>
+                }
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+      }
+    </main>
+
+    @if (!isLoading() && !error() && units().length) {
+      <footer class="units-modal-footer">
+        <mat-paginator
+          class="units-paginator"
+          [length]="pagination().totalCount"
+          [pageIndex]="pagination().page - 1"
+          [pageSize]="pagination().limit"
+          [pageSizeOptions]="[10, 25, 50]"
+          [showFirstLastButtons]="true"
+          [disabled]="isLoading()"
+          aria-label="Property units pagination"
+          (page)="onPageChange($event)"
+        ></mat-paginator>
+      </footer>
+    }
+  </section>
+</div>
