@@ -1056,6 +1056,11 @@
 
   .property-name {
     color: #f8fafc !important;
+
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
   }
 
   .property-rent {

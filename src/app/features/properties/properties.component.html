@@ -130,6 +130,7 @@
         class="view-toggle-group"
         [value]="currentView()"
         (change)="setView($event.value)"
+        [hideSingleSelectionIndicator]="true"
         aria-label="Property display mode"
       >
         <mat-button-toggle
@@ -255,17 +256,12 @@
               <div class="alloc-row-top">
                 <span class="alloc-label">Unit Allocation</span>
                 <span class="alloc-fraction">
-                {{ property.occupiedUnits }} / {{ property.unitCount }} Units
-              </span>
+                  {{ property.occupiedUnits }} / {{ property.unitCount }} Units
+                </span>
               </div>
 
               <div class="alloc-track">
-                <div
-                  class="alloc-fill"
-                  [style.width.%]="
-                  property.occupancyRate
-                "
-                ></div>
+                <div class="alloc-fill" [style.width.%]="property.occupancyRate"></div>
               </div>
 
               <div class="alloc-row-bottom">
