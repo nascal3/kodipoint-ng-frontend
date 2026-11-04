@@ -343,6 +343,18 @@
   font-size: 9px;
 }
 
+.unit-type.commercial {
+  color: #6b21a8;
+  background: #f3e8ff;
+  border-color: #d8b4fe;
+}
+
+.unit-type.mixed {
+  color: #92400e;
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
 .rent-cell {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-weight: 700;
@@ -366,6 +378,16 @@
   padding: 4px 9px;
   font-size: 10px;
   font-weight: 700;
+}
+
+.status-pill.occupied {
+  color: #047857;
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+
+.status-pill.occupied .status-dot {
+  background: #059669;
 }
 
 .status-pill.available {
@@ -491,6 +513,10 @@
   border-color: rgba(16, 185, 129, 0.34);
 }
 
+:host-context(html.dark-theme) .status-pill.occupied .status-dot {
+  background: #34d399;
+}
+
 :host-context(html.dark-theme) .status-dot,
 :host-context(html.dark-theme) .occupied-dot {
   background: #34d399;
@@ -500,6 +526,18 @@
   color: #93c5fd;
   background: rgba(37, 99, 235, 0.18);
   border-color: rgba(59, 130, 246, 0.38);
+}
+
+:host-context(html.dark-theme) .unit-type.commercial {
+  color: #d8b4fe;
+  background: #48236f;
+  border-color: #7040a0;
+}
+
+:host-context(html.dark-theme) .unit-type.mixed {
+  color: #fcd34d;
+  background: #493316;
+  border-color: #8a5a18;
 }
 
 :host-context(html.dark-theme) .frequency-pill {

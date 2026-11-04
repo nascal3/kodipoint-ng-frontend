@@ -93,14 +93,30 @@
               <td mat-cell *matCellDef="let unit" class="unit-number">{{ unit.unitNumber }}</td>
             </ng-container>
             <ng-container matColumnDef="bedrooms">
-              <th mat-header-cell *matHeaderCellDef>Bedrooms</th>
+              <th mat-header-cell *matHeaderCellDef>Rooms</th>
               <td mat-cell *matCellDef="let unit">
-                <mat-icon class="bed-icon">bed</mat-icon>{{ unit.bedroomCount }} Bed
+                <mat-icon class="bed-icon">
+                  {{
+                    unit.propertyUseType === 'COMMERCIAL'
+                      ? 'meeting_room'
+                      : unit.propertyUseType === 'MIXED' ? 'nest_multi_room' : 'bed'
+                  }}
+                </mat-icon>
+                {{ unit.bedroomCount }}
+                {{ unit.propertyUseType === 'RESIDENTIAL' ? 'Bedrooms' : 'Rooms' }}
               </td>
             </ng-container>
             <ng-container matColumnDef="unitType">
               <th mat-header-cell *matHeaderCellDef>Unit Type</th>
-              <td mat-cell *matCellDef="let unit"><span class="unit-type">{{ unit.propertyUseType }}</span></td>
+              <td mat-cell *matCellDef="let unit">
+                <span
+                  class="unit-type"
+                  [class.commercial]="unit.propertyUseType === 'COMMERCIAL'"
+                  [class.mixed]="unit.propertyUseType === 'MIXED'"
+                >
+                  {{ unit.propertyUseType }}
+                </span>
+              </td>
             </ng-container>
             <ng-container matColumnDef="marketRent">
               <th mat-header-cell *matHeaderCellDef>Market Rent</th>
