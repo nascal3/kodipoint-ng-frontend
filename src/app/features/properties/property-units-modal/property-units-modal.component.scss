@@ -16,7 +16,7 @@
 }
 
 .units-modal-backdrop {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 1000;
   display: flex;
