@@ -142,17 +142,19 @@
             <ng-container matColumnDef="tenantLease">
               <th mat-header-cell *matHeaderCellDef>Active Tenant</th>
               <td mat-cell *matCellDef="let unit; let index = index" class="tenant-cell">
-                @if (unit.tenantName) {
-                  <span class="tenant-avatar" [class]="getAvatarColor(index)">{{ getInitials(unit.tenantName) }}</span>
-                  <span class="tenant-name">{{ unit.tenantName }}</span>
-                } @else if (unit.status === 'AVAILABLE') {
-                  <span class="vacant-lease">
-                    <mat-icon>vpn_key</mat-icon>
-                    Vacant · Ready to Lease
-                  </span>
-                } @else {
-                  <span class="muted-value">No active tenant</span>
-                }
+                <span class="tenant-content">
+                  @if (unit.tenantName) {
+                    <span class="tenant-avatar" [class]="getAvatarColor(index)">{{ getInitials(unit.tenantName) }}</span>
+                    <span class="tenant-name">{{ unit.tenantName }}</span>
+                  } @else if (unit.status === 'AVAILABLE') {
+                    <span class="vacant-lease">
+                      <mat-icon>vpn_key</mat-icon>
+                      Vacant · Ready to Lease
+                    </span>
+                  } @else {
+                    <span class="muted-value">No active tenant</span>
+                  }
+                </span>
               </td>
             </ng-container>
             <ng-container matColumnDef="actions">

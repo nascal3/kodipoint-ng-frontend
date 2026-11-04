@@ -416,10 +416,13 @@
 }
 
 .tenant-cell {
-  display: flex;
+  vertical-align: middle;
+}
+
+.tenant-content {
+  display: inline-flex;
   align-items: center;
   gap: 9px;
-  min-height: 52px;
 }
 
 .tenant-avatar {
@@ -482,9 +485,27 @@
 }
 
 .row-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  color: var(--units-muted);
+  line-height: 1;
+}
+
+.row-action .mat-mdc-button-persistent-ripple,
+.row-action .mat-mdc-button-touch-target {
   width: 32px;
   height: 32px;
-  color: var(--units-muted);
+}
+
+.row-action mat-icon {
+  display: block;
+  margin: 0;
 }
 
 .row-action mat-icon {
@@ -499,7 +520,7 @@
   padding: 0 10px;
   color: #fff;
   background: #3b82f6;
-  border-radius: 999px;
+  border-radius: 7px;
   font-size: 10px;
   line-height: 30px;
 }
