@@ -1073,6 +1073,10 @@
   .property-card {
     background: #162333;
     border-color: #223247;
+
+    &:hover {
+      transform: none;
+    }
   }
 
   .property-card-body,
