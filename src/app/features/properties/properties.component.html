@@ -271,7 +271,9 @@
               >
                 {{ property.vacantUnits }} Units Vacant
               </span>
-                <!--              <span class="yield-tag">Yield: {{ property.yield }}</span>-->
+              <span class="yield-tag">
+                {{ property.propertyUseType }}
+              </span>
               </div>
             </div>
 
@@ -378,6 +380,7 @@
   <app-add-property-unit-modal
     [propertyId]="property.id"
     [propertyName]="property.name"
+    [propertyUseType]="property.propertyUseType"
     (closed)="closeAddUnitModal()"
     (created)="onUnitCreated()"
   />

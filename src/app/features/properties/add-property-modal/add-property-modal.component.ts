@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, input
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { MatRadioModule } from '@angular/material/radio';
-import { City, Country } from '@app/features/properties/models/properties.models';
+import { City, Country, propertyUseType } from '@app/features/properties/models/properties.models';
 import { PropertyService } from '@app/features/properties/services/properties.service';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import { PropertyChargesFormComponent } from '@app/features/properties/add-property-modal/property-charges-form/property-charges-form.component';
@@ -32,6 +32,7 @@ export class AddPropertyModalComponent {
     name: new FormControl('', { nonNullable: true, validators: Validators.required }),
     addressLine1: new FormControl('', { nonNullable: true, validators: Validators.required }),
     addressLine2: new FormControl<string | null>(null),
+    propertyUseType: new FormControl('RESIDENTIAL', { nonNullable: true, validators: Validators.required }),
     city: new FormControl({ value: '', disabled: true }, { nonNullable: true, validators: Validators.required }),
     state: new FormControl('', { nonNullable: true }),
     postalCode: new FormControl('', { nonNullable: true, validators: Validators.required }),
@@ -98,6 +99,7 @@ export class AddPropertyModalComponent {
     const formValue = this.propertyForm.getRawValue();
     this.propertyService.createProperty({
       ...formValue,
+      propertyUseType: formValue.propertyUseType as propertyUseType,
       addressLine2: formValue.addressLine2 || null,
       description: formValue.description || null,
     }).subscribe({

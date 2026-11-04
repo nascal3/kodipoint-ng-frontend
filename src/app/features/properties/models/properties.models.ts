@@ -1,3 +1,5 @@
+export type propertyUseType = 'RESIDENTIAL' | 'COMMERCIAL' | 'MIXED';
+
 export interface ProjectedRentProperty {
   property: {
     id: string;
@@ -37,6 +39,7 @@ export interface PropertyItem {
   city: string;
   state: string;
   postalCode: string;
+  propertyUseType: propertyUseType;
   countryId?: string;
   country?: string;
   description: string | null;
@@ -75,6 +78,7 @@ export interface CreatePropertyRequest {
   city: string;
   state: string;
   postalCode: string;
+  propertyUseType: propertyUseType;
   countryId: string;
   description: string | null;
   currency: string;
@@ -150,6 +154,7 @@ export interface CreatePropertyUnitRequest {
   unitNumber: string;
   bedroomCount: number;
   status: UnitStatus;
+  propertyUseType: propertyUseType;
   marketRent: number;
   billingFrequency: UnitBillingFrequency;
   propertyCharges: Array<{

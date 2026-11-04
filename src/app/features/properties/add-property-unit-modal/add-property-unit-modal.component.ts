@@ -5,7 +5,7 @@ import { EMPTY, expand, reduce } from 'rxjs';
 import { MatRadioModule } from '@angular/material/radio';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { PropertyService } from '@app/features/properties/services/properties.service';
-import { PropertyCharge, UnitBillingFrequency, UnitStatus } from '@app/features/properties/models/properties.models';
+import { PropertyCharge, UnitBillingFrequency, UnitStatus, propertyUseType } from '@app/features/properties/models/properties.models';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 
 @Component({
@@ -26,6 +26,7 @@ export class AddPropertyUnitModalComponent implements OnInit {
 
   readonly propertyId = input.required<string>();
   readonly propertyName = input.required<string>();
+  readonly propertyUseType = input.required<propertyUseType>();
   readonly charges = signal<PropertyCharge[]>([]);
   readonly chargeAmounts = new FormRecord<FormControl<number>>({});
   readonly selectedChargeIds = signal<Set<string>>(new Set());
@@ -49,9 +50,11 @@ export class AddPropertyUnitModalComponent implements OnInit {
     marketRent: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
     billingFrequency: new FormControl<UnitBillingFrequency>('MONTHLY', { nonNullable: true, validators: Validators.required }),
     status: new FormControl<UnitStatus>('AVAILABLE', { nonNullable: true, validators: Validators.required }),
+    propertyUseType: new FormControl<propertyUseType>('RESIDENTIAL', { nonNullable: true, validators: Validators.required }),
   });
 
   ngOnInit(): void {
+    this.unitForm.patchValue({ propertyUseType: this.propertyUseType() });
     this.loadCharges();
   }
 
@@ -104,6 +107,7 @@ export class AddPropertyUnitModalComponent implements OnInit {
       unitNumber: formValue.unitNumber.trim(),
       bedroomCount: formValue.bedroomCount,
       status: formValue.status,
+      propertyUseType: formValue.propertyUseType,
       marketRent: formValue.marketRent,
       billingFrequency: formValue.billingFrequency,
       propertyCharges,

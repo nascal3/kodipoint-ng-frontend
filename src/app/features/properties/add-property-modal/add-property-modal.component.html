@@ -60,6 +60,21 @@
 
         <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Property Use Type</mat-label>
+            <mat-icon class="material-symbol" matPrefix>apartment</mat-icon>
+            <mat-select id="property-use-type" formControlName="propertyUseType">
+              <mat-option value="RESIDENTIAL">Residential</mat-option>
+              <mat-option value="COMMERCIAL">Commercial</mat-option>
+              <mat-option value="MIXED">Mixed</mat-option>
+            </mat-select>
+            @if (propertyForm.controls.propertyUseType.hasError('required') && propertyForm.controls.propertyUseType.touched) {
+              <mat-error>Property use type is required.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-field">
+          <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Country</mat-label>
             <mat-icon class="material-symbol" matPrefix>public</mat-icon>
             <mat-select id="property-country" formControlName="countryId" (selectionChange)="onCountrySelected($event.value)">

@@ -48,6 +48,18 @@
               }
             </mat-select>
           </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
+            <mat-label>Property Use Type</mat-label>
+            <mat-select formControlName="propertyUseType">
+              <mat-option value="RESIDENTIAL">Residential</mat-option>
+              <mat-option value="COMMERCIAL">Commercial</mat-option>
+              <mat-option value="MIXED">Mixed</mat-option>
+            </mat-select>
+            @if (unitForm.controls.propertyUseType.invalid && unitForm.controls.propertyUseType.touched) {
+              <mat-error>Property use type is required.</mat-error>
+            }
+          </mat-form-field>
         </div>
 
         <fieldset class="status-field">

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject, input
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { MatRadioModule } from '@angular/material/radio';
-import { City, Country, PropertyItem } from '@app/features/properties/models/properties.models';
+import { City, Country, PropertyItem, propertyUseType } from '@app/features/properties/models/properties.models';
 import { PropertyService } from '@app/features/properties/services/properties.service';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 
@@ -28,6 +28,7 @@ export class EditPropertyModalComponent {
     name: new FormControl('', { nonNullable: true, validators: Validators.required }),
     addressLine1: new FormControl('', { nonNullable: true, validators: Validators.required }),
     addressLine2: new FormControl<string | null>(null),
+    propertyUseType: new FormControl<propertyUseType>('RESIDENTIAL', { nonNullable: true, validators: Validators.required }),
     city: new FormControl({ value: '', disabled: true }, { nonNullable: true, validators: Validators.required }),
     state: new FormControl('', { nonNullable: true }),
     postalCode: new FormControl('', { nonNullable: true, validators: Validators.required }),
@@ -57,6 +58,7 @@ export class EditPropertyModalComponent {
           name: prop.name,
           addressLine1: prop.addressLine1,
           addressLine2: prop.addressLine2 || null,
+          propertyUseType: prop.propertyUseType as propertyUseType,
           city: prop.city,
           state: prop.state,
           postalCode: prop.postalCode,
