@@ -2,6 +2,11 @@
 @use './app/shared/components/snackbar/snackbar';
 @use './app/shared/styles/dark-theme';
 
+// Material has no shape token for the checkbox outline.
+html.dark-theme app-notification-settings .mdc-checkbox__native-control:not(:checked):not(:indeterminate) ~ .mdc-checkbox__background {
+  border-radius: 4px;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -21,6 +26,11 @@ html, body {
 
 .mat-mdc-form-field .mdc-text-field--outlined {
   height: var(--mat-form-field-container-height, 42px);
+}
+
+app-property-charges-modal .mat-mdc-form-field.description-field .mdc-text-field--outlined {
+  height: auto;
+  min-height: 88px;
 }
 
 /* User Profile Menu Styling */

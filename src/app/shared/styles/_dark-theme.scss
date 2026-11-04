@@ -418,6 +418,7 @@ html.dark-theme {
   .search-field input,
   .filter-field input {
     color: #e2e8f0 !important;
+    caret-color: #e2e8f0 !important;
   }
 
   input::placeholder,
@@ -452,6 +453,10 @@ html.dark-theme {
   .mat-calendar-table-header th abbr,
   .mat-calendar-period-button {
     color: #d7e0eb !important;
+  }
+
+  .mat-mdc-option {
+    --mat-option-selected-state-label-text-color: #93c5fd;
   }
 
   .mat-calendar-period-button .mat-calendar-arrow {
@@ -513,5 +518,15 @@ html.dark-theme {
 
   .user-profile-menu-panel .menu-divider {
     border-color: #294056 !important;
+  }
+
+  .user-profile-menu-panel .profile-menu-item:hover,
+  .user-profile-menu-panel .profile-menu-item.logout-item:hover {
+    background-color: #14283a !important;
+  }
+
+  .user-profile-menu-panel .profile-menu-item:not(.logout-item):hover,
+  .user-profile-menu-panel .profile-menu-item:not(.logout-item):hover .mat-icon {
+    color: #d7e0eb !important;
   }
 }

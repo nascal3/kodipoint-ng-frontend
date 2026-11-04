@@ -132,6 +132,12 @@
   color: #cbd5e1;
 }
 
+:host-context(html.dark-theme) .preference-row mat-checkbox {
+  --mat-checkbox-unselected-icon-color: #64748b;
+  --mat-checkbox-unselected-hover-icon-color: #64748b;
+  --mat-checkbox-unselected-focus-icon-color: #64748b;
+}
+
 :host-context(html.dark-theme) .primary-button,
 :host-context(html.dark-theme) .primary-button.mat-mdc-unelevated-button {
   background-color: #2563eb;

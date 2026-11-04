@@ -1,0 +1,160 @@
+<div class="charges-modal-backdrop" (keydown.escape)="close()">
+  <section
+    class="charges-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="charges-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="charges-modal-header">
+      <div class="modal-heading-icon"><mat-icon>receipt_long</mat-icon></div>
+      <div class="modal-heading-copy">
+        @if (isCreating()) {
+          <h2 id="charges-title">Add Charge</h2>
+          <p>Create a charge for this property</p>
+        } @else if (isEditing()) {
+          <h2 id="charges-title">Edit Charge</h2>
+          <p>Update charge details</p>
+        } @else {
+          <h2 id="charges-title">Property Charges</h2>
+          <p>View all charges associated with this property</p>
+        }
+      </div>
+      <button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <div class="charges-modal-content">
+      @if (isLoading()) {
+        <div class="charges-loading" role="status">
+          <mat-spinner diameter="32" aria-label="Loading charges"></mat-spinner>
+          <span>Loading charges...</span>
+        </div>
+      } @else if (error()) {
+        <div class="charges-error" role="alert">
+          <mat-icon class="error-icon">error_outline</mat-icon>
+          <span>{{ error() }}</span>
+        </div>
+      } @else if (isCreating() || isEditing()) {
+        <form [formGroup]="editForm" class="edit-charge-form" (ngSubmit)="isCreating() ? createCharge() : saveEdit()">
+          <div class="form-field">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Charge Name</mat-label>
+              <input matInput formControlName="name" placeholder="e.g., Maintenance Fee" />
+              @if ((editForm.controls.name.hasError('required') || editForm.controls.name.hasError('pattern')) && editForm.controls.name.touched) {
+                <mat-error>Charge name is required.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-field">
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Amount</mat-label>
+              <input matInput formControlName="amount" type="number" step="0.01" placeholder="0.00" />
+              @if (editForm.controls.amount.hasError('required') && editForm.controls.amount.touched) {
+                <mat-error>Amount is required.</mat-error>
+              }
+              @if (editForm.controls.amount.hasError('min') && editForm.controls.amount.touched) {
+                <mat-error>Amount must be at least 0.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-field">
+            <mat-form-field class="description-field" appearance="outline" subscriptSizing="dynamic">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="3" placeholder="Optional description"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="form-field">
+            <mat-slide-toggle formControlName="isActive" color="primary">Active</mat-slide-toggle>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" mat-button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+            <button type="submit" mat-raised-button color="primary" class="save-btn" [disabled]="editForm.invalid || isSaving()">
+              @if (isSaving()) {
+                <mat-spinner diameter="18"></mat-spinner>
+              } @else {
+                <span>{{ isCreating() ? 'Add Charge' : 'Save Changes' }}</span>
+              }
+            </button>
+          </div>
+        </form>
+      } @else if (charges().length === 0) {
+        <div class="charges-empty">
+          <mat-icon class="empty-icon">receipt_long</mat-icon>
+          <p>No charges found for this property</p>
+          <button type="button" matButton="outlined" class="add-charge-btn" (click)="startCreate()">
+            <mat-icon>add</mat-icon>
+            Add a charge
+          </button>
+        </div>
+      } @else {
+        <div class="charges-list">
+          <div class="charges-list-header">
+            <span>Charges</span>
+            <button type="button" matButton="outlined" class="add-charge-btn" (click)="startCreate()">
+              <mat-icon>add</mat-icon>
+              Add charge
+            </button>
+          </div>
+          @for (charge of charges(); track charge.id) {
+            <div class="charge-item">
+              <div class="charge-header">
+                <h3 class="charge-name">{{ charge.name }}</h3>
+                <div class="charge-amount">
+                  <span class="amount-value">{{ charge.amount }}</span>
+                </div>
+              </div>
+              <p class="charge-description">{{ charge.description || 'No description' }}</p>
+              <div class="charge-footer">
+                <div class="charge-status">
+                  <span class="status-dot" [class.active]="charge.isActive"></span>
+                  <span class="status-text">{{ charge.isActive ? 'Active' : 'Inactive' }}</span>
+                </div>
+                <span class="charge-date">{{ formatDate(charge.createdAt) }}</span>
+              </div>
+              <div class="charge-actions">
+                <button type="button" mat-icon-button class="action-btn edit-btn" (click)="startEdit(charge)" matTooltip="Edit charge">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                @if (charge.isActive) {
+                  <button type="button" mat-icon-button class="action-btn delete-btn" (click)="deleteCharge(charge.id)" [disabled]="isDeleting()" matTooltip="Deactivate charge">
+                    @if (isDeleting() && deletingChargeId() === charge.id) {
+                      <mat-spinner diameter="18"></mat-spinner>
+                    } @else {
+                      <mat-icon>block</mat-icon>
+                    }
+                  </button>
+                }
+              </div>
+            </div>
+          }
+          @if (hasMoreCharges()) {
+            <button
+              type="button"
+              matButton="outlined"
+              class="load-more-charges-btn"
+              (click)="loadMoreCharges()"
+              [disabled]="isLoadingMore()"
+            >
+              @if (isLoadingMore()) {
+                <mat-spinner diameter="18" aria-label="Loading more charges"></mat-spinner>
+                <span>Loading...</span>
+              } @else {
+                <span>Load more charges</span>
+              }
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <footer class="charges-modal-footer">
+      <button matButton="filled" type="button" class="modal-close-btn" (click)="close()">Close</button>
+    </footer>
+  </section>
+</div>

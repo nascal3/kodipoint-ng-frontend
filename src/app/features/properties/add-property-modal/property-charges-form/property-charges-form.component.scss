@@ -1,0 +1,360 @@
+:host {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+}
+
+.charges-form {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.charges-form-fields {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  align-content: start;
+  gap: 14px;
+  overflow-y: auto;
+  padding: 20px 24px 18px;
+}
+
+.charge-intro {
+  margin: 0;
+  color: #606579;
+  font-size: 13px;
+}
+
+.charge-list {
+  display: grid;
+  min-width: 0;
+  gap: 14px;
+}
+
+.charge-card {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #e1dfef;
+  border-radius: 10px;
+}
+
+.charge-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.charge-card-header legend {
+  padding: 0;
+  color: #535365;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.charge-card-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 12px;
+}
+
+.form-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  grid-column: span 1;
+  gap: 2px;
+  margin: 0;
+}
+
+.description-field {
+  grid-column: 1 / -1;
+}
+
+.charges-form .auth-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
+}
+
+.charges-form .auth-input ::ng-deep .mat-mdc-form-field-icon-prefix {
+  padding-left: 12px;
+}
+
+.charges-form .auth-input ::ng-deep .mat-mdc-form-field-icon-prefix > .mat-icon {
+  margin-right: 8px;
+}
+
+.charges-form .material-symbol {
+  padding: 0 !important;
+  color: #666a7d;
+  font-size: 20px;
+}
+
+.charges-form .auth-input input,
+.charges-form .auth-input textarea {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+}
+
+.description-field textarea {
+  min-height: 64px;
+  resize: vertical;
+}
+
+.description-field .auth-input {
+  --mat-form-field-container-height: 80px;
+}
+
+.charge-active {
+  grid-column: 1 / -1;
+  color: #313146;
+  font-size: 12px;
+  --mat-checkbox-selected-icon-color: #3425d6;
+  --mat-checkbox-selected-checkmark-color: #fff;
+  --mat-checkbox-unselected-icon-color: #64748b;
+  --mat-checkbox-unselected-hover-icon-color: #475569;
+  --mat-checkbox-unselected-focus-icon-color: #475569;
+}
+
+.charge-active ::ng-deep .mdc-form-field,
+.charge-active ::ng-deep .mdc-label {
+  color: #313146;
+}
+
+.charge-remove-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: #b91c1c;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.charge-remove-button:hover {
+  background: #fef2f2;
+}
+
+.charge-add-button {
+  justify-self: start;
+  color: #3425d6;
+  --mdc-outlined-button-outline-color: #c9c6e4;
+  --mdc-outlined-button-label-text-color: #3425d6;
+  --mdc-outlined-button-container-shape: 8px;
+}
+
+.charge-add-button ::ng-deep .mdc-button__label {
+  color: #3425d6;
+}
+
+.charges-form-error {
+  margin: 0 24px 12px;
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+.charges-form-footer {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  background: #faf9ff;
+  border-top: 1px solid #e7e5ff;
+}
+
+.charges-form-footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.finish-button {
+  --mdc-outlined-button-outline-color: #c9c6e4;
+  --mdc-outlined-button-label-text-color: #20243a;
+  --mdc-outlined-button-container-shape: 8px;
+}
+
+.save-button {
+  --mat-button-filled-container-color: #3425d6;
+  --mat-button-filled-container-shape: 8px;
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-label-text-font: 'Plus Jakarta Sans', sans-serif;
+  --mat-button-filled-label-text-size: 13px;
+  --mat-button-filled-label-text-weight: 600;
+}
+
+.save-button:hover:not(:disabled) {
+  --mat-button-filled-container-color: #2f1fbd;
+}
+
+.save-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.save-button mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+:host-context(html.dark-theme) .charge-intro,
+:host-context(html.dark-theme) .charge-card-header legend {
+  color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .charges-form .material-symbol {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .charges-form .auth-input mat-label {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .charges-form .auth-input input,
+:host-context(html.dark-theme) .charges-form .auth-input textarea {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .charges-form .auth-input input::placeholder,
+:host-context(html.dark-theme) .charges-form .auth-input textarea::placeholder {
+  color: #94a3b8;
+  opacity: 0;
+}
+
+:host-context(html.dark-theme) .charges-form .auth-input input:focus::placeholder,
+:host-context(html.dark-theme) .charges-form .auth-input textarea:focus::placeholder {
+  opacity: 1;
+}
+
+:host-context(html.dark-theme) .charges-form .auth-input ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #0a1928;
+}
+
+:host-context(html.dark-theme) .charges-form .auth-input ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .charges-form .auth-input ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .charges-form .auth-input ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #294056;
+}
+
+:host-context(html.dark-theme) .charges-form .auth-input:hover ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .charges-form .auth-input:hover ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .charges-form .auth-input:hover ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #47627b;
+}
+
+:host-context(html.dark-theme) .charge-card {
+  border-color: #294056;
+}
+
+:host-context(html.dark-theme) .charge-active {
+  color: #cbd5e1;
+  --mat-checkbox-selected-icon-color: #60a5fa;
+  --mat-checkbox-selected-checkmark-color: #0a1928;
+  --mat-checkbox-unselected-icon-color: #94a3b8;
+  --mat-checkbox-unselected-hover-icon-color: #cbd5e1;
+  --mat-checkbox-unselected-focus-icon-color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .charge-active ::ng-deep .mdc-form-field,
+:host-context(html.dark-theme) .charge-active ::ng-deep .mdc-label {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .charge-remove-button {
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .charge-remove-button:hover {
+  background: #3b1e2b;
+}
+
+:host-context(html.dark-theme) .charge-add-button {
+  color: #93c5fd;
+  --mdc-outlined-button-outline-color: #47627b;
+  --mdc-outlined-button-label-text-color: #93c5fd;
+}
+
+:host-context(html.dark-theme) .charge-add-button ::ng-deep .mdc-button__label {
+  color: #93c5fd;
+}
+
+:host-context(html.dark-theme) .charges-form-error {
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .charges-form-footer {
+  background: #0b1b2a;
+  border-color: #203447;
+}
+
+:host-context(html.dark-theme) .finish-button {
+  --mat-button-outlined-outline-color: #47627b;
+  --mat-button-outlined-label-text-color: #cbd5e1;
+  --mat-button-outlined-disabled-label-text-color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .save-button {
+  --mat-button-filled-container-color: #3b82f6;
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-disabled-container-color: #203447;
+  --mat-button-filled-disabled-label-text-color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .save-button:hover:not(:disabled) {
+  --mat-button-filled-container-color: #2563eb;
+}
+
+:host-context(html.dark-theme) .save-button:disabled {
+  opacity: 1;
+}
+
+:host-context(html.dark-theme) .charges-form mat-spinner {
+  --mdc-circular-progress-active-indicator-color: #60a5fa;
+}
+
+@media (max-width: 600px) {
+  .charges-form-fields {
+    padding: 16px;
+  }
+
+  .charge-card-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .charge-card-fields > .form-field,
+  .charge-card-fields > .description-field,
+  .charge-active {
+    grid-column: 1 / -1;
+  }
+
+  .charges-form-footer {
+    padding: 12px 16px;
+  }
+}

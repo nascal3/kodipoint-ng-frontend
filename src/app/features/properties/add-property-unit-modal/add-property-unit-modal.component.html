@@ -1,0 +1,141 @@
+<div class="unit-modal-backdrop" (keydown.escape)="close()">
+  <section class="unit-modal" role="dialog" aria-modal="true" aria-labelledby="add-unit-title" (click)="$event.stopPropagation()">
+    <header class="unit-modal-header">
+      <div class="modal-heading-icon"><mat-icon>add_home</mat-icon></div>
+      <div class="modal-heading-copy">
+        <h2 id="add-unit-title">Add Property Unit</h2>
+        <p>Create a unit in {{ propertyName() }}</p>
+      </div>
+      <button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()" [disabled]="isSaving()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <form [formGroup]="unitForm" class="unit-form" (ngSubmit)="createUnit()">
+      <div class="unit-form-content">
+        <div class="form-grid">
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
+            <mat-label>Unit Number/Name</mat-label>
+            <input matInput formControlName="unitNumber" placeholder="e.g. A101" />
+            @if (unitForm.controls.unitNumber.invalid && unitForm.controls.unitNumber.touched) {
+              <mat-error>Enter a unit number.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
+            <mat-label>Bedrooms</mat-label>
+            <input matInput type="number" min="1" step="1" formControlName="bedroomCount" />
+            @if (unitForm.controls.bedroomCount.hasError('pattern') && unitForm.controls.bedroomCount.touched) {
+              <mat-error>Bedrooms must be a whole number.</mat-error>
+            } @else if (unitForm.controls.bedroomCount.invalid && unitForm.controls.bedroomCount.touched) {
+              <mat-error>Bedrooms must be at least one.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
+            <mat-label>Market Rent</mat-label>
+            <input matInput type="number" min="0" step="0.01" formControlName="marketRent" />
+            @if (unitForm.controls.marketRent.invalid && unitForm.controls.marketRent.touched) {
+              <mat-error>Enter a rent amount of zero or more.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
+            <mat-label>Billing Frequency</mat-label>
+            <mat-select formControlName="billingFrequency">
+              @for (frequency of billingFrequencies; track frequency.value) {
+                <mat-option [value]="frequency.value">{{ frequency.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
+            <mat-label>Property Use Type</mat-label>
+            <mat-select formControlName="propertyUseType">
+              <mat-option value="RESIDENTIAL">Residential</mat-option>
+              <mat-option value="COMMERCIAL">Commercial</mat-option>
+              <mat-option value="MIXED">Mixed</mat-option>
+            </mat-select>
+            @if (unitForm.controls.propertyUseType.invalid && unitForm.controls.propertyUseType.touched) {
+              <mat-error>Property use type is required.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <fieldset class="status-field">
+          <legend>Unit Status</legend>
+          <mat-radio-group class="status-options" formControlName="status">
+            @for (status of unitStatuses; track status.value) {
+              <mat-radio-button class="status-option" [value]="status.value">{{ status.label }}</mat-radio-button>
+            }
+          </mat-radio-group>
+        </fieldset>
+
+        <section class="unit-charges" aria-labelledby="unit-charges-title">
+          <div class="charges-heading">
+            <div>
+              <h3 id="unit-charges-title">Property Charges</h3>
+              <p>Select the configured charges to apply to this unit.</p>
+            </div>
+          </div>
+
+          @if (isLoadingCharges()) {
+            <div class="charges-loading" role="status">
+              <mat-spinner diameter="22" aria-label="Loading property charges"></mat-spinner>
+              <span>Loading property charges...</span>
+            </div>
+          } @else if (chargesError()) {
+            <div class="charges-error" role="alert">
+              <span>{{ chargesError() }}</span>
+              <button type="button" matButton="outlined" (click)="loadCharges()">Retry</button>
+            </div>
+          } @else if (charges().length === 0) {
+            <p class="charges-empty">No active property charges are configured.</p>
+          } @else {
+            <div class="charges-list">
+              @for (charge of charges(); track charge.id) {
+                <div class="charge-row">
+                  <mat-checkbox
+                    color="primary"
+                    [checked]="selectedChargeIds().has(charge.id)"
+                    (change)="toggleCharge(charge.id, $event.checked)"
+                  >
+                    <span class="charge-copy">
+                      <strong>{{ charge.name }}</strong>
+                      <span>{{ charge.description || 'Property charge' }}</span>
+                    </span>
+                  </mat-checkbox>
+                  <mat-form-field class="charge-amount-field" appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Amount</mat-label>
+                    <input matInput type="number" min="0" step="0.01" [formControl]="chargeAmounts.controls[charge.id]" />
+                    @if (chargeAmounts.controls[charge.id].hasError('required') && chargeAmounts.controls[charge.id].touched) {
+                      <mat-error>Enter an amount.</mat-error>
+                    } @else if (chargeAmounts.controls[charge.id].hasError('min') && chargeAmounts.controls[charge.id].touched) {
+                      <mat-error>Amount must be at least 0.</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+              }
+            </div>
+          }
+        </section>
+
+        @if (formError()) {
+          <p class="unit-form-error" role="alert">{{ formError() }}</p>
+        }
+      </div>
+
+      <footer class="unit-modal-footer">
+        <button matButton="outlined" type="button" class="cancel-button" (click)="close()" [disabled]="isSaving()">Cancel</button>
+        <button matButton="filled" type="submit" class="submit-button" [disabled]="unitForm.invalid || hasInvalidSelectedCharge() || isLoadingCharges() || !!chargesError() || isSaving()">
+          @if (isSaving()) {
+            <mat-spinner diameter="18" aria-label="Creating unit"></mat-spinner>
+          } @else {
+            <mat-icon>add_home</mat-icon>
+          }
+          <span>{{ isSaving() ? 'Creating...' : 'Create Unit' }}</span>
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>
