@@ -809,6 +809,24 @@
   line-height: 1.25;
 }
 
+.property-name-trigger {
+  display: block;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.property-name-trigger:hover,
+.property-name-trigger:focus-visible {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .property-rent {
   font-size: 14px;
   font-weight: 700;

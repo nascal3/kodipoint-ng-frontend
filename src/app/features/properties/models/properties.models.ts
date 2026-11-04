@@ -139,6 +139,47 @@ export interface PropertyChargesResponse {
   };
 }
 
+export interface PropertyUnitCharge {
+  id: string;
+  managerId: string;
+  propertyId: string;
+  name: string;
+  description: string;
+  amount: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  customAmount: string | null;
+  effectiveAmount: string;
+}
+
+export interface PropertyUnit {
+  id: string;
+  managerId: string;
+  propertyId: string;
+  propertyUseType: propertyUseType;
+  unitNumber: string;
+  bedroomCount: number;
+  status: string;
+  marketRent: string;
+  billingFrequency: UnitBillingFrequency;
+  createdAt: string;
+  updatedAt: string;
+  charges: PropertyUnitCharge[];
+}
+
+export interface PropertyUnitsResponse {
+  data: PropertyUnit[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalCount: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
 export interface UpdatePropertyCharge {
   name?: string;
   description?: string | null;

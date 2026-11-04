@@ -11,6 +11,7 @@ import { AddPropertyModalComponent } from '@app/features/properties/add-property
 import { PropertyChargesModalComponent } from '@app/features/properties/property-charges-modal/property-charges-modal.component';
 import { EditPropertyModalComponent } from '@app/features/properties/edit-property-modal/edit-property-modal.component';
 import { AddPropertyUnitModalComponent } from '@app/features/properties/add-property-unit-modal/add-property-unit-modal.component';
+import { PropertyUnitsModalComponent } from '@app/features/properties/property-units-modal/property-units-modal.component';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 
 @Component({
@@ -24,6 +25,7 @@ import { SnackbarService } from '@app/shared/components/snackbar/snackbar.servic
     PropertyChargesModalComponent,
     EditPropertyModalComponent,
     AddPropertyUnitModalComponent,
+    PropertyUnitsModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './properties.component.html',
@@ -81,6 +83,7 @@ export class PropertiesComponent implements OnInit {
   readonly isChargesModalOpen = signal(false);
   readonly isEditPropertyModalOpen = signal(false);
   readonly isAddUnitModalOpen = signal(false);
+  readonly isUnitsModalOpen = signal(false);
   readonly selectedPropertyId = signal('');
   readonly selectedProperty = signal<PropertyItem | null>(null);
   readonly selectedCountry = signal('All Countries');
@@ -137,6 +140,22 @@ export class PropertiesComponent implements OnInit {
   openAddUnitModal(property: PropertyItem): void {
     this.selectedProperty.set(property);
     this.isAddUnitModalOpen.set(true);
+  }
+
+  openPropertyUnits(property: PropertyItem): void {
+    this.selectedProperty.set(property);
+    this.isUnitsModalOpen.set(true);
+  }
+
+  closeUnitsModal(): void {
+    this.isUnitsModalOpen.set(false);
+    this.selectedProperty.set(null);
+  }
+
+  addUnitFromUnitsModal(): void {
+    const property = this.selectedProperty();
+    this.closeUnitsModal();
+    if (property) this.openAddUnitModal(property);
   }
 
   closeAddUnitModal(): void {

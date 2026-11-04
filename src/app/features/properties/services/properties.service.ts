@@ -12,6 +12,7 @@ import {
   PropertiesResponse,
   Country,
   PropertyChargesResponse,
+  PropertyUnitsResponse,
   UpdatePropertyCharge
 } from '@app/features/properties/models/properties.models';
 
@@ -78,6 +79,21 @@ export class PropertyService {
     return this.http.get<PropertyChargesResponse>(
       `${environment.apiUrl}/properties/charges?page=${page}&limit=${limit}&sortOrder=${sortOrder}&propertyId=${propertyId}`
     );
+  }
+
+  getPropertyUnits(
+    propertyId: string,
+    page: number = 1,
+    limit: number = 10,
+    sortOrder: 'ASC' | 'DESC' = 'DESC'
+  ): Observable<PropertyUnitsResponse> {
+    const params = new HttpParams()
+      .set('page', page)
+      .set('limit', limit)
+      .set('sortOrder', sortOrder)
+      .set('propertyId', propertyId);
+
+    return this.http.get<PropertyUnitsResponse>(`${environment.apiUrl}/properties/units`, { params });
   }
 
   updatePropertyCharge(chargeId: string, updates: UpdatePropertyCharge): Observable<void> {

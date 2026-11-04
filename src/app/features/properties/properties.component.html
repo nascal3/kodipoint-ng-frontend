@@ -239,7 +239,11 @@
           <div class="property-card-body">
             <div class="property-details">
               <div class="title-price-row">
-                <h3 class="property-name">{{ property.name }}</h3>
+                <h3 class="property-name">
+                  <button type="button" class="property-name-trigger" (click)="openPropertyUnits(property)" [attr.aria-label]="'View units for ' + property.name">
+                    {{ property.name }}
+                  </button>
+                </h3>
                 <div class="property-rent">
                 <span class="rent-amount">
                   {{ property.currency }} {{ property.minRent }} - {{ property.maxRent }}
@@ -383,5 +387,13 @@
     [propertyUseType]="property.propertyUseType"
     (closed)="closeAddUnitModal()"
     (created)="onUnitCreated()"
+  />
+}
+
+@if (isUnitsModalOpen() && selectedProperty(); as property) {
+  <app-property-units-modal
+    [property]="property"
+    (closed)="closeUnitsModal()"
+    (addUnitRequested)="addUnitFromUnitsModal()"
   />
 }
