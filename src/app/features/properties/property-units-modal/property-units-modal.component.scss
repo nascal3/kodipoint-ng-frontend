@@ -340,8 +340,7 @@
   font-weight: 600;
 }
 
-.filter-trigger mat-icon,
-.unit-search-icon {
+.filter-trigger mat-icon {
   width: 15px;
   height: 15px;
   color: var(--units-muted);
@@ -349,7 +348,13 @@
 }
 
 .unit-search-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
   margin-right: 4px;
+  color: #64748b;
+  font-size: 22px;
+  text-align: center;
 }
 
 .unit-search-field input {
