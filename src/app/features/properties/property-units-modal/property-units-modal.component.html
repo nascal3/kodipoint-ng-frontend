@@ -64,6 +64,56 @@
     }
 
     <main class="units-modal-content">
+      <div class="units-filters-toolbar" aria-label="Filter property units">
+        <mat-form-field class="unit-filter-field status-filter" appearance="outline" subscriptSizing="dynamic">
+          <mat-select
+            [ngModel]="selectedStatus()"
+            (ngModelChange)="onStatusChange($event)"
+            aria-label="Filter units by status"
+          >
+            <mat-select-trigger>
+              <span class="filter-trigger">
+                <mat-icon>filter_list</mat-icon>
+                <span>{{ statusLabel() }}</span>
+              </span>
+            </mat-select-trigger>
+            @for (option of statusOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="unit-filter-field type-filter" appearance="outline" subscriptSizing="dynamic">
+          <mat-select
+            [ngModel]="selectedPropertyUseType()"
+            (ngModelChange)="onPropertyUseTypeChange($event)"
+            aria-label="Filter units by type"
+          >
+            <mat-select-trigger>
+              <span class="filter-trigger">
+                <mat-icon>category</mat-icon>
+                <span>{{ propertyUseTypeLabel() }}</span>
+              </span>
+            </mat-select-trigger>
+            @for (option of propertyUseTypeOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="unit-filter-field unit-search-field" appearance="outline" subscriptSizing="dynamic">
+          <mat-icon matPrefix class="unit-search-icon">search</mat-icon>
+          <input
+            matInput
+            type="text"
+            placeholder="Filter unit number..."
+            aria-label="Search by unit number"
+            [ngModel]="unitNumberQuery()"
+            (ngModelChange)="onUnitNumberChange($event)"
+          />
+        </mat-form-field>
+      </div>
+
       @if (isLoading()) {
         <div class="units-state" role="status">
           <mat-spinner diameter="32" aria-label="Loading property units"></mat-spinner>
@@ -78,12 +128,14 @@
       } @else if (!units().length) {
         <div class="units-state empty-state">
           <mat-icon>apartment</mat-icon>
-          <strong>No units found</strong>
-          <span>This property does not have any units yet.</span>
-          <button matButton="filled" type="button" class="primary-action" (click)="addUnitRequested.emit()">
-            <mat-icon>add</mat-icon>
-            Add Unit
-          </button>
+          <strong>{{ hasActiveFilters() ? 'No matching units found' : 'No units found' }}</strong>
+          <span>{{ hasActiveFilters() ? 'Try adjusting your filters.' : 'This property does not have any units yet.' }}</span>
+          @if (!hasActiveFilters()) {
+            <button matButton="filled" type="button" class="primary-action" (click)="addUnitRequested.emit()">
+              <mat-icon>add</mat-icon>
+              Add Unit
+            </button>
+          }
         </div>
       } @else {
         <div class="units-table-scroll">

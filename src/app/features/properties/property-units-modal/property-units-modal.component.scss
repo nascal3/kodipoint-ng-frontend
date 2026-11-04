@@ -278,6 +278,133 @@
   overflow: auto;
 }
 
+.units-filters-toolbar {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 24px;
+  background: var(--units-subtle);
+  border-bottom: 1px solid var(--units-divider);
+}
+
+.unit-filter-field {
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: 12px;
+  --mat-form-field-outlined-outline-color: var(--units-border);
+  --mat-form-field-outlined-hover-outline-color: #94a3b8;
+  --mat-form-field-outlined-focus-outline-color: #3b82f6;
+  --mat-form-field-outlined-input-text-color: var(--units-text);
+  --mat-form-field-outlined-label-text-color: var(--units-muted);
+  --mdc-outlined-text-field-input-text-color: var(--units-text);
+  --mdc-outlined-text-field-outline-color: var(--units-border);
+  --mdc-outlined-text-field-hover-outline-color: #94a3b8;
+  --mdc-outlined-text-field-focus-outline-color: #3b82f6;
+}
+
+.status-filter {
+  width: 190px;
+}
+
+.type-filter {
+  width: 180px;
+}
+
+.unit-search-field {
+  width: min(290px, 35%);
+  margin-left: auto;
+}
+
+.unit-filter-field ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.unit-filter-field ::ng-deep .mat-mdc-text-field-wrapper {
+  height: 40px;
+  background: var(--units-surface);
+}
+
+.unit-filter-field ::ng-deep .mat-mdc-form-field-infix {
+  min-height: 40px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+}
+
+.filter-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--units-text);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.filter-trigger mat-icon,
+.unit-search-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--units-muted);
+  font-size: 15px;
+}
+
+.unit-search-icon {
+  margin-right: 4px;
+}
+
+.unit-search-field input {
+  color: var(--units-text);
+  font-size: 13px;
+}
+
+.unit-search-field input::placeholder {
+  color: var(--units-muted);
+  font-size: 16px;
+  opacity: 0.85;
+}
+
+.unit-filter-field ::ng-deep .mat-mdc-select-value,
+.unit-filter-field ::ng-deep .mat-mdc-select-arrow {
+  color: var(--units-text);
+}
+
+.unit-filter-field ::ng-deep .mat-mdc-select-value-text {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+:host-context(html.dark-theme) .unit-filter-field {
+  --mat-form-field-outlined-outline-color: #294056;
+  --mat-form-field-outlined-hover-outline-color: #47627b;
+  --mat-form-field-outlined-focus-outline-color: #60a5fa;
+  --mat-form-field-outlined-input-text-color: #e2e8f0;
+  --mdc-outlined-text-field-input-text-color: #e2e8f0;
+  --mdc-outlined-text-field-outline-color: #203447;
+  --mdc-outlined-text-field-hover-outline-color: #47627b;
+  --mdc-outlined-text-field-focus-outline-color: #60a5fa;
+}
+
+:host-context(html.dark-theme) .unit-filter-field ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #0a1928;
+}
+
+:host-context(html.dark-theme) .unit-filter-field ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .unit-filter-field ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .unit-filter-field ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #203447;
+}
+
+:host-context(html.dark-theme) .unit-filter-field ::ng-deep .mat-mdc-select-value,
+:host-context(html.dark-theme) .unit-filter-field ::ng-deep .mat-mdc-select-arrow,
+:host-context(html.dark-theme) .unit-search-field input {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .unit-search-icon,
+:host-context(html.dark-theme) .filter-trigger mat-icon {
+  color: #8492a8;
+}
+
 .units-table-scroll {
   width: 100%;
   overflow: auto;
@@ -710,6 +837,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: 12px 15px;
   }
+
+  .units-filters-toolbar {
+    padding: 8px 15px;
+  }
 }
 
 @media (max-width: 560px) {
@@ -726,6 +857,22 @@
 
   .units-title-row h2 {
     font-size: 15px;
+  }
+
+  .units-filters-toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .status-filter,
+  .type-filter {
+    width: calc(50% - 4px);
+  }
+
+  .unit-search-field {
+    width: 100%;
+    margin-left: 0;
   }
 
   .occupancy-badge {

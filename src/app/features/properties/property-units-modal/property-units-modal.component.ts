@@ -1,15 +1,24 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, OnInit, Output, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY, Subject, catchError, debounceTime, switchMap } from 'rxjs';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
-import { PropertyItem, PropertyUnit } from '@app/features/properties/models/properties.models';
+import { PropertyItem, PropertyUnit, propertyUseType } from '@app/features/properties/models/properties.models';
 import { PropertyService } from '@app/features/properties/services/properties.service';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
+
+interface UnitRequest {
+  page: number;
+  limit: number;
+  filters: { propertyUseType?: propertyUseType; status?: string; unitNumber?: string };
+}
 
 @Component({
   selector: 'app-property-units-modal',
   standalone: true,
-  imports: [CommonModule, ...MATERIAL_MODULES],
+  imports: [CommonModule, FormsModule, ...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './property-units-modal.component.html',
   styleUrl: './property-units-modal.component.scss',
@@ -17,6 +26,9 @@ import { SnackbarService } from '@app/shared/components/snackbar/snackbar.servic
 export class PropertyUnitsModalComponent implements OnInit {
   private readonly propertyService = inject(PropertyService);
   private readonly snackbarService = inject(SnackbarService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly unitRequests = new Subject<UnitRequest>();
+  private readonly unitNumberSearchChanges = new Subject<void>();
 
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly addUnitRequested = new EventEmitter<void>();
@@ -33,6 +45,24 @@ export class PropertyUnitsModalComponent implements OnInit {
   });
   readonly isLoading = signal(true);
   readonly error = signal('');
+  readonly selectedStatus = signal('');
+  readonly selectedPropertyUseType = signal<propertyUseType | ''>('');
+  readonly unitNumberQuery = signal('');
+  readonly statusOptions = [
+    { value: '', label: 'All Units' },
+    { value: 'OCCUPIED', label: 'Occupied' },
+    { value: 'AVAILABLE', label: 'Available' },
+    { value: 'MAINTENANCE', label: 'Maintenance' },
+  ];
+  readonly propertyUseTypeOptions: { value: propertyUseType | ''; label: string }[] = [
+    { value: '', label: 'All Unit Types' },
+    { value: 'RESIDENTIAL', label: 'Residential' },
+    { value: 'COMMERCIAL', label: 'Commercial' },
+    { value: 'MIXED', label: 'Mixed' },
+  ];
+  readonly hasActiveFilters = computed(() =>
+    Boolean(this.selectedStatus() || this.selectedPropertyUseType() || this.unitNumberQuery().trim())
+  );
   readonly displayedColumns = [
     'unitNumber',
     'bedrooms',
@@ -54,6 +84,34 @@ export class PropertyUnitsModalComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    this.unitRequests.pipe(
+      switchMap(({ page, limit, filters }) => this.propertyService.getPropertyUnits(
+        this.property().id,
+        page,
+        limit,
+        'DESC',
+        filters
+      ).pipe(
+        catchError((error: unknown) => {
+          console.error('Failed to load property units:', error);
+          this.error.set('Could not load units for this property. Please try again.');
+          this.snackbarService.error('Could not load property units.');
+          this.isLoading.set(false);
+          return EMPTY;
+        })
+      )),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((response) => {
+      this.units.set(response.data);
+      this.pagination.set(response.pagination);
+      this.isLoading.set(false);
+    });
+
+    this.unitNumberSearchChanges.pipe(
+      debounceTime(300),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => this.applyFilters());
+
     this.loadUnits(1);
   }
 
@@ -69,6 +127,29 @@ export class PropertyUnitsModalComponent implements OnInit {
       : 1;
     this.pagination.update((current) => ({ ...current, page, limit: event.pageSize }));
     this.loadUnits(page, event.pageSize);
+  }
+
+  onStatusChange(status: string): void {
+    this.selectedStatus.set(status);
+    this.applyFilters();
+  }
+
+  onPropertyUseTypeChange(propertyUseType: propertyUseType | ''): void {
+    this.selectedPropertyUseType.set(propertyUseType);
+    this.applyFilters();
+  }
+
+  onUnitNumberChange(unitNumber: string): void {
+    this.unitNumberQuery.set(unitNumber);
+    this.unitNumberSearchChanges.next();
+  }
+
+  statusLabel(): string {
+    return this.statusOptions.find((option) => option.value === this.selectedStatus())?.label ?? 'All Units';
+  }
+
+  propertyUseTypeLabel(): string {
+    return this.propertyUseTypeOptions.find((option) => option.value === this.selectedPropertyUseType())?.label ?? 'All Unit Types';
   }
 
   retry(): void {
@@ -127,18 +208,20 @@ export class PropertyUnitsModalComponent implements OnInit {
   private loadUnits(page: number, limit = this.pagination().limit): void {
     this.isLoading.set(true);
     this.error.set('');
-    this.propertyService.getPropertyUnits(this.property().id, page, limit, 'DESC').subscribe({
-      next: (response) => {
-        this.units.set(response.data);
-        this.pagination.set(response.pagination);
-        this.isLoading.set(false);
-      },
-      error: (error: unknown) => {
-        console.error('Failed to load property units:', error);
-        this.error.set('Could not load units for this property. Please try again.');
-        this.snackbarService.error('Could not load property units.');
-        this.isLoading.set(false);
+    const selectedPropertyUseType = this.selectedPropertyUseType();
+    this.unitRequests.next({
+      page,
+      limit,
+      filters: {
+        ...(this.selectedStatus() ? { status: this.selectedStatus() } : {}),
+        ...(selectedPropertyUseType ? { propertyUseType: selectedPropertyUseType } : {}),
+        ...(this.unitNumberQuery().trim() ? { unitNumber: this.unitNumberQuery().trim() } : {}),
       },
     });
+  }
+
+  private applyFilters(): void {
+    this.pagination.update((current) => ({ ...current, page: 1 }));
+    this.loadUnits(1, this.pagination().limit);
   }
 }

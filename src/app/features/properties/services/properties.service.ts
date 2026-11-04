@@ -13,7 +13,8 @@ import {
   Country,
   PropertyChargesResponse,
   PropertyUnitsResponse,
-  UpdatePropertyCharge
+  UpdatePropertyCharge,
+  propertyUseType,
 } from '@app/features/properties/models/properties.models';
 
 @Injectable({
@@ -85,7 +86,8 @@ export class PropertyService {
     propertyId: string,
     page: number = 1,
     limit: number = 10,
-    sortOrder: 'ASC' | 'DESC' = 'DESC'
+    sortOrder: 'ASC' | 'DESC' = 'DESC',
+    filters: { propertyUseType?: propertyUseType; status?: string; unitNumber?: string } = {}
   ): Observable<PropertyUnitsResponse> {
     const params = new HttpParams()
       .set('page', page)
@@ -93,7 +95,12 @@ export class PropertyService {
       .set('sortOrder', sortOrder)
       .set('propertyId', propertyId);
 
-    return this.http.get<PropertyUnitsResponse>(`${environment.apiUrl}/properties/units`, { params });
+    const filteredParams = Object.entries(filters).reduce(
+      (currentParams, [key, value]) => value ? currentParams.set(key, value) : currentParams,
+      params
+    );
+
+    return this.http.get<PropertyUnitsResponse>(`${environment.apiUrl}/properties/units`, { params: filteredParams });
   }
 
   updatePropertyCharge(chargeId: string, updates: UpdatePropertyCharge): Observable<void> {
