@@ -165,6 +165,7 @@ export interface PropertyUnit {
   billingFrequency: UnitBillingFrequency;
   createdAt: string;
   updatedAt: string;
+  tenantName: string | null;
   charges: PropertyUnitCharge[];
 }
 

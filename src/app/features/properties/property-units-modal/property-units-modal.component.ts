@@ -33,7 +33,16 @@ export class PropertyUnitsModalComponent implements OnInit {
   });
   readonly isLoading = signal(true);
   readonly error = signal('');
-  readonly displayedColumns = ['unitNumber', 'bedrooms', 'unitType', 'marketRent', 'billingFrequency', 'status', 'charges'];
+  readonly displayedColumns = [
+    'unitNumber',
+    'bedrooms',
+    'unitType',
+    'marketRent',
+    'billingFrequency',
+    'status',
+    'tenantLease',
+    'actions',
+  ];
   readonly occupiedCount = computed(() => this.units().filter((unit) => unit.status === 'OCCUPIED').length);
   readonly availableCount = computed(() => this.units().filter((unit) => unit.status === 'AVAILABLE').length);
   readonly occupiedRate = computed(() => {
@@ -75,8 +84,25 @@ export class PropertyUnitsModalComponent implements OnInit {
     return frequency.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
   }
 
+  getInitials(name: string): string {
+    return name.trim().split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join('');
+  }
+
+  getAvatarColor(index: number): string {
+    return ['blue', 'green', 'purple', 'gold'][index % 4];
+  }
+
   exportUnits(): void {
-    const columns = ['Unit Number', 'Bedrooms', 'Unit Type', 'Market Rent', 'Billing Frequency', 'Status', 'Charges'];
+    const columns = [
+      'Unit Number',
+      'Bedrooms',
+      'Unit Type',
+      'Market Rent',
+      'Billing Frequency',
+      'Status',
+      'Active Tenant / Lease',
+      'Charges',
+    ];
     const rows = this.units().map((unit) => [
       unit.unitNumber,
       String(unit.bedroomCount),
@@ -84,6 +110,7 @@ export class PropertyUnitsModalComponent implements OnInit {
       unit.marketRent,
       unit.billingFrequency,
       unit.status,
+      unit.tenantName || (unit.status === 'AVAILABLE' ? 'Vacant - Ready to Lease' : 'No tenant information'),
       unit.charges.map((charge) => `${charge.name}: ${charge.effectiveAmount}`).join('; '),
     ]);
     const csv = [columns, ...rows]
