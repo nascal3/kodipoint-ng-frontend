@@ -700,6 +700,10 @@
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+
+    .property-image {
+      transform: scale(1.08);
+    }
   }
 }
 
@@ -714,6 +718,7 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.3s ease;
   }
 
   .occupancy-badge {
@@ -1212,6 +1217,14 @@
   .properties-loading-spinner,
   .skeleton-placeholder {
     animation: none;
+  }
+
+  .property-image {
+    transition: none;
+  }
+
+  .property-card:hover .property-image {
+    transform: none;
   }
 }
 
