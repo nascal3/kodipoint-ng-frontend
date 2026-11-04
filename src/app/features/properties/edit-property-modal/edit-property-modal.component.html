@@ -30,7 +30,20 @@
           </mat-form-field>
           <small class="field-hint">Official title of building, complex, or commercial facility</small>
         </div>
-
+        <div class="form-field">
+          <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Property Use Type</mat-label>
+            <mat-icon class="material-symbol" matPrefix>apartment</mat-icon>
+            <mat-select id="property-use-type" formControlName="propertyUseType">
+              <mat-option value="RESIDENTIAL">Residential</mat-option>
+              <mat-option value="COMMERCIAL">Commercial</mat-option>
+              <mat-option value="MIXED">Mixed</mat-option>
+            </mat-select>
+            @if (propertyForm.controls.propertyUseType.hasError('required') && propertyForm.controls.propertyUseType.touched) {
+              <mat-error>Property use type is required.</mat-error>
+            }
+          </mat-form-field>
+        </div>
         <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Address Line 1</mat-label>
@@ -48,22 +61,16 @@
             <input matInput id="property-address-line-2" formControlName="addressLine2" placeholder="Building, floor, suite" />
           </mat-form-field>
         </div>
-
         <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Property Use Type</mat-label>
-            <mat-icon class="material-symbol" matPrefix>apartment</mat-icon>
-            <mat-select id="property-use-type" formControlName="propertyUseType">
-              <mat-option value="RESIDENTIAL">Residential</mat-option>
-              <mat-option value="COMMERCIAL">Commercial</mat-option>
-              <mat-option value="MIXED">Mixed</mat-option>
-            </mat-select>
-            @if (propertyForm.controls.propertyUseType.hasError('required') && propertyForm.controls.propertyUseType.touched) {
-              <mat-error>Property use type is required.</mat-error>
+            <mat-label>Postal Code</mat-label>
+            <mat-icon class="material-symbol" matPrefix>local_post_office</mat-icon>
+            <input matInput id="property-postal-code" formControlName="postalCode" placeholder="Postal code" />
+            @if (propertyForm.controls.postalCode.hasError('required') && propertyForm.controls.postalCode.touched) {
+              <mat-error>Postal code is required.</mat-error>
             }
           </mat-form-field>
         </div>
-
         <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Country</mat-label>
@@ -80,7 +87,7 @@
         </div>
         <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-            <mat-label>City</mat-label>
+            <mat-label>City (Select country first)</mat-label>
             <mat-icon class="material-symbol" matPrefix>location_city</mat-icon>
             <mat-select id="property-city" formControlName="city" [attr.aria-busy]="isLoadingCities()">
               @for (city of cities(); track city.id) {
@@ -95,17 +102,6 @@
             }
           </mat-form-field>
         </div>
-
-        <div class="form-field">
-          <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Postal Code</mat-label>
-            <mat-icon class="material-symbol" matPrefix>local_post_office</mat-icon>
-            <input matInput id="property-postal-code" formControlName="postalCode" placeholder="Postal code" />
-            @if (propertyForm.controls.postalCode.hasError('required') && propertyForm.controls.postalCode.touched) {
-              <mat-error>Postal code is required.</mat-error>
-            }
-          </mat-form-field>
-        </div>
         <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>State / County</mat-label>
@@ -113,8 +109,7 @@
             <input matInput id="property-state" formControlName="state" placeholder="State / County" />
           </mat-form-field>
         </div>
-
-        <div class="form-field third-width">
+        <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Total Units</mat-label>
             <mat-icon class="material-symbol" matPrefix>tag</mat-icon>
@@ -124,20 +119,7 @@
             }
           </mat-form-field>
         </div>
-        <div class="form-field third-width">
-          <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Monthly Rent</mat-label>
-            <mat-icon class="material-symbol" matPrefix>payments</mat-icon>
-            <input matInput id="property-monthly-rent" formControlName="monthlyRent" type="number" min="0" step="0.01" />
-            @if (propertyForm.controls.monthlyRent.hasError('required') && propertyForm.controls.monthlyRent.touched) {
-              <mat-error>Monthly rent is required.</mat-error>
-            }
-            @if (propertyForm.controls.monthlyRent.hasError('min') && propertyForm.controls.monthlyRent.touched) {
-              <mat-error>Monthly rent must be at minimum 0.</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div class="form-field third-width">
+        <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Currency</mat-label>
             <mat-icon class="material-symbol" matPrefix>paid</mat-icon>
@@ -148,6 +130,19 @@
             </mat-select>
             @if (propertyForm.controls.currency.hasError('required') && propertyForm.controls.currency.touched) {
               <mat-error>Currency is required.</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="form-field">
+          <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
+            <mat-label>Monthly Rent</mat-label>
+            <mat-icon class="material-symbol" matPrefix>payments</mat-icon>
+            <input matInput id="property-monthly-rent" formControlName="monthlyRent" type="number" min="0" step="0.01" />
+            @if (propertyForm.controls.monthlyRent.hasError('required') && propertyForm.controls.monthlyRent.touched) {
+              <mat-error>Monthly rent is required.</mat-error>
+            }
+            @if (propertyForm.controls.monthlyRent.hasError('min') && propertyForm.controls.monthlyRent.touched) {
+              <mat-error>Monthly rent must be at minimum 0.</mat-error>
             }
           </mat-form-field>
         </div>
