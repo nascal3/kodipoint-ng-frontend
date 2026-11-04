@@ -1084,9 +1084,12 @@
     color: #f8fafc !important;
 
     &:hover {
-      text-decoration: underline;
       cursor: pointer;
     }
+  }
+
+  .property-name-trigger:hover {
+    text-decoration: none;
   }
 
   .property-rent {
