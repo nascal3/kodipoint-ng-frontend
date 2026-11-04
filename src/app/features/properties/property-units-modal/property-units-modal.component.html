@@ -21,11 +21,6 @@
         <p>
           <mat-icon>location_on</mat-icon>
           {{ property().addressLine1 }} · {{ property().city }}
-          @if (!isLoading()) {
-            <div>
-              · Showing {{ units().length }} of {{ pagination().totalCount }} total units
-            </div>
-          }
         </p>
       </div>
       <div class="header-actions">
