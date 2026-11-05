@@ -612,6 +612,39 @@
   font-size: 15px;
 }
 
+.maintenance-lease {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.maintenance-lease mat-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+
+.archived-lease {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-style: italic;
+}
+
+.archived-lease mat-icon {
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+}
+
 .actions-cell {
   white-space: nowrap !important;
 }
@@ -806,12 +839,38 @@
 
 :host-context(html.dark-theme) .status-pill.maintenance {
   color: #fbbf24;
-  background: rgba(217, 119, 6, 0.14);
+  background: #0f1d30;
   border-color: rgba(245, 158, 11, 0.35);
 }
 
 :host-context(html.dark-theme) .status-pill.maintenance .status-dot {
   background: #fbbf24;
+}
+
+:host-context(html.dark-theme) .status-pill.archived {
+  color: #cbd5e1;
+  background: #263445;
+  border-color: #3a4b60;
+}
+
+:host-context(html.dark-theme) .status-pill.archived .status-dot {
+  background: #8492a8;
+}
+
+:host-context(html.dark-theme) .archived-lease,
+:host-context(html.dark-theme) .archived-action {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .archived-action:hover {
+  color: #cbd5e1;
+  background: #263445;
+}
+
+:host-context(html.dark-theme) .maintenance-lease {
+  color: #fbbf24;
+  background: #0f1d30;
+  border-color: rgba(245, 158, 11, 0.35);
 }
 
 :host-context(html.dark-theme) .charge-chip {

@@ -53,6 +53,7 @@ export class PropertyUnitsModalComponent implements OnInit {
     { value: 'OCCUPIED', label: 'Occupied' },
     { value: 'AVAILABLE', label: 'Available' },
     { value: 'MAINTENANCE', label: 'Maintenance' },
+    { value: 'ARCHIVED', label: 'Archived' },
   ];
   readonly propertyUseTypeOptions: { value: propertyUseType | ''; label: string }[] = [
     { value: '', label: 'All Unit Types' },

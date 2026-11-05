@@ -195,13 +195,23 @@
               <th mat-header-cell *matHeaderCellDef>Active Tenant</th>
               <td mat-cell *matCellDef="let unit; let index = index" class="tenant-cell">
                 <span class="tenant-content">
-                  @if (unit.tenantName) {
+                  @if (unit.status === 'ARCHIVED') {
+                    <span class="archived-lease">
+                      <mat-icon>inventory_2</mat-icon>
+                      Archived · Not In Service
+                    </span>
+                  } @else if (unit.tenantName) {
                     <span class="tenant-avatar" [class]="getAvatarColor(index)">{{ getInitials(unit.tenantName) }}</span>
                     <span class="tenant-name">{{ unit.tenantName }}</span>
                   } @else if (unit.status === 'AVAILABLE') {
                     <span class="vacant-lease">
                       <mat-icon>vpn_key</mat-icon>
                       Vacant · Ready to Lease
+                    </span>
+                  } @else if (unit.status === 'MAINTENANCE') {
+                    <span class="maintenance-lease">
+                      <mat-icon>build</mat-icon>
+                      Under Maintenance
                     </span>
                   } @else {
                     <span class="muted-value">No active tenant</span>
@@ -212,9 +222,42 @@
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let unit" class="actions-cell">
-                @if (unit.tenantName) {
-                  <button mat-icon-button type="button" class="row-action" aria-label="View tenant lease" matTooltip="View tenant lease">
+                @if (unit.status === 'ARCHIVED') {
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="row-action"
+                    aria-label="View tenancy ledger"
+                    matTooltip="View tenancy ledger"
+                  >
                     <mat-icon>receipt_long</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button type="button"
+                    class="row-action archived-action"
+                    aria-label="Restore archived unit"
+                    matTooltip="Restore unit"
+                  >
+                    <mat-icon>unarchive</mat-icon>
+                  </button>
+                } @else if (unit.tenantName) {
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="row-action"
+                    aria-label="View tenancy ledger"
+                    matTooltip="View tenancy ledger"
+                  >
+                    <mat-icon>receipt_long</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="row-action"
+                    aria-label="Edit unit"
+                    matTooltip="Edit unit"
+                  >
+                    <mat-icon>edit</mat-icon>
                   </button>
                 } @else if (unit.status === 'AVAILABLE') {
                   <button matButton="filled" type="button" class="assign-button">
@@ -222,7 +265,13 @@
                     Assign
                   </button>
                 }
-                <button mat-icon-button type="button" class="row-action" aria-label="Edit unit" matTooltip="Edit unit">
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="row-action"
+                  aria-label="Edit unit"
+                  matTooltip="Edit unit"
+                >
                   <mat-icon>edit</mat-icon>
                 </button>
               </td>

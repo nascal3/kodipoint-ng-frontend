@@ -1163,6 +1163,14 @@
   .property-name {
     color: #f8fafc !important;
 
+    button {
+      color: #f8fafc !important;
+
+      &:hover {
+        color: #3d81f6 !important;
+      }
+    }
+
     &:hover {
       cursor: pointer;
     }
