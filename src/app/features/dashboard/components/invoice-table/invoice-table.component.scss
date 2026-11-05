@@ -105,10 +105,25 @@
 }
 
 .table-responsive-wrapper {
+  position: relative;
   width: 100%;
   overflow-x: auto;
   border: 1px solid #f1f5f9;
   border-radius: 12px;
+}
+
+.table-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 180px;
+  color: #64748b;
+  background: rgba(255, 255, 255, 0.88);
 }
 
 .invoices-table {
@@ -476,6 +491,11 @@
 
 :host-context(html.dark-theme) .table-responsive-wrapper {
   border-color: #1d2b40;
+}
+
+:host-context(html.dark-theme) .table-loading-overlay {
+  color: #8492a8;
+  background: rgba(15, 29, 48, 0.9);
 }
 
 :host-context(html.dark-theme) .avatar-bubble {

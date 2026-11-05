@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  <div class="table-responsive-wrapper">
+  <div class="table-responsive-wrapper" [attr.aria-busy]="isLoading()">
     <table mat-table [dataSource]="dataSource()" matSort class="invoices-table">
       <ng-container matColumnDef="invoice">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Invoice & Tenant</th>
@@ -173,6 +173,12 @@
         </td>
       </tr>
     </table>
+    @if (isLoading()) {
+      <div class="table-loading-overlay" role="status" aria-live="polite">
+        <mat-spinner diameter="36" aria-hidden="true" />
+        <span>Loading invoices...</span>
+      </div>
+    }
   </div>
 
   <mat-paginator
