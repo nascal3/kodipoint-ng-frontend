@@ -1,10 +1,15 @@
-<mat-card appearance="outlined" class="summary-card">
+<mat-card appearance="outlined" class="summary-card" [attr.aria-busy]="loading()">
   <mat-card-content class="card-content">
     <div class="card-header">
       <div class="title-value-group">
         <span class="card-title">Total Rent Owed</span>
         <div class="card-value-container">
-          <span class="card-value">{{ value() }}</span>
+          @if (loading()) {
+            <span class="loading-placeholder" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading total rent owed</span>
+          } @else {
+            <span class="card-value">{{ value() }}</span>
+          }
         </div>
       </div>
 

@@ -24,13 +24,16 @@ export class DashboardComponent implements OnInit {
   readonly dateRangeEnd = signal<Date | null>(this.maxDate);
 
   readonly totalRentOwed = signal('Loading...');
+  readonly totalRentOwedLoading = signal(true);
 
   readonly portfolioOccupancyValue = signal('Loading...');
   readonly portfolioOccupancyUnit = signal('/ -- Units');
   readonly portfolioOccupancyFooter = signal('Loading...');
+  readonly portfolioOccupancyLoading = signal(true);
 
   readonly totalRemittance = signal('Loading...');
   readonly totalRemittanceFooter = signal('Based on last 3 months');
+  readonly totalRemittanceLoading = signal(true);
 
   ngOnInit(): void {
     this.dashboardService.getPortfolioOccupancy().subscribe({
@@ -38,11 +41,13 @@ export class DashboardComponent implements OnInit {
         this.portfolioOccupancyValue.set(`${occupiedUnits}`);
         this.portfolioOccupancyUnit.set(`/ ${totalUnits} Units`);
         this.portfolioOccupancyFooter.set(`${occupancyPercentage}% occupied`);
+        this.portfolioOccupancyLoading.set(false);
       },
       error: () => {
         this.portfolioOccupancyValue.set('--');
         this.portfolioOccupancyUnit.set('/ -- Units');
         this.portfolioOccupancyFooter.set('Occupancy unavailable');
+        this.portfolioOccupancyLoading.set(false);
         this.snackbarService.error('Failed to load portfolio occupancy.');
       },
     });
@@ -58,6 +63,9 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
+    this.totalRentOwedLoading.set(true);
+    this.totalRemittanceLoading.set(true);
+
     this.dashboardService.getTotalRentOwed(startDate, endDate).subscribe({
       next: ({ summary }) => {
         const amount = new Intl.NumberFormat('en-KE', {
@@ -66,9 +74,11 @@ export class DashboardComponent implements OnInit {
         }).format(Number(summary.totalOwed));
 
         this.totalRentOwed.set(`KES ${amount}`);
+        this.totalRentOwedLoading.set(false);
       },
       error: () => {
         this.totalRentOwed.set('--');
+        this.totalRentOwedLoading.set(false);
         this.snackbarService.error('Failed to load total rent owed.');
       },
     });
@@ -81,9 +91,11 @@ export class DashboardComponent implements OnInit {
         }).format(Number(summary.totalIncome));
 
         this.totalRemittance.set(`KES ${amount}`);
+        this.totalRemittanceLoading.set(false);
       },
       error: () => {
         this.totalRemittance.set('--');
+        this.totalRemittanceLoading.set(false);
         this.snackbarService.error('Failed to load total remittance.');
       },
     });

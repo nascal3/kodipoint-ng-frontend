@@ -1,11 +1,17 @@
-<mat-card appearance="outlined" class="summary-card">
+<mat-card appearance="outlined" class="summary-card" [attr.aria-busy]="loading()">
   <mat-card-content class="card-content">
     <div class="card-header">
       <div class="title-value-group">
         <span class="card-title">Portfolio Occupancy</span>
         <div class="card-value-container">
-          <span class="card-value">{{ value() }}</span>
-          <span class="unit-detail">{{ unitDetail() }}</span>
+          @if (loading()) {
+            <span class="loading-placeholder" aria-hidden="true"></span>
+            <span class="loading-placeholder unit-placeholder" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading portfolio occupancy</span>
+          } @else {
+            <span class="card-value">{{ value() }}</span>
+            <span class="unit-detail">{{ unitDetail() }}</span>
+          }
         </div>
       </div>
 
@@ -16,10 +22,15 @@
 
     <div class="card-footer">
       <div class="footer-badge">
-        <span class="status-pill">
-          <mat-icon class="badge-icon">check_circle</mat-icon>
-          <span>{{ footerText() }}</span>
-        </span>
+        @if (loading()) {
+          <span class="loading-placeholder footer-placeholder" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading occupancy status</span>
+        } @else {
+          <span class="status-pill">
+            <mat-icon class="badge-icon">check_circle</mat-icon>
+            <span>{{ footerText() }}</span>
+          </span>
+        }
       </div>
     </div>
   </mat-card-content>
