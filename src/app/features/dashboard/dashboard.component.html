@@ -6,7 +6,7 @@
   </section>
 
   <section class="financial-chart-section" aria-label="Financial Activity">
-    <app-financial-chart [dateRangeStart]="dateRangeStart()" [dateRangeEnd]="dateRangeEnd()" [maxDate]="maxDate" (dateRangeChange)="onDateRangeChange($event)" />
+    <app-financial-chart [(dateRangeStart)]="dateRangeStart" [(dateRangeEnd)]="dateRangeEnd" [maxDate]="maxDate" (dateRangeChange)="onDateRangeChange($event)" />
   </section>
 
   <section class="invoice-table-section" aria-label="Tenant Invoices and Remittances">

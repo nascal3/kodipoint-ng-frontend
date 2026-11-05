@@ -92,5 +92,6 @@ export class DashboardComponent implements OnInit {
   onDateRangeChange(range: { start: Date | null; end: Date | null }): void {
     this.dateRangeStart.set(range.start);
     this.dateRangeEnd.set(range.end);
+    this.fetchDashboardData();
   }
 }
