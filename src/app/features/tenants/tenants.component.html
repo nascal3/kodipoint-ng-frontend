@@ -161,24 +161,8 @@
             <th mat-header-cell *matHeaderCellDef>Contract Rent</th>
             <td mat-cell *matCellDef="let tenant">
               <div class="contract-rent">
-                <span class="rent-amount">KES {{ tenant.contractRent }}</span>
+                <span class="rent-amount">{{ tenant.currency }} {{ tenant.contractRent }}</span>
                 <span class="rent-period">{{ tenant.rentPeriod }}</span>
-              </div>
-            </td>
-          </ng-container>
-
-          <!-- Ledger Balance Column -->
-          <ng-container matColumnDef="ledgerBalance">
-            <th mat-header-cell *matHeaderCellDef>Ledger Balance</th>
-            <td mat-cell *matCellDef="let tenant">
-              <div
-                class="ledger-balance"
-                [ngClass]="getBalanceClass(tenant.ledgerBalance, tenant.balanceStatus)"
-              >
-                <mat-icon class="ledger-balance-icon">
-                  {{ getBalanceIcon(tenant.ledgerBalance, tenant.balanceStatus) }}
-                </mat-icon>
-                {{ getBalanceStatus(tenant.ledgerBalance, tenant.balanceStatus) }}
               </div>
             </td>
           </ng-container>
@@ -230,8 +214,8 @@
       <!-- Pagination -->
       <div class="table-pagination">
         <mat-paginator
-          [length]="142"
-          [pageSize]="5"
+          [length]="pagination().totalCount"
+          [pageSize]="pagination().limit"
           [pageSizeOptions]="[5, 10, 25, 50]"
           [showFirstLastButtons]="true"
           aria-label="Select page"

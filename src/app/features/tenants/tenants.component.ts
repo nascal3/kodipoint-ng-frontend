@@ -1,27 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
-
-export interface TenantItem {
-  id: number;
-  name: string;
-  phone: string;
-  email: string;
-  avatar: string;
-  premises: string;
-  unit: string;
-  unitType: string;
-  startDate: string;
-  tenure: string;
-  contractRent: string;
-  rentPeriod: string;
-  ledgerBalance: string;
-  balanceStatus: 'overdue' | 'settled' | 'credit';
-  emergencyContact: string;
-  emergencyPhone: string;
-  tenancyStatus: 'active' | 'notice' | 'pending';
-}
+import { TenantsService } from './services/tenants.service';
+import { TenantItem, Tenant, Tenancy } from './models/tenants.interface';
 
 @Component({
   selector: 'app-tenants',
@@ -35,7 +17,17 @@ export interface TenantItem {
   templateUrl: './tenants.component.html',
   styleUrl: './tenants.component.scss',
 })
-export class TenantsComponent {
+export class TenantsComponent implements OnInit {
+  private readonly tenantsService = inject(TenantsService);
+  readonly tenants = signal<TenantItem[]>([]);
+  readonly pagination = signal({
+    page: 1,
+    limit: 10,
+    totalCount: 0,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  });
   readonly activeLeaseholdRate = signal({
     title: 'Active Leasehold Rate',
     percentage: '97.8%',
@@ -58,108 +50,6 @@ export class TenantsComponent {
     pendingReview: '8 Pending Review',
   });
 
-  readonly tenants = signal<TenantItem[]>([
-    {
-      id: 1,
-      name: 'John Kamau',
-      phone: '+254722 411980',
-      email: 'john.kamau@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-      premises: 'Highland Courts',
-      unit: 'Apt 4B',
-      unitType: '3 Bed',
-      startDate: '15 Jan 2023',
-      tenure: '24 Mo Fixed',
-      contractRent: '145,000',
-      rentPeriod: 'Monthly',
-      ledgerBalance: '-85,000',
-      balanceStatus: 'overdue',
-      emergencyContact: 'David W.',
-      emergencyPhone: '+254722 411980',
-      tenancyStatus: 'notice',
-    },
-    {
-      id: 2,
-      name: 'Peter Kimani',
-      phone: '+254733 908122',
-      email: 'peter.kimani@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
-      premises: 'Kilimani Nexus',
-      unit: 'Suite 601',
-      unitType: 'Comm.',
-      startDate: '01 Mar 2022',
-      tenure: '36 Mo Fixed',
-      contractRent: '320,000',
-      rentPeriod: 'Quarterly',
-      ledgerBalance: '0',
-      balanceStatus: 'settled',
-      emergencyContact: 'Peter K.',
-      emergencyPhone: '+254733 908122',
-      tenancyStatus: 'active',
-    },
-    {
-      id: 3,
-      name: 'Linet Kipkemboi',
-      phone: '+254728 991433',
-      email: 'linet.kipkemboi@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-      premises: 'Westlands Hts',
-      unit: 'Penthouse 12A',
-      unitType: '',
-      startDate: '10 Oct 2021',
-      tenure: '20 Days Left',
-      contractRent: '210,000',
-      rentPeriod: 'Quarterly',
-      ledgerBalance: '+310,000',
-      balanceStatus: 'credit',
-      emergencyContact: 'Linet K.',
-      emergencyPhone: '+254728 991433',
-      tenancyStatus: 'notice',
-    },
-    {
-      id: 4,
-      name: 'Collins Ochieng',
-      phone: '+254711 884100',
-      email: 'collins.ochieng@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-      premises: 'Riverside Green',
-      unit: 'Townhouse 08',
-      unitType: '',
-      startDate: '01 Dec 2023',
-      tenure: '12 Mo Lease',
-      contractRent: '180,000',
-      rentPeriod: 'Monthly',
-      ledgerBalance: '0',
-      balanceStatus: 'settled',
-      emergencyContact: 'Collins O.',
-      emergencyPhone: '+254711 884100',
-      tenancyStatus: 'active',
-    },
-    {
-      id: 5,
-      name: 'Christine Omondi',
-      phone: '+254722 882119',
-      email: 'christine.omondi@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-      premises: 'Parklands Plaza',
-      unit: 'Comm. Suite 2B',
-      unitType: '',
-      startDate: 'Pending Draft',
-      tenure: '3 Yrs',
-      contractRent: '175,000',
-      rentPeriod: 'Annually',
-      ledgerBalance: 'Escrow Deposit',
-      balanceStatus: 'settled',
-      emergencyContact: 'Christine O.',
-      emergencyPhone: '+254722 882119',
-      tenancyStatus: 'pending',
-    },
-  ]);
 
   readonly selectedLedger = signal('All Tenants');
   readonly searchQuery = signal('');
@@ -177,7 +67,6 @@ export class TenantsComponent {
     'premisesUnit',
     'tenure',
     'contractRent',
-    'ledgerBalance',
     'emergency',
     'tenancyStatus',
     'actions',
@@ -233,6 +122,86 @@ export class TenantsComponent {
       default:
         return 'balance-settled';
     }
+  }
+
+  ngOnInit(): void {
+    this.loadTenants();
+  }
+
+  loadTenants(): void {
+    const statusFilter = this.selectedLedger() === 'All Tenants' ? undefined : this.mapLedgerToStatus(this.selectedLedger());
+    const nameFilter = this.searchQuery() || undefined;
+
+    this.tenantsService
+      .getTenants(this.pagination().page, this.pagination().limit, {
+        status: statusFilter,
+        name: nameFilter,
+      })
+      .subscribe({
+        next: (response) => {
+          const transformedTenants = this.transformTenants(response.data);
+          this.tenants.set(transformedTenants);
+          this.pagination.set(response.pagination);
+        },
+        error: (error) => {
+          console.error('Error loading tenants:', error);
+        },
+      });
+  }
+
+  private transformTenants(apiTenants: Tenant[]): TenantItem[] {
+    return apiTenants.map((tenant) => {
+      const activeTenancy = tenant.tenancies?.[0];
+      return {
+        id: tenant.id,
+        name: `${tenant.firstName} ${tenant.lastName}`,
+        phone: tenant.phone,
+        email: tenant.email,
+        premises: activeTenancy?.property?.name || 'N/A',
+        unit: activeTenancy?.unit?.unitNumber || 'N/A',
+        unitType: activeTenancy?.unit?.bedroomCount || 'N/A',
+        currency: activeTenancy?.property?.currency || 'N/A',
+        startDate: activeTenancy?.startDate ? this.formatDate(activeTenancy.startDate) : 'N/A',
+        tenure: activeTenancy?.endDate ? this.calculateTenure(activeTenancy.startDate, activeTenancy.endDate) : 'Active',
+        contractRent: activeTenancy?.unit?.marketRent || '0',
+        rentPeriod: activeTenancy?.unit?.billingFrequency || 'N/A',
+        emergencyContact: tenant.emergencyContactName,
+        emergencyPhone: tenant.emergencyContactPhone,
+        tenancyStatus: this.mapTenancyStatus(activeTenancy?.status || tenant.status),
+      };
+    });
+  }
+
+  private formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
+  }
+
+  private calculateTenure(startDate: string, endDate: string): string {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const months = Math.floor(diffDays / 30);
+    return `${months} Mo Fixed`;
+  }
+
+  private mapTenancyStatus(status: string): 'active' | 'notice' | 'pending' {
+    const statusMap: Record<string, 'active' | 'notice' | 'pending'> = {
+      ACTIVE: 'active',
+      NOTICE: 'notice',
+      PENDING: 'pending',
+    };
+    return statusMap[status] || 'pending';
+  }
+
+  private mapLedgerToStatus(ledger: string): string | undefined {
+    const statusMap: Record<string, string> = {
+      'Active Tenancies': 'ACTIVE',
+      'Notice Period': 'NOTICE',
+      'Pending Lease': 'PENDING',
+    };
+    return statusMap[ledger];
   }
 
   getInitials(name: string): string {
