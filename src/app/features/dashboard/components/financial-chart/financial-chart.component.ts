@@ -244,6 +244,13 @@ export class FinancialChartComponent {
           return html;
         },
       },
+      toolbox: {
+        feature: {
+          magicType: { show: true, type: ['line', 'bar'] },
+          restore: { show: true },
+          saveAsImage: { show: true }
+        }
+      },
       xAxis: {
         type: 'category',
         data: months,

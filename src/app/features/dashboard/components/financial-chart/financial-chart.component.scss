@@ -164,10 +164,32 @@
   min-height: 280px;
 }
 
+.chart-plot-container {
+  position: relative;
+}
+
+.chart-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #64748b;
+  background: rgba(255, 255, 255, 0.82);
+}
+
 :host-context(html.dark-theme) .chart-card {
   background: #0f1d30;
   border-color: #1d2b40;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+
+:host-context(html.dark-theme) .chart-loading-overlay {
+  color: #8492a8;
+  background: rgba(15, 29, 48, 0.86);
 }
 
 :host-context(html.dark-theme) .chart-title {
