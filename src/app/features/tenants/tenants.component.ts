@@ -28,6 +28,7 @@ export class TenantsComponent implements OnInit {
   readonly tenants = signal<TenantItem[]>([]);
   readonly isLoading = signal(false);
   readonly hasLoadError = signal(false);
+  readonly isKpiLoading = signal(false);
   readonly pagination = signal({
     page: 1,
     limit: 10,
@@ -126,6 +127,11 @@ export class TenantsComponent implements OnInit {
         this.resetPageAndLoad();
       });
     this.loadTenants();
+    this.loadKpiData();
+  }
+
+  private loadKpiData(): void {
+    this.isKpiLoading.set(true);
     this.loadProjectedRent();
     this.loadExpiringLeases();
     this.loadTenanciesSummary();
@@ -172,7 +178,9 @@ export class TenantsComponent implements OnInit {
   }
 
   loadProjectedRent(): void {
-    this.tenantsService.getProjectedRent(1, 10, 'DESC').subscribe({
+    this.tenantsService.getProjectedRent(1, 10, 'DESC').pipe(
+      finalize(() => this.isKpiLoading.set(false))
+    ).subscribe({
       next: (response) => {
         const { totalOccupiedUnits, totalVacantUnits, totalProperties } = response.summary;
         const percentage = totalProperties > 0
@@ -204,7 +212,9 @@ export class TenantsComponent implements OnInit {
   }
 
   loadTenanciesSummary(): void {
-    this.tenantsService.getActiveTenancies(1, 10).subscribe({
+    this.tenantsService.getActiveTenancies(1, 10).pipe(
+      finalize(() => this.isKpiLoading.set(false))
+    ).subscribe({
       next: (response) => {
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();

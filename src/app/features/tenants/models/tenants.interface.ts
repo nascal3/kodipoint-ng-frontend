@@ -70,25 +70,6 @@ export interface TenantsResponse {
   };
 }
 
-// export interface ProjectedRentResponse {
-//   summary: {
-//     totalProjectedRent: string;
-//     totalPotentialRent: string;
-//     totalOccupiedUnits: number;
-//     totalVacantUnits: number;
-//     totalProperties: number;
-//   };
-//   properties: any[];
-//   pagination: {
-//     page: number;
-//     limit: number;
-//     total: number;
-//     totalPages: number;
-//     hasNextPage: boolean;
-//     hasPreviousPage: boolean;
-//   };
-// }
-
 export interface TenanciesResponse {
   data: Tenancy[];
   pagination: {

@@ -9,13 +9,19 @@
           <mat-icon class="kpi-icon">home</mat-icon>
         </div>
       </div>
-      <div class="kpi-flex-row">
-        <span class="amount-val">{{ activeLeaseholdRate().percentage }}</span>
-      </div>
-      <div class="kpi-detail">
-        <span>Occupied Capacity</span>
-        <strong>{{ activeLeaseholdRate().unitRatio }}</strong>
-      </div>
+      @if (isKpiLoading()) {
+        <div class="kpi-loading" role="status" aria-live="polite">
+          <mat-spinner diameter="24"></mat-spinner>
+        </div>
+      } @else {
+        <div class="kpi-flex-row">
+          <span class="amount-val">{{ activeLeaseholdRate().percentage }}</span>
+        </div>
+        <div class="kpi-detail">
+          <span>Occupied Capacity</span>
+          <strong>{{ activeLeaseholdRate().unitRatio }}</strong>
+        </div>
+      }
     </div>
 
     <!-- Card 2: Tenancies summary-->
@@ -26,13 +32,19 @@
           <mat-icon class="kpi-icon">groups</mat-icon>
         </div>
       </div>
-      <div class="kpi-main-val">
-        <span class="amount-val">{{ tenanciesSummary().newTenants }}</span>
-      </div>
-      <div class="kpi-detail">
-        <span>Active Tenancies</span>
-        <strong>{{ tenanciesSummary().activeTenants }}</strong>
-      </div>
+      @if (isKpiLoading()) {
+        <div class="kpi-loading" role="status" aria-live="polite">
+          <mat-spinner diameter="24"></mat-spinner>
+        </div>
+      } @else {
+        <div class="kpi-main-val">
+          <span class="amount-val">{{ tenanciesSummary().newTenants }}</span>
+        </div>
+        <div class="kpi-detail">
+          <span>Active Tenancies</span>
+          <strong>{{ tenanciesSummary().activeTenants }}</strong>
+        </div>
+      }
     </div>
 
     <!-- Card 3: Expiring in 30 Days -->
@@ -43,13 +55,19 @@
           <mat-icon class="kpi-icon">schedule</mat-icon>
         </div>
       </div>
-      <div class="kpi-flex-row">
-        <span class="amount-val">{{ expiringLeases().leasesCount }}</span>
-      </div>
-      <div class="kpi-detail">
-        <span>Notice Dispatches</span>
-        <strong>{{ expiringLeases().pendingReview }}</strong>
-      </div>
+      @if (isKpiLoading()) {
+        <div class="kpi-loading" role="status" aria-live="polite">
+          <mat-spinner diameter="24"></mat-spinner>
+        </div>
+      } @else {
+        <div class="kpi-flex-row">
+          <span class="amount-val">{{ expiringLeases().leasesCount }}</span>
+        </div>
+        <div class="kpi-detail">
+          <span>Notice Dispatches</span>
+          <strong>{{ expiringLeases().pendingReview }}</strong>
+        </div>
+      }
     </div>
   </section>
 
