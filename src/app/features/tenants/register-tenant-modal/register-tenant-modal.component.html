@@ -58,6 +58,22 @@
           }
         </mat-form-field>
 
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Identification document</mat-label>
+          <mat-select formControlName="identificationDoc">
+            <mat-option value="NATIONAL_ID">National ID</mat-option>
+            <mat-option value="PASSPORT">Passport</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Identification document number</mat-label>
+          <input matInput formControlName="identificationDocNumber" autocomplete="off" placeholder="e.g. 12345678"/>
+          @if ((tenantForm.controls.identificationDocNumber.hasError('required') || tenantForm.controls.identificationDocNumber.hasError('pattern')) && tenantForm.controls.identificationDocNumber.touched) {
+            <mat-error>Identification document number is required.</mat-error>
+          }
+        </mat-form-field>
+
         <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
           <mat-label>Residential address</mat-label>
           <input matInput formControlName="address" autocomplete="street-address" placeholder="Street, area, city"/>

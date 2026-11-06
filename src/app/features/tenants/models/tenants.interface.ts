@@ -20,6 +20,8 @@ export interface CreateTenantRequest {
   lastName: string;
   email: string;
   phone: string;
+  identificationDoc: 'NATIONAL_ID' | 'PASSPORT';
+  identificationDocNumber: string;
   address: string;
   emergencyContactName: string;
   emergencyContactPhone: string;

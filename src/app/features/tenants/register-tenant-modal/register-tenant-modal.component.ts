@@ -27,6 +27,14 @@ export class RegisterTenantModalComponent {
     lastName: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)]}),
     email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
     phone: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)]}),
+    identificationDoc: new FormControl<'NATIONAL_ID' | 'PASSPORT'>('NATIONAL_ID', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    identificationDocNumber: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(/\S/)],
+    }),
     address: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)]}),
     emergencyContactName: new FormControl('', {
       nonNullable: true,
@@ -62,6 +70,8 @@ export class RegisterTenantModalComponent {
       lastName: formValue.lastName.trim(),
       email: formValue.email.trim(),
       phone: formValue.phone.trim(),
+      identificationDoc: formValue.identificationDoc,
+      identificationDocNumber: formValue.identificationDocNumber.trim(),
       address: formValue.address.trim(),
       emergencyContactName: formValue.emergencyContactName.trim(),
       emergencyContactPhone: formValue.emergencyContactPhone.trim(),
