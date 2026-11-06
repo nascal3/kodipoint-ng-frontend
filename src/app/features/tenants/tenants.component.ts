@@ -41,9 +41,9 @@ export class TenantsComponent implements OnInit {
     unitRatio: '--',
   });
 
-  readonly contractedRent = signal({
-    amount: '--',
-    collectedLabel: '--',
+  readonly tenanciesSummary = signal({
+    newTenants: '--',
+    activeTenants: '--',
   });
 
   readonly expiringLeases = signal({
@@ -128,6 +128,7 @@ export class TenantsComponent implements OnInit {
     this.loadTenants();
     this.loadProjectedRent();
     this.loadExpiringLeases();
+    this.loadTenanciesSummary();
   }
 
   onStatusChange(status: string): void {
@@ -198,6 +199,30 @@ export class TenantsComponent implements OnInit {
       },
       error: () => {
         this.snackbarService.error('Failed to load expiring leases data.');
+      },
+    });
+  }
+
+  loadTenanciesSummary(): void {
+    this.tenantsService.getActiveTenancies(1, 10).subscribe({
+      next: (response) => {
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+
+        const newTenantsCount = response.data.filter(tenancy => {
+          const createdAt = new Date(tenancy.createdAt);
+          return createdAt.getMonth() === currentMonth && createdAt.getFullYear() === currentYear;
+        }).length;
+
+        const activeTenantsCount = response.pagination.total;
+
+        this.tenanciesSummary.set({
+          newTenants: newTenantsCount.toString(),
+          activeTenants: activeTenantsCount.toString(),
+        });
+      },
+      error: () => {
+        this.snackbarService.error('Failed to load tenancies summary data.');
       },
     });
   }

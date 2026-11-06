@@ -47,4 +47,16 @@ export class TenantsService {
 
     return this.http.get<TenanciesResponse>(`${environment.apiUrl}/tenancies`, { params });
   }
+
+  getActiveTenancies(
+    page: number = 1,
+    limit: number = 10
+  ): Observable<TenanciesResponse> {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('limit', limit)
+      .set('status', 'ACTIVE');
+
+    return this.http.get<TenanciesResponse>(`${environment.apiUrl}/tenancies`, { params });
+  }
 }

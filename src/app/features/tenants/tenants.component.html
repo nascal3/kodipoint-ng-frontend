@@ -18,21 +18,20 @@
       </div>
     </div>
 
-    <!-- Card 2: Contracted Rent / Mo -->
+    <!-- Card 2: Tenancies summary-->
     <div class="kpi-card kpi-card-primary">
       <div class="kpi-card-header">
-        <span class="kpi-title">Contracted Rent / Mo</span>
+        <span class="kpi-title">New Tenants</span>
         <div class="kpi-icon-bubble icon-primary">
-          <mat-icon class="kpi-icon">payments</mat-icon>
+          <mat-icon class="kpi-icon">groups</mat-icon>
         </div>
       </div>
       <div class="kpi-main-val">
-        <span class="currency-prefix">KES</span>
-        <span class="amount-val">{{ contractedRent().amount }}</span>
+        <span class="amount-val">{{ tenanciesSummary().newTenants }}</span>
       </div>
       <div class="kpi-detail">
-        <span>Collection Rate</span>
-        <strong>{{ contractedRent().collectedLabel }}</strong>
+        <span>Active Tenancies</span>
+        <strong>{{ tenanciesSummary().activeTenants }}</strong>
       </div>
     </div>
 
