@@ -37,25 +37,18 @@ export class TenantsComponent implements OnInit {
     hasPreviousPage: false,
   });
   readonly activeLeaseholdRate = signal({
-    title: 'Active Leasehold Rate',
-    percentage: '97.8%',
-    unitLabel: 'Occupied Capacity',
-    unitRatio: '139 / 142 Units',
+    percentage: '--',
+    unitRatio: '--',
   });
 
   readonly contractedRent = signal({
-    title: 'Contracted Rent / Mo',
-    currency: 'KES',
-    amount: '11.84M',
-    collectionLabel: 'Collection Rate',
-    collectedLabel: '91.4% Collected',
+    amount: '--',
+    collectedLabel: '--',
   });
 
   readonly expiringLeases = signal({
-    title: 'Expiring in 30 Days',
     leasesCount: '8 Leases',
-    dispatchLabel: 'Notice Dispatches',
-    pendingReview: '8 Pending Review',
+    pendingReview: '8',
   });
 
 
@@ -133,6 +126,8 @@ export class TenantsComponent implements OnInit {
         this.resetPageAndLoad();
       });
     this.loadTenants();
+    this.loadProjectedRent();
+    this.loadExpiringLeases();
   }
 
   onStatusChange(status: string): void {
@@ -173,6 +168,38 @@ export class TenantsComponent implements OnInit {
           this.snackbarService.error('Failed to load tenants. Please try again.');
         },
       });
+  }
+
+  loadProjectedRent(): void {
+    this.tenantsService.getProjectedRent(1, 10, 'DESC').subscribe({
+      next: (response) => {
+        const { totalOccupiedUnits, totalVacantUnits, totalProperties } = response.summary;
+        const percentage = totalProperties > 0
+          ? ((totalOccupiedUnits / totalProperties) * 100).toFixed(1) + '%'
+          : '0%';
+        const unitRatio = `${totalOccupiedUnits} / ${totalProperties} Units`;
+
+        this.activeLeaseholdRate.set({ percentage, unitRatio });
+      },
+      error: () => {
+        this.snackbarService.error('Failed to load projected rent data.');
+      },
+    });
+  }
+
+  loadExpiringLeases(): void {
+    this.tenantsService.getExpiringTenancies(1, 10).subscribe({
+      next: (response) => {
+        const totalLeases = response.pagination.total;
+        this.expiringLeases.set({
+          leasesCount: `${totalLeases} Leases`,
+          pendingReview: totalLeases.toString(),
+        });
+      },
+      error: () => {
+        this.snackbarService.error('Failed to load expiring leases data.');
+      },
+    });
   }
 
   private transformTenants(apiTenants: Tenant[]): TenantItem[] {

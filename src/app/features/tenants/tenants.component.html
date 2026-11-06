@@ -4,7 +4,7 @@
     <!-- Card 1: Active Leasehold Rate -->
     <div class="kpi-card kpi-card-secondary">
       <div class="kpi-card-header">
-        <span class="kpi-title">{{ activeLeaseholdRate().title }}</span>
+        <span class="kpi-title">Active Leasehold Rate</span>
         <div class="kpi-icon-bubble icon-secondary">
           <mat-icon class="kpi-icon">home</mat-icon>
         </div>
@@ -13,7 +13,7 @@
         <span class="amount-val">{{ activeLeaseholdRate().percentage }}</span>
       </div>
       <div class="kpi-detail">
-        <span>{{ activeLeaseholdRate().unitLabel }}</span>
+        <span>Occupied Capacity</span>
         <strong>{{ activeLeaseholdRate().unitRatio }}</strong>
       </div>
     </div>
@@ -21,17 +21,17 @@
     <!-- Card 2: Contracted Rent / Mo -->
     <div class="kpi-card kpi-card-primary">
       <div class="kpi-card-header">
-        <span class="kpi-title">{{ contractedRent().title }}</span>
+        <span class="kpi-title">Contracted Rent / Mo</span>
         <div class="kpi-icon-bubble icon-primary">
           <mat-icon class="kpi-icon">payments</mat-icon>
         </div>
       </div>
       <div class="kpi-main-val">
-        <span class="currency-prefix">{{ contractedRent().currency }}</span>
+        <span class="currency-prefix">KES</span>
         <span class="amount-val">{{ contractedRent().amount }}</span>
       </div>
       <div class="kpi-detail">
-        <span>{{ contractedRent().collectionLabel }}</span>
+        <span>Collection Rate</span>
         <strong>{{ contractedRent().collectedLabel }}</strong>
       </div>
     </div>
@@ -39,7 +39,7 @@
     <!-- Card 3: Expiring in 30 Days -->
     <div class="kpi-card kpi-card-error">
       <div class="kpi-card-header">
-        <span class="kpi-title">{{ expiringLeases().title }}</span>
+        <span class="kpi-title">Expiring in 30 Days</span>
         <div class="kpi-icon-bubble icon-error">
           <mat-icon class="kpi-icon">schedule</mat-icon>
         </div>
@@ -48,7 +48,7 @@
         <span class="amount-val">{{ expiringLeases().leasesCount }}</span>
       </div>
       <div class="kpi-detail">
-        <span>{{ expiringLeases().dispatchLabel }}</span>
+        <span>Notice Dispatches</span>
         <strong>{{ expiringLeases().pendingReview }}</strong>
       </div>
     </div>
