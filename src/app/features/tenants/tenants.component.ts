@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import { TenantsService } from './services/tenants.service';
@@ -20,8 +21,10 @@ import { TenantItem, Tenant, Tenancy } from './models/tenants.interface';
   styleUrl: './tenants.component.scss',
 })
 export class TenantsComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly tenantsService = inject(TenantsService);
   private readonly snackbarService = inject(SnackbarService);
+  private readonly searchChanges = new Subject<string>();
   readonly tenants = signal<TenantItem[]>([]);
   readonly isLoading = signal(false);
   readonly hasLoadError = signal(false);
@@ -56,16 +59,10 @@ export class TenantsComponent implements OnInit {
   });
 
 
-  readonly selectedLedger = signal('All Tenants');
+  readonly selectedStatus = signal('All');
   readonly searchQuery = signal('');
 
-  readonly ledgerOptions = [
-    'All Tenants',
-    'Active Tenancies',
-    'Notice Period',
-    'Pending Lease',
-    'Overdue Balance',
-  ];
+  readonly statusOptions = ['All', 'ACTIVE', 'NOTICE', 'ENDED'];
 
   displayedColumns: string[] = [
     'tenantProfile',
@@ -130,14 +127,34 @@ export class TenantsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.searchChanges
+      .pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.resetPageAndLoad();
+      });
+    this.loadTenants();
+  }
+
+  onStatusChange(status: string): void {
+    this.selectedStatus.set(status);
+    this.resetPageAndLoad();
+  }
+
+  onSearchChange(query: string): void {
+    this.searchQuery.set(query);
+    this.searchChanges.next(query);
+  }
+
+  private resetPageAndLoad(): void {
+    this.pagination.update((pagination) => ({ ...pagination, page: 1 }));
     this.loadTenants();
   }
 
   loadTenants(): void {
     this.isLoading.set(true);
     this.hasLoadError.set(false);
-    const statusFilter = this.selectedLedger() === 'All Tenants' ? undefined : this.mapLedgerToStatus(this.selectedLedger());
-    const nameFilter = this.searchQuery() || undefined;
+    const statusFilter = this.selectedStatus() === 'All' ? undefined : this.selectedStatus();
+    const nameFilter = this.searchQuery().trim() || undefined;
 
     this.tenantsService
       .getTenants(this.pagination().page, this.pagination().limit, {
@@ -202,15 +219,6 @@ export class TenantsComponent implements OnInit {
       PENDING: 'pending',
     };
     return statusMap[status] || 'pending';
-  }
-
-  private mapLedgerToStatus(ledger: string): string | undefined {
-    const statusMap: Record<string, string> = {
-      'Active Tenancies': 'ACTIVE',
-      'Notice Period': 'NOTICE',
-      'Pending Lease': 'PENDING',
-    };
-    return statusMap[ledger];
   }
 
   getInitials(name: string): string {

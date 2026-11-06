@@ -64,20 +64,20 @@
           subscriptSizing="dynamic"
         >
           <mat-select
-            [ngModel]="selectedLedger()"
-            (ngModelChange)="selectedLedger.set($event)"
-            aria-label="Filter by ledger status"
+            [ngModel]="selectedStatus()"
+            (ngModelChange)="onStatusChange($event)"
+            aria-label="Filter by tenancy status"
           >
             <mat-select-trigger>
               <span class="ledger-select-trigger">
                 <mat-icon class="ledger-filter-icon">tune</mat-icon>
                 <span class="ledger-select-copy">
                   <span class="ledger-select-label">TENANCY STATUS</span>
-                  <span class="ledger-select-value">{{ selectedLedger() }}</span>
+                  <span class="ledger-select-value">{{ selectedStatus() }}</span>
                 </span>
               </span>
             </mat-select-trigger>
-            @for (option of ledgerOptions; track option) {
+            @for (option of statusOptions; track option) {
               <mat-option [value]="option">{{ option }}</mat-option>
             }
           </mat-select>
@@ -89,10 +89,10 @@
             matInput
             type="text"
             class="search-input"
-            placeholder="tenant name, phone, unit..."
+            placeholder="tenant name, phone"
             aria-label="Search tenants"
             [ngModel]="searchQuery()"
-            (ngModelChange)="searchQuery.set($event)"
+            (ngModelChange)="onSearchChange($event)"
           />
         </mat-form-field>
 
