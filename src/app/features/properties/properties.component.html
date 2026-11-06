@@ -332,7 +332,7 @@
 
               <!-- Card Actions Footer -->
               <div class="card-footer">
-                <button type="button" class="btn-assign" matTooltip="Create a new Unit" (click)="openAddUnitModal(property)">
+                <button type="button" class="btn-assign" matTooltip="Create a new Unit" (click)="openAddUnitModal(property)" [disabled]="property.status === 'INACTIVE'">
                   <mat-icon class="action-btn-icon">add_home</mat-icon>
                   <span>Add Unit</span>
                 </button>

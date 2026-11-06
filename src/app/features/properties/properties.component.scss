@@ -1032,6 +1032,16 @@
 
     &:hover { background: #f8fafc; }
     .action-btn-icon { font-size: 16px; width: 16px; height: 16px; color: #475569; }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      color: #94a3b8;
+
+      .action-btn-icon { color: #94a3b8; }
+    }
   }
 
   .btn-icon-square {
@@ -1260,6 +1270,16 @@
       &:hover {
         background: #1d3045;
         color: #f8fafc;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #1a2738;
+        border-color: #26384a;
+        color: #64748b;
+
+        .action-btn-icon { color: #64748b; }
       }
     }
 
