@@ -2,7 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Tenancy, Tenant, TenantsResponse, ProjectedRentResponse, TenanciesResponse } from '../models/tenants.interface';
+import { TenantsResponse, TenanciesResponse } from '../models/tenants.interface';
+import { ProjectedRentResponse } from '@app/features/properties/models/properties.models';
 
 @Injectable({
   providedIn: 'root',
