@@ -43,6 +43,7 @@ export class AddPropertyUnitModalComponent implements OnInit {
   readonly unitStatuses: { value: UnitStatus; label: string }[] = [
     { value: 'AVAILABLE', label: 'Available' },
     { value: 'MAINTENANCE', label: 'Maintenance' },
+    { value: 'UNAVAILABLE', label: 'Unavailable' },
   ];
   readonly unitForm = new FormGroup({
     unitNumber: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)] }),
