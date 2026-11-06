@@ -263,7 +263,12 @@
                     <mat-icon>edit</mat-icon>
                   </button>
                 } @else if (unit.status === 'AVAILABLE') {
-                  <button matButton="filled" type="button" class="assign-button">
+                  <button
+                    matButton="filled"
+                    type="button"
+                    class="assign-button"
+                    [disabled]="property().status !== 'ACTIVE'"
+                  >
                     <mat-icon>person_add</mat-icon>
                     Assign
                   </button>
