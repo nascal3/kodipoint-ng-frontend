@@ -77,11 +77,8 @@
         </mat-form-field>
 
         <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Residential address</mat-label>
+          <mat-label>Postal address</mat-label>
           <input matInput formControlName="address" autocomplete="street-address" placeholder="Street, area, city"/>
-          @if ((tenantForm.controls.address.hasError('required') || tenantForm.controls.address.hasError('pattern')) && tenantForm.controls.address.touched) {
-            <mat-error>Address is required.</mat-error>
-          }
         </mat-form-field>
 
         <h3 class="form-section-title emergency-heading">Emergency contact</h3>
@@ -98,8 +95,10 @@
           <mat-label>Contact phone</mat-label>
           <input matInput type="tel" formControlName="emergencyContactPhone" autocomplete="off"
                  placeholder="+254 7XX XXX XXX"/>
-          @if ((tenantForm.controls.emergencyContactPhone.hasError('required') || tenantForm.controls.emergencyContactPhone.hasError('pattern')) && tenantForm.controls.emergencyContactPhone.touched) {
+          @if (tenantForm.controls.emergencyContactPhone.hasError('required') && tenantForm.controls.emergencyContactPhone.touched) {
             <mat-error>Emergency contact phone is required.</mat-error>
+          } @else if (tenantForm.controls.emergencyContactPhone.hasError('pattern') && tenantForm.controls.emergencyContactPhone.touched) {
+            <mat-error>Enter a valid phone number with country code (e.g., +254700000000).</mat-error>
           }
         </mat-form-field>
 

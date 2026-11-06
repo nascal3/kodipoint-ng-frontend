@@ -38,14 +38,14 @@ export class RegisterTenantModalComponent {
       nonNullable: true,
       validators: [Validators.required, Validators.pattern(/\S/)],
     }),
-    address: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)]}),
+    address: new FormControl('', {nonNullable: true}),
     emergencyContactName: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.pattern(/\S/)]
     }),
     emergencyContactPhone: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/\S/)]
+      validators: [Validators.required, Validators.pattern(/^\+\d{1,3}\d{6,14}$/)]
     }),
     emergencyContactRelationship: new FormControl('', {
       nonNullable: true,
