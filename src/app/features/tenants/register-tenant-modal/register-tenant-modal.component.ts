@@ -26,7 +26,10 @@ export class RegisterTenantModalComponent {
     firstName: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)]}),
     lastName: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)]}),
     email: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.email]}),
-    phone: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)]}),
+    phone: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(/^\+\d{1,3}\d{6,14}$/)]
+    }),
     identificationDoc: new FormControl<'NATIONAL_ID' | 'PASSPORT'>('NATIONAL_ID', {
       nonNullable: true,
       validators: [Validators.required],

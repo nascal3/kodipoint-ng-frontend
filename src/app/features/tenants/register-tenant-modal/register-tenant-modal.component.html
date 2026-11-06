@@ -53,8 +53,10 @@
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Phone number</mat-label>
           <input matInput type="tel" formControlName="phone" autocomplete="tel" placeholder="+254 7XX XXX XXX"/>
-          @if ((tenantForm.controls.phone.hasError('required') || tenantForm.controls.phone.hasError('pattern')) && tenantForm.controls.phone.touched) {
+          @if (tenantForm.controls.phone.hasError('required') && tenantForm.controls.phone.touched) {
             <mat-error>Phone number is required.</mat-error>
+          } @else if (tenantForm.controls.phone.hasError('pattern') && tenantForm.controls.phone.touched) {
+            <mat-error>Enter a valid phone number with country code (e.g., +254700000000).</mat-error>
           }
         </mat-form-field>
 
