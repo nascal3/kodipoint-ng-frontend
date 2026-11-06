@@ -265,8 +265,8 @@ export class TenantsComponent implements OnInit {
         unit: activeTenancy?.unit?.unitNumber || 'N/A',
         unitType: activeTenancy?.unit?.bedroomCount || 'N/A',
         currency: activeTenancy?.property?.currency || 'N/A',
-        startDate: activeTenancy?.startDate ? this.formatDate(activeTenancy.startDate) : 'N/A',
-        tenure: activeTenancy?.endDate ? this.calculateTenure(activeTenancy.startDate, activeTenancy.endDate) : 'Active',
+        startDate: tenant.createdAt ? this.formatDate(tenant.createdAt) : 'N/A',
+        tenure: tenant.createdAt ? this.calculateTenure(tenant.createdAt) : 'N/A',
         contractRent: activeTenancy?.unit?.marketRent || '0',
         rentPeriod: activeTenancy?.unit?.billingFrequency || 'N/A',
         emergencyContact: tenant.emergencyContactName,
@@ -278,16 +278,27 @@ export class TenantsComponent implements OnInit {
 
   private formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
+    return date.toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'});
   }
 
-  private calculateTenure(startDate: string, endDate: string): string {
+  private calculateTenure(startDate: string): string {
     const start = new Date(startDate);
-    const end = new Date(endDate);
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const months = Math.floor(diffDays / 30);
-    return `${months} Mo Fixed`;
+    const now = new Date();
+    let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+    if (now.getDate() < start.getDate()) {
+      months--;
+    }
+    const years = Math.floor(months / 12);
+    const remainingMonths = months % 12;
+
+    if (years > 0) {
+      return remainingMonths > 0 ? `${years} Yrs ${remainingMonths} Mo` : `${years} Yrs`;
+    }
+    if (remainingMonths > 0) {
+      return `${remainingMonths} Mo`;
+    }
+    const days = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    return `${days} Days`;
   }
 
   private mapTenancyStatus(status: string): 'active' | 'notice' | 'pending' {
