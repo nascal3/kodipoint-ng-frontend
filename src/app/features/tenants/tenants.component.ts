@@ -7,6 +7,7 @@ import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import { TenantsService } from './services/tenants.service';
 import { TenantItem, Tenant, Tenancy } from './models/tenants.interface';
+import { RegisterTenantModalComponent } from './register-tenant-modal/register-tenant-modal.component';
 
 @Component({
   selector: 'app-tenants',
@@ -14,6 +15,7 @@ import { TenantItem, Tenant, Tenancy } from './models/tenants.interface';
   imports: [
     CommonModule,
     FormsModule,
+    RegisterTenantModalComponent,
     ...MATERIAL_MODULES,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,6 +57,7 @@ export class TenantsComponent implements OnInit {
 
   readonly selectedStatus = signal('All');
   readonly searchQuery = signal('');
+  readonly isTenantRegistrationOpen = signal(false);
 
   readonly statusOptions = ['All', 'ACTIVE', 'NOTICE', 'ENDED'];
 
@@ -145,6 +148,19 @@ export class TenantsComponent implements OnInit {
   onSearchChange(query: string): void {
     this.searchQuery.set(query);
     this.searchChanges.next(query);
+  }
+
+  openTenantRegistration(): void {
+    this.isTenantRegistrationOpen.set(true);
+  }
+
+  closeTenantRegistration(): void {
+    this.isTenantRegistrationOpen.set(false);
+  }
+
+  onTenantCreated(): void {
+    this.closeTenantRegistration();
+    this.loadTenants();
   }
 
   private resetPageAndLoad(): void {

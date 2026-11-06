@@ -122,7 +122,7 @@
           <mat-icon>download</mat-icon>
         </button>
 
-        <button mat-raised-button class="register-btn" color="primary">
+        <button mat-raised-button class="register-btn" color="primary" (click)="openTenantRegistration()">
           <mat-icon class="btn-icon">person_add</mat-icon>
           Register New Tenant
         </button>
@@ -260,4 +260,11 @@
       </div>
     </div>
   </section>
+
+  @if (isTenantRegistrationOpen()) {
+    <app-register-tenant-modal
+      (closed)="closeTenantRegistration()"
+      (created)="onTenantCreated()"
+    />
+  }
 </div>

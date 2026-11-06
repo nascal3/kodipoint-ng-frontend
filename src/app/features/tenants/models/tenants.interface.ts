@@ -15,6 +15,17 @@ export interface TenantItem {
   tenancyStatus: 'active' | 'notice' | 'pending';
 }
 
+export interface CreateTenantRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+  emergencyContactRelationship: string;
+}
+
 export interface Tenancy {
   id: string;
   managerId: string;

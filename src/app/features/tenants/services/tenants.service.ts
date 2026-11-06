@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { TenantsResponse, TenanciesResponse } from '../models/tenants.interface';
+import { CreateTenantRequest, Tenant, TenantsResponse, TenanciesResponse } from '../models/tenants.interface';
 import { ProjectedRentResponse } from '@app/features/properties/models/properties.models';
 
 @Injectable({
@@ -22,6 +22,10 @@ export class TenantsService {
     if (filters.name) params = params.set('name', filters.name);
 
     return this.http.get<TenantsResponse>(`${environment.apiUrl}/tenants`, { params });
+  }
+
+  createTenant(tenant: CreateTenantRequest): Observable<Tenant> {
+    return this.http.post<Tenant>(`${environment.apiUrl}/tenants`, tenant);
   }
 
   getProjectedRent(
