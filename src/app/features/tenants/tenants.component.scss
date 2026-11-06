@@ -505,6 +505,32 @@
   }
 }
 
+.table-message-cell {
+  height: 160px;
+  text-align: center;
+}
+
+.table-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #64748b;
+  font-size: 13px;
+
+  mat-icon {
+    color: #94a3b8;
+  }
+}
+
+:host-context(html.dark-theme) .table-message {
+  color: #8492a8;
+
+  mat-icon {
+    color: #64748b;
+  }
+}
+
 .tenant-profile {
   display: flex;
   min-width: 0;

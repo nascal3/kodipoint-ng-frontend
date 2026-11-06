@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
+import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import { TenantsService } from './services/tenants.service';
 import { TenantItem, Tenant, Tenancy } from './models/tenants.interface';
 
@@ -19,7 +21,10 @@ import { TenantItem, Tenant, Tenancy } from './models/tenants.interface';
 })
 export class TenantsComponent implements OnInit {
   private readonly tenantsService = inject(TenantsService);
+  private readonly snackbarService = inject(SnackbarService);
   readonly tenants = signal<TenantItem[]>([]);
+  readonly isLoading = signal(false);
+  readonly hasLoadError = signal(false);
   readonly pagination = signal({
     page: 1,
     limit: 10,
@@ -129,6 +134,8 @@ export class TenantsComponent implements OnInit {
   }
 
   loadTenants(): void {
+    this.isLoading.set(true);
+    this.hasLoadError.set(false);
     const statusFilter = this.selectedLedger() === 'All Tenants' ? undefined : this.mapLedgerToStatus(this.selectedLedger());
     const nameFilter = this.searchQuery() || undefined;
 
@@ -137,14 +144,16 @@ export class TenantsComponent implements OnInit {
         status: statusFilter,
         name: nameFilter,
       })
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (response) => {
           const transformedTenants = this.transformTenants(response.data);
           this.tenants.set(transformedTenants);
           this.pagination.set(response.pagination);
         },
-        error: (error) => {
-          console.error('Error loading tenants:', error);
+        error: () => {
+          this.hasLoadError.set(true);
+          this.snackbarService.error('Failed to load tenants. Please try again.');
         },
       });
   }

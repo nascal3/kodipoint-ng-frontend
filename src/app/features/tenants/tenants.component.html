@@ -208,6 +208,26 @@
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          <tr *matNoDataRow>
+            <td class="mat-cell table-message-cell" [attr.colspan]="displayedColumns.length">
+              @if (isLoading()) {
+                <div class="table-message" role="status" aria-live="polite">
+                  <mat-spinner diameter="32" aria-label="Loading tenants"></mat-spinner>
+                  <span>Loading tenants...</span>
+                </div>
+              } @else if (hasLoadError()) {
+                <div class="table-message" role="alert">
+                  <span>Unable to load tenants.</span>
+                  <button mat-button color="primary" (click)="loadTenants()">Try again</button>
+                </div>
+              } @else {
+                <div class="table-message" role="status">
+                  <mat-icon aria-hidden="true">people_outline</mat-icon>
+                  <span>No tenants found.</span>
+                </div>
+              }
+            </td>
+          </tr>
         </table>
       </div>
 
