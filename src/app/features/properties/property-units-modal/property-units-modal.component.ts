@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, OnInit, Output, computed, inject, input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, OnDestroy, OnInit, Output, computed, inject, input, signal } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -23,12 +23,16 @@ interface UnitRequest {
   templateUrl: './property-units-modal.component.html',
   styleUrl: './property-units-modal.component.scss',
 })
-export class PropertyUnitsModalComponent implements OnInit {
+export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
   private readonly propertyService = inject(PropertyService);
   private readonly snackbarService = inject(SnackbarService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly document = inject(DOCUMENT);
   private readonly unitRequests = new Subject<UnitRequest>();
   private readonly unitNumberSearchChanges = new Subject<void>();
+  private scrollContainer: HTMLElement | null = null;
+  private previousOverflowY = '';
+  private previousOverflowYPriority = '';
 
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly addUnitRequested = new EventEmitter<void>();
@@ -85,6 +89,8 @@ export class PropertyUnitsModalComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    this.lockPageScroll();
+
     this.unitRequests.pipe(
       switchMap(({ page, limit, filters }) => this.propertyService.getPropertyUnits(
         this.property().id,
@@ -114,6 +120,16 @@ export class PropertyUnitsModalComponent implements OnInit {
     ).subscribe(() => this.applyFilters());
 
     this.loadUnits(1);
+  }
+
+  ngOnDestroy(): void {
+    if (!this.scrollContainer) return;
+
+    if (this.previousOverflowY) {
+      this.scrollContainer.style.setProperty('overflow-y', this.previousOverflowY, this.previousOverflowYPriority);
+    } else {
+      this.scrollContainer.style.removeProperty('overflow-y');
+    }
   }
 
   close(): void {
@@ -224,5 +240,14 @@ export class PropertyUnitsModalComponent implements OnInit {
   private applyFilters(): void {
     this.pagination.update((current) => ({ ...current, page: 1 }));
     this.loadUnits(1, this.pagination().limit);
+  }
+
+  private lockPageScroll(): void {
+    this.scrollContainer = this.document.querySelector<HTMLElement>('.shell-content');
+    if (!this.scrollContainer) return;
+
+    this.previousOverflowY = this.scrollContainer.style.getPropertyValue('overflow-y');
+    this.previousOverflowYPriority = this.scrollContainer.style.getPropertyPriority('overflow-y');
+    this.scrollContainer.style.setProperty('overflow-y', 'hidden');
   }
 }
