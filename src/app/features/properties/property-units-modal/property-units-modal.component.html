@@ -9,6 +9,9 @@
     <header class="units-modal-header">
       <div class="modal-heading-icon"><mat-icon>apartment</mat-icon></div>
       <div class="modal-heading-copy">
+        <mat-chip class="property-status-pill" [ngClass]="'status-' + property().status.toLowerCase()">
+          {{ property().status }}
+        </mat-chip>
         <div class="units-title-row">
           <h2 id="units-title">{{ property().name }} — Units Management</h2>
           @if (!isLoading() && units().length) {

@@ -67,6 +67,39 @@
   min-width: 0;
 }
 
+.property-status-pill {
+  --mdc-chip-container-height: 22px;
+  --mdc-chip-label-text-size: 11px;
+  --mdc-chip-label-text-weight: 700;
+
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px;
+  margin: 0 0 5px;
+  padding: 3px 10px;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  box-shadow: none;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.property-status-pill.status-maintenance {
+  color: #b45309;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.property-status-pill.status-inactive,
+.property-status-pill.status-archived {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
 .units-title-row {
   display: flex;
   align-items: center;
@@ -786,6 +819,38 @@
   color: #60a5fa;
   background: #1a3045;
   border-color: #263a4d;
+}
+
+:host-context(html.dark-theme) .property-status-pill {
+  color: #34d399;
+  background: rgba(5, 150, 105, 0.14);
+  border-color: rgba(16, 185, 129, 0.34);
+}
+
+:host-context(html.dark-theme) .property-status-pill ::ng-deep .mdc-evolution-chip__text-label {
+  color: #34d399 !important;
+}
+
+:host-context(html.dark-theme) .property-status-pill.status-maintenance {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+:host-context(html.dark-theme) .property-status-pill.status-maintenance ::ng-deep .mdc-evolution-chip__text-label {
+  color: #fbbf24 !important;
+}
+
+:host-context(html.dark-theme) .property-status-pill.status-inactive,
+:host-context(html.dark-theme) .property-status-pill.status-archived {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(248, 113, 113, 0.32);
+}
+
+:host-context(html.dark-theme) .property-status-pill.status-inactive ::ng-deep .mdc-evolution-chip__text-label,
+:host-context(html.dark-theme) .property-status-pill.status-archived ::ng-deep .mdc-evolution-chip__text-label {
+  color: #fca5a5 !important;
 }
 
 :host-context(html.dark-theme) .occupancy-badge,
