@@ -6,8 +6,9 @@ import { debounceTime, finalize, Subject } from 'rxjs';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import { TenantsService } from './services/tenants.service';
-import { TenantItem, Tenant, Tenancy } from './models/tenants.interface';
+import { TenantItem, Tenant } from './models/tenants.interface';
 import { RegisterTenantModalComponent } from './register-tenant-modal/register-tenant-modal.component';
+import { EditTenantModalComponent } from './edit-tenant-modal/edit-tenant-modal.component';
 
 @Component({
   selector: 'app-tenants',
@@ -16,6 +17,7 @@ import { RegisterTenantModalComponent } from './register-tenant-modal/register-t
     CommonModule,
     FormsModule,
     RegisterTenantModalComponent,
+    EditTenantModalComponent,
     ...MATERIAL_MODULES,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,6 +60,7 @@ export class TenantsComponent implements OnInit {
   readonly selectedStatus = signal('All');
   readonly searchQuery = signal('');
   readonly isTenantRegistrationOpen = signal(false);
+  readonly editingTenant = signal<Tenant | null>(null);
 
   readonly statusOptions = ['All', 'ACTIVE', 'NOTICE', 'ENDED'];
 
@@ -85,12 +88,14 @@ export class TenantsComponent implements OnInit {
     return 'check_circle';
   }
 
-  getTenancyStatusClass(status: 'active' | 'notice' | 'pending'): string {
+  getTenancyStatusClass(status: 'active' | 'notice' | 'pending' | 'ended'): string {
     switch (status) {
       case 'active':
         return 'status-active';
       case 'notice':
         return 'status-notice';
+      case 'ended':
+        return 'status-ended';
       case 'pending':
         return 'status-pending';
       default:
@@ -98,12 +103,14 @@ export class TenantsComponent implements OnInit {
     }
   }
 
-  getTenancyStatusLabel(status: 'active' | 'notice' | 'pending'): string {
+  getTenancyStatusLabel(status: 'active' | 'notice' | 'pending' | 'ended'): string {
     switch (status) {
       case 'active':
         return 'Active Tenancy';
       case 'notice':
         return 'Notice Period';
+      case 'ended':
+        return 'Ended';
       case 'pending':
         return 'Pending Lease';
       default:
@@ -160,6 +167,19 @@ export class TenantsComponent implements OnInit {
 
   onTenantCreated(): void {
     this.closeTenantRegistration();
+    this.loadTenants();
+  }
+
+  openTenantEdit(tenant: Tenant): void {
+    this.editingTenant.set(tenant);
+  }
+
+  closeTenantEdit(): void {
+    this.editingTenant.set(null);
+  }
+
+  onTenantUpdated(): void {
+    this.closeTenantEdit();
     this.loadTenants();
   }
 
@@ -258,6 +278,7 @@ export class TenantsComponent implements OnInit {
       const activeTenancy = tenant.tenancies?.[0];
       return {
         id: tenant.id,
+        tenant,
         name: `${tenant.firstName} ${tenant.lastName}`,
         phone: tenant.phone,
         email: tenant.email,
@@ -301,11 +322,12 @@ export class TenantsComponent implements OnInit {
     return `${days} Days`;
   }
 
-  private mapTenancyStatus(status: string): 'active' | 'notice' | 'pending' {
-    const statusMap: Record<string, 'active' | 'notice' | 'pending'> = {
+  private mapTenancyStatus(status: string): 'active' | 'notice' | 'pending' | 'ended' {
+    const statusMap: Record<string, 'active' | 'notice' | 'pending' | 'ended'> = {
       ACTIVE: 'active',
       NOTICE: 'notice',
       PENDING: 'pending',
+      ENDED: 'ended',
     };
     return statusMap[status] || 'pending';
   }

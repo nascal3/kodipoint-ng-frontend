@@ -745,6 +745,15 @@
     color: #4338ca;
     background: #ddd6fe;
   }
+  &.status-ended {
+    color: #475569;
+    background: #e2e8f0;
+  }
+}
+
+:host-context(html.dark-theme) .status-badge.status-ended {
+  color: #cbd5e1;
+  background: #334155;
 }
 
 .action-btn {

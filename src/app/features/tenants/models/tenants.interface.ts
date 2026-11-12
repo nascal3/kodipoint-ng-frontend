@@ -1,5 +1,6 @@
 export interface TenantItem {
   id: string;
+  tenant: Tenant;
   name: string;
   phone: string;
   email: string;
@@ -12,8 +13,10 @@ export interface TenantItem {
   rentPeriod: string;
   emergencyContact: string;
   emergencyPhone: string;
-  tenancyStatus: 'active' | 'notice' | 'pending';
+  tenancyStatus: 'active' | 'notice' | 'pending' | 'ended';
 }
+
+export type TenantStatus = 'ACTIVE' | 'NOTICE' | 'ENDED';
 
 export interface CreateTenantRequest {
   firstName: string;
@@ -26,6 +29,10 @@ export interface CreateTenantRequest {
   emergencyContactName: string;
   emergencyContactPhone: string;
   emergencyContactRelationship: string;
+}
+
+export interface UpdateTenantRequest extends CreateTenantRequest {
+  status: TenantStatus;
 }
 
 export interface Tenancy {
@@ -61,6 +68,8 @@ export interface Tenant {
   lastName: string;
   email: string;
   phone: string;
+  identificationDoc?: 'NATIONAL_ID' | 'PASSPORT';
+  identificationDocNumber?: string;
   address: string;
   emergencyContactName: string;
   emergencyContactPhone: string;

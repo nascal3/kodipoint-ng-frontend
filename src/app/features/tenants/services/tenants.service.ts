@@ -2,7 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { CreateTenantRequest, Tenant, TenantsResponse, TenanciesResponse } from '../models/tenants.interface';
+import {
+  CreateTenantRequest,
+  Tenant,
+  TenantsResponse,
+  TenanciesResponse,
+  UpdateTenantRequest,
+} from '../models/tenants.interface';
 import { ProjectedRentResponse } from '@app/features/properties/models/properties.models';
 
 @Injectable({
@@ -26,6 +32,10 @@ export class TenantsService {
 
   createTenant(tenant: CreateTenantRequest): Observable<Tenant> {
     return this.http.post<Tenant>(`${environment.apiUrl}/tenants`, tenant);
+  }
+
+  updateTenant(id: string, tenant: UpdateTenantRequest): Observable<Tenant> {
+    return this.http.patch<Tenant>(`${environment.apiUrl}/tenants/${id}`, tenant);
   }
 
   getProjectedRent(

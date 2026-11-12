@@ -217,7 +217,8 @@
               <button mat-icon-button class="action-btn" aria-label="Message tenant" matTooltip="Message tenant">
                 <mat-icon>chat_bubble_outline</mat-icon>
               </button>
-              <button mat-icon-button class="action-btn" aria-label="Edit tenant" matTooltip="Edit tenant">
+              <button mat-icon-button class="action-btn" aria-label="Edit tenant" matTooltip="Edit tenant"
+                      (click)="openTenantEdit(tenant.tenant)">
                 <mat-icon>edit</mat-icon>
               </button>
             </td>
@@ -265,6 +266,14 @@
     <app-register-tenant-modal
       (closed)="closeTenantRegistration()"
       (created)="onTenantCreated()"
+    />
+  }
+
+  @if (editingTenant(); as tenant) {
+    <app-edit-tenant-modal
+      [tenant]="tenant"
+      (closed)="closeTenantEdit()"
+      (saved)="onTenantUpdated()"
     />
   }
 </div>
