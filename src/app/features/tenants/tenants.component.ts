@@ -1,27 +1,18 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { debounceTime, finalize, Subject } from 'rxjs';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
-
-export interface TenantItem {
-  id: number;
-  name: string;
-  phone: string;
-  email: string;
-  avatar: string;
-  premises: string;
-  unit: string;
-  unitType: string;
-  startDate: string;
-  tenure: string;
-  contractRent: string;
-  rentPeriod: string;
-  ledgerBalance: string;
-  balanceStatus: 'overdue' | 'settled' | 'credit';
-  emergencyContact: string;
-  emergencyPhone: string;
-  tenancyStatus: 'active' | 'notice' | 'pending';
-}
+import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
+import { TenantsService } from './services/tenants.service';
+import { TenantItem, Tenant } from './models/tenants.interface';
+import { RegisterTenantModalComponent } from './register-tenant-modal/register-tenant-modal.component';
+import { EditTenantModalComponent } from './edit-tenant-modal/edit-tenant-modal.component';
+import {
+  SendTenantMessageModalComponent,
+  TenantMessageDraft,
+} from './send-tenant-message-modal/send-tenant-message-modal.component';
 
 @Component({
   selector: 'app-tenants',
@@ -29,155 +20,63 @@ export interface TenantItem {
   imports: [
     CommonModule,
     FormsModule,
+    RegisterTenantModalComponent,
+    EditTenantModalComponent,
+    SendTenantMessageModalComponent,
     ...MATERIAL_MODULES,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './tenants.component.html',
   styleUrl: './tenants.component.scss',
 })
-export class TenantsComponent {
+export class TenantsComponent implements OnInit {
+
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly tenantsService = inject(TenantsService);
+  private readonly snackbarService = inject(SnackbarService);
+  private readonly searchChanges = new Subject<string>();
+  readonly tenants = signal<TenantItem[]>([]);
+  readonly isLoading = signal(false);
+  readonly hasLoadError = signal(false);
+  readonly isKpiLoading = signal(false);
+  readonly pagination = signal({
+    page: 1,
+    limit: 10,
+    totalCount: 0,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  });
   readonly activeLeaseholdRate = signal({
-    title: 'Active Leasehold Rate',
-    percentage: '97.8%',
-    unitLabel: 'Occupied Capacity',
-    unitRatio: '139 / 142 Units',
+    percentage: '--',
+    unitRatio: '--',
   });
 
-  readonly contractedRent = signal({
-    title: 'Contracted Rent / Mo',
-    currency: 'KES',
-    amount: '11.84M',
-    collectionLabel: 'Collection Rate',
-    collectedLabel: '91.4% Collected',
+  readonly tenanciesSummary = signal({
+    newTenants: '--',
+    activeTenants: '--',
   });
 
   readonly expiringLeases = signal({
-    title: 'Expiring in 30 Days',
     leasesCount: '8 Leases',
-    dispatchLabel: 'Notice Dispatches',
-    pendingReview: '8 Pending Review',
+    pendingReview: '8',
   });
 
-  readonly tenants = signal<TenantItem[]>([
-    {
-      id: 1,
-      name: 'John Kamau',
-      phone: '+254722 411980',
-      email: 'john.kamau@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-      premises: 'Highland Courts',
-      unit: 'Apt 4B',
-      unitType: '3 Bed',
-      startDate: '15 Jan 2023',
-      tenure: '24 Mo Fixed',
-      contractRent: '145,000',
-      rentPeriod: 'Monthly',
-      ledgerBalance: '-85,000',
-      balanceStatus: 'overdue',
-      emergencyContact: 'David W.',
-      emergencyPhone: '+254722 411980',
-      tenancyStatus: 'notice',
-    },
-    {
-      id: 2,
-      name: 'Peter Kimani',
-      phone: '+254733 908122',
-      email: 'peter.kimani@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
-      premises: 'Kilimani Nexus',
-      unit: 'Suite 601',
-      unitType: 'Comm.',
-      startDate: '01 Mar 2022',
-      tenure: '36 Mo Fixed',
-      contractRent: '320,000',
-      rentPeriod: 'Quarterly',
-      ledgerBalance: '0',
-      balanceStatus: 'settled',
-      emergencyContact: 'Peter K.',
-      emergencyPhone: '+254733 908122',
-      tenancyStatus: 'active',
-    },
-    {
-      id: 3,
-      name: 'Linet Kipkemboi',
-      phone: '+254728 991433',
-      email: 'linet.kipkemboi@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-      premises: 'Westlands Hts',
-      unit: 'Penthouse 12A',
-      unitType: '',
-      startDate: '10 Oct 2021',
-      tenure: '20 Days Left',
-      contractRent: '210,000',
-      rentPeriod: 'Quarterly',
-      ledgerBalance: '+310,000',
-      balanceStatus: 'credit',
-      emergencyContact: 'Linet K.',
-      emergencyPhone: '+254728 991433',
-      tenancyStatus: 'notice',
-    },
-    {
-      id: 4,
-      name: 'Collins Ochieng',
-      phone: '+254711 884100',
-      email: 'collins.ochieng@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-      premises: 'Riverside Green',
-      unit: 'Townhouse 08',
-      unitType: '',
-      startDate: '01 Dec 2023',
-      tenure: '12 Mo Lease',
-      contractRent: '180,000',
-      rentPeriod: 'Monthly',
-      ledgerBalance: '0',
-      balanceStatus: 'settled',
-      emergencyContact: 'Collins O.',
-      emergencyPhone: '+254711 884100',
-      tenancyStatus: 'active',
-    },
-    {
-      id: 5,
-      name: 'Christine Omondi',
-      phone: '+254722 882119',
-      email: 'christine.omondi@email.com',
-      avatar:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
-      premises: 'Parklands Plaza',
-      unit: 'Comm. Suite 2B',
-      unitType: '',
-      startDate: 'Pending Draft',
-      tenure: '3 Yrs',
-      contractRent: '175,000',
-      rentPeriod: 'Annually',
-      ledgerBalance: 'Escrow Deposit',
-      balanceStatus: 'settled',
-      emergencyContact: 'Christine O.',
-      emergencyPhone: '+254722 882119',
-      tenancyStatus: 'pending',
-    },
-  ]);
 
-  readonly selectedLedger = signal('All Tenants');
+  readonly selectedStatus = signal('All');
   readonly searchQuery = signal('');
+  readonly isTenantRegistrationOpen = signal(false);
+  readonly editingTenant = signal<Tenant | null>(null);
+  readonly messagingTenant = signal<TenantItem | null>(null);
+  readonly sendingTenantMessage = signal(false);
 
-  readonly ledgerOptions = [
-    'All Tenants',
-    'Active Tenancies',
-    'Notice Period',
-    'Pending Lease',
-    'Overdue Balance',
-  ];
+  readonly statusOptions = ['All', 'ACTIVE', 'NOTICE', 'ENDED'];
 
   displayedColumns: string[] = [
     'tenantProfile',
     'premisesUnit',
     'tenure',
     'contractRent',
-    'ledgerBalance',
     'emergency',
     'tenancyStatus',
     'actions',
@@ -197,12 +96,14 @@ export class TenantsComponent {
     return 'check_circle';
   }
 
-  getTenancyStatusClass(status: 'active' | 'notice' | 'pending'): string {
+  getTenancyStatusClass(status: 'active' | 'notice' | 'pending' | 'ended'): string {
     switch (status) {
       case 'active':
         return 'status-active';
       case 'notice':
         return 'status-notice';
+      case 'ended':
+        return 'status-ended';
       case 'pending':
         return 'status-pending';
       default:
@@ -210,12 +111,14 @@ export class TenantsComponent {
     }
   }
 
-  getTenancyStatusLabel(status: 'active' | 'notice' | 'pending'): string {
+  getTenancyStatusLabel(status: 'active' | 'notice' | 'pending' | 'ended'): string {
     switch (status) {
       case 'active':
         return 'Active Tenancy';
       case 'notice':
         return 'Notice Period';
+      case 'ended':
+        return 'Ended';
       case 'pending':
         return 'Pending Lease';
       default:
@@ -233,6 +136,239 @@ export class TenantsComponent {
       default:
         return 'balance-settled';
     }
+  }
+
+  ngOnInit(): void {
+    this.searchChanges
+      .pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.resetPageAndLoad();
+      });
+    this.loadTenants();
+    this.loadKpiData();
+  }
+
+  private loadKpiData(): void {
+    this.isKpiLoading.set(true);
+    this.loadProjectedRent();
+    this.loadExpiringLeases();
+    this.loadTenanciesSummary();
+  }
+
+  onStatusChange(status: string): void {
+    this.selectedStatus.set(status);
+    this.resetPageAndLoad();
+  }
+
+  onSearchChange(query: string): void {
+    this.searchQuery.set(query);
+    this.searchChanges.next(query);
+  }
+
+  openTenantRegistration(): void {
+    this.isTenantRegistrationOpen.set(true);
+  }
+
+  closeTenantRegistration(): void {
+    this.isTenantRegistrationOpen.set(false);
+  }
+
+  onTenantCreated(): void {
+    this.closeTenantRegistration();
+    this.loadTenants();
+  }
+
+  openTenantEdit(tenant: Tenant): void {
+    this.editingTenant.set(tenant);
+  }
+
+  closeTenantEdit(): void {
+    this.editingTenant.set(null);
+  }
+
+  onTenantUpdated(): void {
+    this.closeTenantEdit();
+    this.loadTenants();
+  }
+
+  openTenantMessage(tenant: TenantItem): void {
+    this.messagingTenant.set(tenant);
+  }
+
+  closeTenantMessage(): void {
+    this.messagingTenant.set(null);
+  }
+
+  onTenantMessageRequested(draft: TenantMessageDraft): void {
+    this.sendingTenantMessage.set(true);
+    this.tenantsService
+      .sendTenantMessage({
+        email: draft.recipient.email,
+        phone: draft.recipient.phone,
+        sendSms: draft.channels.sms,
+        sendEmail: draft.channels.email,
+        subject: draft.subject,
+        message: draft.content,
+      })
+      .pipe(finalize(() => this.sendingTenantMessage.set(false)))
+      .subscribe({
+        next: () => {
+          this.snackbarService.success('Message sent successfully.');
+          this.closeTenantMessage();
+        },
+        error: () => {
+          this.snackbarService.error('Failed to send message. Please try again.');
+        },
+      });
+  }
+
+  private resetPageAndLoad(): void {
+    this.pagination.update((pagination) => ({ ...pagination, page: 1 }));
+    this.loadTenants();
+  }
+
+  loadTenants(): void {
+    this.isLoading.set(true);
+    this.hasLoadError.set(false);
+    const statusFilter = this.selectedStatus() === 'All' ? undefined : this.selectedStatus();
+    const nameFilter = this.searchQuery().trim() || undefined;
+
+    this.tenantsService
+      .getTenants(this.pagination().page, this.pagination().limit, {
+        status: statusFilter,
+        name: nameFilter,
+      })
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        next: (response) => {
+          const transformedTenants = this.transformTenants(response.data);
+          this.tenants.set(transformedTenants);
+          this.pagination.set(response.pagination);
+        },
+        error: () => {
+          this.hasLoadError.set(true);
+          this.snackbarService.error('Failed to load tenants. Please try again.');
+        },
+      });
+  }
+
+  loadProjectedRent(): void {
+    this.tenantsService.getProjectedRent(1, 10, 'DESC').pipe(
+      finalize(() => this.isKpiLoading.set(false))
+    ).subscribe({
+      next: (response) => {
+        const { totalOccupiedUnits, totalVacantUnits, totalProperties } = response.summary;
+        const percentage = totalProperties > 0
+          ? ((totalOccupiedUnits / totalProperties) * 100).toFixed(1) + '%'
+          : '0%';
+        const unitRatio = `${totalOccupiedUnits} / ${totalProperties} Units`;
+
+        this.activeLeaseholdRate.set({ percentage, unitRatio });
+      },
+      error: () => {
+        this.snackbarService.error('Failed to load projected rent data.');
+      },
+    });
+  }
+
+  loadExpiringLeases(): void {
+    this.tenantsService.getExpiringTenancies(1, 10).subscribe({
+      next: (response) => {
+        const totalLeases = response.pagination.total;
+        this.expiringLeases.set({
+          leasesCount: `${totalLeases} Leases`,
+          pendingReview: totalLeases.toString(),
+        });
+      },
+      error: () => {
+        this.snackbarService.error('Failed to load expiring leases data.');
+      },
+    });
+  }
+
+  loadTenanciesSummary(): void {
+    this.tenantsService.getActiveTenancies(1, 10).pipe(
+      finalize(() => this.isKpiLoading.set(false))
+    ).subscribe({
+      next: (response) => {
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+
+        const newTenantsCount = response.data.filter(tenancy => {
+          const createdAt = new Date(tenancy.createdAt);
+          return createdAt.getMonth() === currentMonth && createdAt.getFullYear() === currentYear;
+        }).length;
+
+        const activeTenantsCount = response.pagination.total;
+
+        this.tenanciesSummary.set({
+          newTenants: newTenantsCount.toString(),
+          activeTenants: activeTenantsCount.toString(),
+        });
+      },
+      error: () => {
+        this.snackbarService.error('Failed to load tenancies summary data.');
+      },
+    });
+  }
+
+  private transformTenants(apiTenants: Tenant[]): TenantItem[] {
+    return apiTenants.map((tenant) => {
+      const activeTenancy = tenant.tenancies?.[0];
+      return {
+        id: tenant.id,
+        tenant,
+        name: `${tenant.firstName} ${tenant.lastName}`,
+        phone: tenant.phone,
+        email: tenant.email,
+        premises: activeTenancy?.property?.name || 'N/A',
+        unit: activeTenancy?.unit?.unitNumber || 'N/A',
+        unitType: activeTenancy?.unit?.bedroomCount || 'N/A',
+        currency: activeTenancy?.property?.currency || 'N/A',
+        startDate: tenant.createdAt ? this.formatDate(tenant.createdAt) : 'N/A',
+        tenure: tenant.createdAt ? this.calculateTenure(tenant.createdAt) : 'N/A',
+        contractRent: activeTenancy?.unit?.marketRent || '0',
+        rentPeriod: activeTenancy?.unit?.billingFrequency || 'N/A',
+        emergencyContact: tenant.emergencyContactName,
+        emergencyPhone: tenant.emergencyContactPhone,
+        tenancyStatus: this.mapTenancyStatus(activeTenancy?.status || tenant.status),
+      };
+    });
+  }
+
+  private formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'});
+  }
+
+  private calculateTenure(startDate: string): string {
+    const start = new Date(startDate);
+    const now = new Date();
+    let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+    if (now.getDate() < start.getDate()) {
+      months--;
+    }
+    const years = Math.floor(months / 12);
+    const remainingMonths = months % 12;
+
+    if (years > 0) {
+      return remainingMonths > 0 ? `${years} Yrs ${remainingMonths} Mo` : `${years} Yrs`;
+    }
+    if (remainingMonths > 0) {
+      return `${remainingMonths} Mo`;
+    }
+    const days = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    return `${days} Days`;
+  }
+
+  private mapTenancyStatus(status: string): 'active' | 'notice' | 'pending' | 'ended' {
+    const statusMap: Record<string, 'active' | 'notice' | 'pending' | 'ended'> = {
+      ACTIVE: 'active',
+      NOTICE: 'notice',
+      PENDING: 'pending',
+      ENDED: 'ended',
+    };
+    return statusMap[status] || 'pending';
   }
 
   getInitials(name: string): string {

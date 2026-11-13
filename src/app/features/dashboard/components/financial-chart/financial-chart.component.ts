@@ -6,6 +6,7 @@ import {
   afterNextRender,
   inject,
   input,
+  model,
   output,
   viewChild, signal,
 } from '@angular/core';
@@ -36,8 +37,8 @@ export class FinancialChartComponent {
     owed: Array<{ month: string; total: string }>;
   } | null = null;
 
-  readonly dateRangeStart = input.required<Date | null>();
-  readonly dateRangeEnd = input.required<Date | null>();
+  readonly dateRangeStart = model.required<Date | null>();
+  readonly dateRangeEnd = model.required<Date | null>();
   readonly maxDate = input<Date>(new Date());
   readonly dateRangeChange = output<{ start: Date | null; end: Date | null }>();
   readonly showCollected = signal(true);
@@ -142,14 +143,16 @@ export class FinancialChartComponent {
   }
 
   onDateRangeChange(start: Date | null, end: Date | null): void {
+    this.dateRangeStart.set(start);
+    this.dateRangeEnd.set(end);
     this.dateRangeChange.emit({ start, end });
-    this.fetchChartData();
+    this.fetchChartData(start, end);
   }
 
-  private fetchChartData(): void {
-    const startDate = this.dateRangeStart();
-    const endDate = this.dateRangeEnd();
-
+  private fetchChartData(
+    startDate: Date | null = this.dateRangeStart(),
+    endDate: Date | null = this.dateRangeEnd(),
+  ): void {
     if (!startDate || !endDate) {
       return;
     }
@@ -240,6 +243,13 @@ export class FinancialChartComponent {
           });
           return html;
         },
+      },
+      toolbox: {
+        feature: {
+          magicType: { show: true, type: ['line', 'bar'] },
+          restore: { show: true },
+          saveAsImage: { show: true }
+        }
       },
       xAxis: {
         type: 'category',

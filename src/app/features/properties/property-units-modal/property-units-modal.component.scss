@@ -16,7 +16,7 @@
 }
 
 .units-modal-backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 1000;
   display: flex;
@@ -65,6 +65,39 @@
 .modal-heading-copy {
   flex: 1;
   min-width: 0;
+}
+
+.property-status-pill {
+  --mdc-chip-container-height: 22px;
+  --mdc-chip-label-text-size: 11px;
+  --mdc-chip-label-text-weight: 700;
+
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px;
+  margin: 0 0 5px;
+  padding: 3px 10px;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  box-shadow: none;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.property-status-pill.status-maintenance {
+  color: #b45309;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.property-status-pill.status-inactive,
+.property-status-pill.status-archived {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
 }
 
 .units-title-row {
@@ -266,7 +299,7 @@
 }
 
 .available-dot {
-  background: #60a5fa;
+  background: #60a5fa !important;
 }
 
 .available-value {
@@ -612,6 +645,39 @@
   font-size: 15px;
 }
 
+.maintenance-lease {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.maintenance-lease mat-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+
+.archived-lease {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-style: italic;
+}
+
+.archived-lease mat-icon {
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+}
+
 .actions-cell {
   white-space: nowrap !important;
 }
@@ -662,6 +728,12 @@
   height: 14px;
   margin-right: 2px;
   font-size: 14px;
+}
+
+.assign-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #94a3b8;
 }
 
 .charge-chip {
@@ -755,6 +827,38 @@
   border-color: #263a4d;
 }
 
+:host-context(html.dark-theme) .property-status-pill {
+  color: #34d399;
+  background: rgba(5, 150, 105, 0.14);
+  border-color: rgba(16, 185, 129, 0.34);
+}
+
+:host-context(html.dark-theme) .property-status-pill ::ng-deep .mdc-evolution-chip__text-label {
+  color: #34d399 !important;
+}
+
+:host-context(html.dark-theme) .property-status-pill.status-maintenance {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+:host-context(html.dark-theme) .property-status-pill.status-maintenance ::ng-deep .mdc-evolution-chip__text-label {
+  color: #fbbf24 !important;
+}
+
+:host-context(html.dark-theme) .property-status-pill.status-inactive,
+:host-context(html.dark-theme) .property-status-pill.status-archived {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(248, 113, 113, 0.32);
+}
+
+:host-context(html.dark-theme) .property-status-pill.status-inactive ::ng-deep .mdc-evolution-chip__text-label,
+:host-context(html.dark-theme) .property-status-pill.status-archived ::ng-deep .mdc-evolution-chip__text-label {
+  color: #fca5a5 !important;
+}
+
 :host-context(html.dark-theme) .occupancy-badge,
 :host-context(html.dark-theme) .status-pill {
   color: #34d399;
@@ -806,7 +910,7 @@
 
 :host-context(html.dark-theme) .status-pill.maintenance {
   color: #fbbf24;
-  background: rgba(217, 119, 6, 0.14);
+  background: #0f1d30;
   border-color: rgba(245, 158, 11, 0.35);
 }
 
@@ -814,9 +918,41 @@
   background: #fbbf24;
 }
 
+:host-context(html.dark-theme) .status-pill.archived {
+  color: #cbd5e1;
+  background: #263445;
+  border-color: #3a4b60;
+}
+
+:host-context(html.dark-theme) .status-pill.archived .status-dot {
+  background: #8492a8;
+}
+
+:host-context(html.dark-theme) .archived-lease,
+:host-context(html.dark-theme) .archived-action {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .archived-action:hover {
+  color: #cbd5e1;
+  background: #263445;
+}
+
+:host-context(html.dark-theme) .maintenance-lease {
+  color: #fbbf24;
+  background: #0f1d30;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
 :host-context(html.dark-theme) .charge-chip {
   color: #cbd5e1;
   background: rgba(100, 116, 139, 0.16);
+}
+
+:host-context(html.dark-theme) .assign-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #4a5568;
 }
 
 :host-context(html.dark-theme) .units-table .mat-mdc-row:hover .mat-mdc-cell {

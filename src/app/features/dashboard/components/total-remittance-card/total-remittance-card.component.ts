@@ -14,4 +14,5 @@ export class TotalRemittanceCardComponent {
   readonly value = input.required<string>();
   readonly dateRangeStart = input.required<Date | null>();
   readonly dateRangeEnd = input.required<Date | null>();
+  readonly loading = input(false);
 }

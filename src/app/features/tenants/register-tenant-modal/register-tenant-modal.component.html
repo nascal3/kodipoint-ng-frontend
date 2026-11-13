@@ -1,0 +1,134 @@
+<div class="tenant-modal-backdrop" (click)="close()" (keydown.escape)="close()">
+  <section
+    class="tenant-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="register-tenant-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="tenant-modal-header">
+      <div class="modal-heading-icon">
+        <mat-icon>person_add</mat-icon>
+      </div>
+      <div class="modal-heading-copy">
+        <h2 id="register-tenant-title">Register New Tenant</h2>
+        <p>Add tenant details and an emergency contact</p>
+      </div>
+      <button mat-icon-button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()"
+              [disabled]="isSubmitting()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <form [formGroup]="tenantForm" class="tenant-form" (ngSubmit)="registerTenant()">
+      <div class="tenant-form-fields">
+        <h3 class="form-section-title">Tenant information</h3>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>First name</mat-label>
+          <input matInput formControlName="firstName" autocomplete="given-name" placeholder="e.g. John"/>
+          @if ((tenantForm.controls.firstName.hasError('required') || tenantForm.controls.firstName.hasError('pattern')) && tenantForm.controls.firstName.touched) {
+            <mat-error>First name is required.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Last name</mat-label>
+          <input matInput formControlName="lastName" autocomplete="family-name" placeholder="e.g. Doe"/>
+          @if ((tenantForm.controls.lastName.hasError('required') || tenantForm.controls.lastName.hasError('pattern')) && tenantForm.controls.lastName.touched) {
+            <mat-error>Last name is required.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Email address</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="email" placeholder="name@example.com"/>
+          @if (tenantForm.controls.email.hasError('required') && tenantForm.controls.email.touched) {
+            <mat-error>Email address is required.</mat-error>
+          } @else if (tenantForm.controls.email.hasError('email') && tenantForm.controls.email.touched) {
+            <mat-error>Enter a valid email address.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Phone number</mat-label>
+          <input matInput type="tel" formControlName="phone" autocomplete="tel" placeholder="+254 7XX XXX XXX"/>
+          @if (tenantForm.controls.phone.hasError('required') && tenantForm.controls.phone.touched) {
+            <mat-error>Phone number is required.</mat-error>
+          } @else if (tenantForm.controls.phone.hasError('pattern') && tenantForm.controls.phone.touched) {
+            <mat-error>Enter a valid phone number with country code (e.g., +254700000000).</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Identification document</mat-label>
+          <mat-select formControlName="identificationDoc">
+            <mat-option value="NATIONAL_ID">National ID</mat-option>
+            <mat-option value="PASSPORT">Passport</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Identification document number</mat-label>
+          <input matInput formControlName="identificationDocNumber" autocomplete="off" placeholder="e.g. 12345678"/>
+          @if ((tenantForm.controls.identificationDocNumber.hasError('required') || tenantForm.controls.identificationDocNumber.hasError('pattern')) && tenantForm.controls.identificationDocNumber.touched) {
+            <mat-error>Identification document number is required.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Postal address</mat-label>
+          <input matInput formControlName="address" autocomplete="street-address" placeholder="Street, area, city"/>
+        </mat-form-field>
+
+        <h3 class="form-section-title emergency-heading">Emergency contact</h3>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Contact name</mat-label>
+          <input matInput formControlName="emergencyContactName" autocomplete="off" placeholder="e.g. Jane Doe"/>
+          @if ((tenantForm.controls.emergencyContactName.hasError('required') || tenantForm.controls.emergencyContactName.hasError('pattern')) && tenantForm.controls.emergencyContactName.touched) {
+            <mat-error>Emergency contact name is required.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Contact phone</mat-label>
+          <input matInput type="tel" formControlName="emergencyContactPhone" autocomplete="off"
+                 placeholder="+254 7XX XXX XXX"/>
+          @if (tenantForm.controls.emergencyContactPhone.hasError('required') && tenantForm.controls.emergencyContactPhone.touched) {
+            <mat-error>Emergency contact phone is required.</mat-error>
+          } @else if (tenantForm.controls.emergencyContactPhone.hasError('pattern') && tenantForm.controls.emergencyContactPhone.touched) {
+            <mat-error>Enter a valid phone number with country code (e.g., +254700000000).</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Relationship to tenant</mat-label>
+          <input matInput formControlName="emergencyContactRelationship" placeholder="e.g. Spouse"/>
+          @if ((tenantForm.controls.emergencyContactRelationship.hasError('required') || tenantForm.controls.emergencyContactRelationship.hasError('pattern')) && tenantForm.controls.emergencyContactRelationship.touched) {
+            <mat-error>Relationship is required.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      @if (submissionError()) {
+        <p class="tenant-form-error" role="alert">{{ submissionError() }}</p>
+      }
+
+      <footer class="tenant-modal-footer">
+        <button matButton="outlined" type="button" class="modal-cancel-button" (click)="close()"
+                [disabled]="isSubmitting()">Cancel
+        </button>
+        <button matButton="filled" type="submit" class="modal-submit-button"
+                [disabled]="tenantForm.invalid || isSubmitting()">
+          @if (isSubmitting()) {
+            <mat-spinner diameter="18" aria-label="Registering tenant"></mat-spinner>
+          } @else {
+            <mat-icon>person_add</mat-icon>
+          }
+          <span>{{ isSubmitting() ? 'Registering...' : 'Register Tenant' }}</span>
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

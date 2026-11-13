@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { DashboardComponent } from './dashboard.component';
 import { TotalRentOwedCardComponent } from './components/total-rent-owed-card/total-rent-owed-card.component';
@@ -97,6 +98,35 @@ describe('DashboardComponent', () => {
 
   it('should show total remittance from the income report', () => {
     expect(component.totalRemittance()).toBe('KES 0.00');
+  });
+
+  it('should refresh rent owed and remittance for the selected date range', () => {
+    const startDate = new Date(2026, 0, 1);
+    const endDate = new Date(2026, 2, 31);
+
+    component.onDateRangeChange({ start: startDate, end: endDate });
+
+    expect(dashboardService.getTotalRentOwed).toHaveBeenLastCalledWith(startDate, endDate);
+    expect(dashboardService.getAllPropertiesIncome).toHaveBeenLastCalledWith(startDate, endDate);
+    expect(component.dateRangeStart()).toBe(startDate);
+    expect(component.dateRangeEnd()).toBe(endDate);
+  });
+
+  it('should update the rent owed card date range when the chart range changes', () => {
+    const startDate = new Date(2026, 1, 1);
+    const endDate = new Date(2026, 3, 30);
+    const chart = fixture.debugElement.query(By.directive(FinancialChartComponent))
+      .componentInstance as FinancialChartComponent;
+
+    chart.onDateRangeChange(startDate, endDate);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const cardText = compiled.querySelector('app-total-rent-owed-card')?.textContent;
+    expect(component.dateRangeStart()).toEqual(startDate);
+    expect(component.dateRangeEnd()).toEqual(endDate);
+    expect(cardText).toContain('1 Feb, 2026');
+    expect(cardText).toContain('30 Apr, 2026');
   });
 
   it('should render the financial activity chart', () => {

@@ -1,0 +1,121 @@
+<div class="message-modal-backdrop" (click)="close()" (keydown.escape)="close()">
+  <section
+    class="message-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="send-tenant-message-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="message-modal-header">
+      <div class="modal-heading-icon">
+        <mat-icon>sms</mat-icon>
+      </div>
+      <div class="modal-heading-copy">
+        <h2 id="send-tenant-message-title">Send Tenant Message / Notice</h2>
+        <p>{{ tenant.name }} <span>·</span> {{ tenant.premises }} - {{ tenant.unit }}
+          <span class="lease-badge" [ngClass]="'status-' + tenant.tenancyStatus">
+            {{
+              tenant.tenancyStatus === 'active' ? 'Active Lease'
+                : tenant.tenancyStatus === 'notice' ? 'Notice Period'
+                  : tenant.tenancyStatus === 'pending' ? 'Pending Lease' : 'Ended'
+            }}
+          </span>
+        </p>
+      </div>
+      <button mat-icon-button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <div class="recipient-profile">
+      <span class="recipient-label">RECIPIENT PROFILE:</span>
+      <div class="recipient-details">
+        <span class="recipient-chip"><mat-icon>call</mat-icon>{{ tenant.phone || 'No phone number' }}</span>
+        <span class="recipient-chip"><mat-icon>mail</mat-icon>{{ tenant.email || 'No email address' }}</span>
+      </div>
+    </div>
+
+    <form class="message-form" [formGroup]="messageForm" (ngSubmit)="requestSend()">
+      <section class="message-form-body">
+        <div class="field-label">Delivery Channels <span class="required-mark">*</span></div>
+        <div class="delivery-options">
+          <label class="delivery-option" [class.selected]="messageForm.controls.sendSms.value">
+            <mat-checkbox formControlName="sendSms" color="primary"></mat-checkbox>
+            <span class="channel-icon sms-icon"><mat-icon>sms</mat-icon></span>
+            <span class="delivery-copy">
+              <strong>SMS Dispatch</strong>
+              <small>Instant mobile SMS via your configured gateway</small>
+            </span>
+          </label>
+          <label class="delivery-option" [class.selected]="messageForm.controls.sendEmail.value">
+            <mat-checkbox formControlName="sendEmail" color="primary"></mat-checkbox>
+            <span class="channel-icon email-icon"><mat-icon>mail</mat-icon></span>
+            <span class="delivery-copy">
+              <strong>Email Notice</strong>
+              <small>HTML formatted notification to tenant inbox</small>
+            </span>
+          </label>
+        </div>
+
+        <label class="field-label" for="tenant-message-subject">
+          Subject Line / Heading <span class="optional-note">(Included in Email &amp; SMS Header)</span>
+        </label>
+        <input
+          id="tenant-message-subject"
+          class="message-input"
+          type="text"
+          formControlName="subject"
+          placeholder="Enter a subject or heading"
+        />
+
+        <div class="templates-heading">
+          <span class="field-label">Quick Templates</span>
+          <span class="templates-hint">Click to insert pre-filled text</span>
+        </div>
+        <div class="template-options">
+          <button type="button" class="template-chip payment-template" (click)="insertTemplate('payment')">
+            <mat-icon>notifications_active</mat-icon>Payment Reminder
+          </button>
+          <button type="button" class="template-chip maintenance-template" (click)="insertTemplate('maintenance')">
+            <mat-icon>build</mat-icon>Maintenance Notice
+          </button>
+          <button type="button" class="template-chip receipt-template" (click)="insertTemplate('receipt')">
+            <mat-icon>check_circle</mat-icon>Receipt Notification
+          </button>
+        </div>
+
+        <div class="content-heading">
+          <label class="field-label" for="tenant-message-content">Message Content <span class="required-mark">*</span></label>
+          @if (messageForm.controls.sendSms.value) {
+            <span class="character-count">{{ messageForm.controls.content.value.length }} chars ({{ smsSegments }} SMS {{ smsSegments === 1 ? 'segment' : 'segments' }})</span>
+          }
+        </div>
+        <textarea
+          id="tenant-message-content"
+          class="message-content"
+          formControlName="content"
+          (input)="formError.set('')"
+          required
+          rows="5"
+          placeholder="Write your message..."
+        ></textarea>
+        @if (formError()) {
+          <p class="form-error" role="alert">{{ formError() }}</p>
+        }
+      </section>
+
+      <footer class="message-modal-footer">
+        <button mat-button type="button" class="cancel-button" (click)="close()">Cancel</button>
+        <button mat-raised-button type="submit" class="send-button" [disabled]="sending">
+          @if (sending) {
+            <mat-spinner diameter="18"></mat-spinner>
+            <span>Sending...</span>
+          } @else {
+            <mat-icon>send</mat-icon>
+            <span>Send Message</span>
+          }
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

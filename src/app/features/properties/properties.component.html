@@ -2,82 +2,114 @@
   <!-- Top KPI Summary Cards -->
   <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
     <!-- Card 1: Projected Monthly Rent -->
-    <div class="kpi-card">
+    <div class="kpi-card" [attr.aria-busy]="projectedRentLoading()">
       <div class="kpi-card-header">
         <span class="kpi-title">{{ projectedRent().title }}</span>
         <div class="kpi-icon-bubble bubble-purple">
           <mat-icon class="kpi-icon">account_balance_wallet</mat-icon>
         </div>
       </div>
-      <div class="kpi-main-val">
-        <span class="currency-prefix">{{ projectedRent().currency }}</span>
-        <span class="amount-val">{{ projectedRent().amount }}</span>
-      </div>
-      <div class="kpi-sub-text">
-        <span class="sub-label">{{ projectedRent().subtitleLabel }}</span>
-        <span class="sub-bold">{{ projectedRent().valuation }}</span>
-      </div>
+      @if (projectedRentLoading()) {
+        <div class="kpi-loading-content" role="status" aria-live="polite">
+          <span class="skeleton-placeholder kpi-skeleton kpi-amount-skeleton" aria-hidden="true"></span>
+          <span class="skeleton-placeholder kpi-skeleton kpi-detail-skeleton" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading projected rent</span>
+        </div>
+      } @else {
+        <div class="kpi-main-val">
+          <span class="currency-prefix">{{ projectedRent().currency }}</span>
+          <span class="amount-val">{{ projectedRent().amount }}</span>
+        </div>
+        <div class="kpi-sub-text">
+          <span class="sub-label">{{ projectedRent().subtitleLabel }}</span>
+          <span class="sub-bold">{{ projectedRent().valuation }}</span>
+        </div>
+      }
     </div>
 
     <!-- Card 2: Portfolio Occupancy -->
-    <div class="kpi-card">
+    <div class="kpi-card" [attr.aria-busy]="occupancyKpiLoading()">
       <div class="kpi-card-header">
         <span class="kpi-title">{{ occupancyKpi().title }}</span>
         <div class="kpi-icon-bubble bubble-green">
           <mat-icon class="kpi-icon">apartment</mat-icon>
         </div>
       </div>
-      <div class="kpi-flex-row">
-        <span class="amount-val">{{ occupancyKpi().percentage }}</span>
-        <span class="kpi-unit-ratio">{{ occupancyKpi().unitRatio }}</span>
-      </div>
-      <div class="kpi-progress-track">
-        <div
-          class="kpi-progress-fill fill-purple"
-          [style.width.%]="occupancyKpi().progress"
-        ></div>
-      </div>
-      <div class="kpi-dot-row">
-        <span class="kpi-status-dot dot-success"></span>
-        <span class="kpi-status-label">{{ occupancyKpi().vacantText }}</span>
-      </div>
+      @if (occupancyKpiLoading()) {
+        <div class="kpi-loading-content" role="status" aria-live="polite">
+          <div class="kpi-flex-row">
+            <span class="skeleton-placeholder kpi-skeleton kpi-occupancy-skeleton" aria-hidden="true"></span>
+            <span class="skeleton-placeholder kpi-skeleton kpi-unit-skeleton" aria-hidden="true"></span>
+          </div>
+          <span class="skeleton-placeholder kpi-skeleton kpi-progress-skeleton" aria-hidden="true"></span>
+          <span class="skeleton-placeholder kpi-skeleton kpi-vacancy-skeleton" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading portfolio occupancy</span>
+        </div>
+      } @else {
+        <div class="kpi-flex-row">
+          <span class="amount-val">{{ occupancyKpi().percentage }}</span>
+          <span class="kpi-unit-ratio">{{ occupancyKpi().unitRatio }}</span>
+        </div>
+        <div class="kpi-progress-track">
+          <div
+            class="kpi-progress-fill fill-purple"
+            [style.width.%]="occupancyKpi().progress"
+          ></div>
+        </div>
+        <div class="kpi-dot-row">
+          <span class="kpi-status-dot dot-success"></span>
+          <span class="kpi-status-label">{{ occupancyKpi().vacantText }}</span>
+        </div>
+      }
     </div>
 
     <!-- Card 3: Total Collected vs. Owed -->
-    <div class="kpi-card">
+    <div class="kpi-card" [attr.aria-busy]="collectedVsOwedLoading()">
       <div class="kpi-card-header">
         <span class="kpi-title">{{ collectedVsOwed().title }}</span>
         <div class="kpi-icon-bubble bubble-lavender">
           <mat-icon class="kpi-icon">donut_large</mat-icon>
         </div>
       </div>
-      <div class="kpi-split-stats">
-        <div class="stat-col stat-collected">
-          <span class="stat-label">{{ collectedVsOwed().collectedLabel }}</span>
-          <div class="stat-amount">
-            <span class="stat-curr">{{ collectedVsOwed().collectedCurrency }}</span>
-            <span class="stat-num">{{ collectedVsOwed().collectedAmount }}</span>
+      @if (collectedVsOwedLoading()) {
+        <div class="kpi-loading-content" role="status" aria-live="polite">
+          <div class="kpi-split-stats">
+            <span class="skeleton-placeholder kpi-skeleton kpi-stat-skeleton" aria-hidden="true"></span>
+            <span class="skeleton-placeholder kpi-skeleton kpi-stat-skeleton" aria-hidden="true"></span>
+          </div>
+          <span class="skeleton-placeholder kpi-skeleton kpi-progress-skeleton" aria-hidden="true"></span>
+          <span class="skeleton-placeholder kpi-skeleton kpi-detail-skeleton" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading collected and owed amounts</span>
+        </div>
+      } @else {
+        <div class="kpi-split-stats">
+          <div class="stat-col stat-collected">
+            <span class="stat-label">{{ collectedVsOwed().collectedLabel }}</span>
+            <div class="stat-amount">
+              <span class="stat-curr">{{ collectedVsOwed().collectedCurrency }}</span>
+              <span class="stat-num">{{ collectedVsOwed().collectedAmount }}</span>
+            </div>
+          </div>
+          <div class="stat-col stat-owed">
+            <span class="stat-label">{{ collectedVsOwed().owedLabel }}</span>
+            <div class="stat-amount owed-color">
+              <span class="stat-curr">{{ collectedVsOwed().owedCurrency }}</span>
+              <span class="stat-num">{{ collectedVsOwed().owedAmount }}</span>
+            </div>
           </div>
         </div>
-        <div class="stat-col stat-owed">
-          <span class="stat-label">{{ collectedVsOwed().owedLabel }}</span>
-          <div class="stat-amount owed-color">
-            <span class="stat-curr">{{ collectedVsOwed().owedCurrency }}</span>
-            <span class="stat-num">{{ collectedVsOwed().owedAmount }}</span>
-          </div>
+        <div class="kpi-segmented-progress">
+          <div
+            class="segment-collected"
+            [style.width.%]="collectedVsOwed().collectedPercent"
+          ></div>
+          <div
+            class="segment-owed"
+            [style.width.%]="collectedVsOwed().owedPercent"
+          ></div>
         </div>
-      </div>
-      <div class="kpi-segmented-progress">
-        <div
-          class="segment-collected"
-          [style.width.%]="collectedVsOwed().collectedPercent"
-        ></div>
-        <div
-          class="segment-owed"
-          [style.width.%]="collectedVsOwed().owedPercent"
-        ></div>
-      </div>
-      <div class="kpi-period-note">{{ collectedVsOwed().periodNote }}</div>
+        <div class="kpi-period-note">{{ collectedVsOwed().periodNote }}</div>
+      }
     </div>
   </section>
 
@@ -240,7 +272,8 @@
             <div class="property-details">
               <div class="title-price-row">
                 <h3 class="property-name">
-                  <button type="button" class="property-name-trigger" (click)="openPropertyUnits(property)" [attr.aria-label]="'View units for ' + property.name">
+                  <button matButton type="button" class="property-name-trigger" (click)="openPropertyUnits(property)" [attr.aria-label]="'View units for ' + property.name">
+                    <mat-icon>open_in_new</mat-icon>
                     {{ property.name }}
                   </button>
                 </h3>
@@ -299,7 +332,7 @@
 
               <!-- Card Actions Footer -->
               <div class="card-footer">
-                <button type="button" class="btn-assign" matTooltip="Create a new Unit" (click)="openAddUnitModal(property)">
+                <button type="button" class="btn-assign" matTooltip="Create a new Unit" (click)="openAddUnitModal(property)" [disabled]="property.status === 'INACTIVE'">
                   <mat-icon class="action-btn-icon">add_home</mat-icon>
                   <span>Add Unit</span>
                 </button>

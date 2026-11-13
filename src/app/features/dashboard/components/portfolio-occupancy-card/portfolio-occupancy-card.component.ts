@@ -13,4 +13,5 @@ export class PortfolioOccupancyCardComponent {
   readonly value = input.required<string>();
   readonly unitDetail = input.required<string>();
   readonly footerText = input.required<string>();
+  readonly loading = input(false);
 }

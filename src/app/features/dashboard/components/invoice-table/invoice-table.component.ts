@@ -35,6 +35,7 @@ export class InvoiceTableComponent {
   readonly displayedColumns: string[] = ['invoice', 'amounts', 'status', 'payment', 'date', 'action'];
 
   protected readonly rawData = signal<InvoiceRecord[]>([]);
+  readonly isLoading = signal(true);
   protected readonly totalRecordsSignal = signal(0);
   readonly totalRecords = computed(() => this.totalRecordsSignal());
   protected readonly currentPage = signal(1);
@@ -45,6 +46,7 @@ export class InvoiceTableComponent {
   }
 
   private loadInvoices(): void {
+    this.isLoading.set(true);
     this.dashboardService.getInvoices(
       this.currentPage(),
       this.pageSize(),
@@ -56,9 +58,11 @@ export class InvoiceTableComponent {
         const transformedData = response.data.map((data) => this.transformInvoiceData(data));
         this.rawData.set(transformedData);
         this.totalRecordsSignal.set(response.pagination.total);
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Error loading invoices:', error);
+        this.isLoading.set(false);
       },
     });
   }

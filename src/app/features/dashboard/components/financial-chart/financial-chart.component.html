@@ -66,6 +66,14 @@
   </mat-card-header>
 
   <mat-card-content class="chart-content">
-    <div #chartContainer class="echarts-container"></div>
+    <div class="chart-plot-container" [attr.aria-busy]="isLoading()">
+      <div #chartContainer class="echarts-container"></div>
+      @if (isLoading()) {
+        <div class="chart-loading-overlay" role="status" aria-live="polite">
+          <mat-spinner diameter="36" aria-hidden="true" />
+          <span>Loading chart data...</span>
+        </div>
+      }
+    </div>
   </mat-card-content>
 </mat-card>

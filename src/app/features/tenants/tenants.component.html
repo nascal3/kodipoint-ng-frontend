@@ -4,53 +4,70 @@
     <!-- Card 1: Active Leasehold Rate -->
     <div class="kpi-card kpi-card-secondary">
       <div class="kpi-card-header">
-        <span class="kpi-title">{{ activeLeaseholdRate().title }}</span>
+        <span class="kpi-title">Active Leasehold Rate</span>
         <div class="kpi-icon-bubble icon-secondary">
           <mat-icon class="kpi-icon">home</mat-icon>
         </div>
       </div>
-      <div class="kpi-flex-row">
-        <span class="amount-val">{{ activeLeaseholdRate().percentage }}</span>
-      </div>
-      <div class="kpi-detail">
-        <span>{{ activeLeaseholdRate().unitLabel }}</span>
-        <strong>{{ activeLeaseholdRate().unitRatio }}</strong>
-      </div>
+      @if (isKpiLoading()) {
+        <div class="kpi-loading" role="status" aria-live="polite">
+          <mat-spinner diameter="24"></mat-spinner>
+        </div>
+      } @else {
+        <div class="kpi-flex-row">
+          <span class="amount-val">{{ activeLeaseholdRate().percentage }}</span>
+        </div>
+        <div class="kpi-detail">
+          <span>Occupied Capacity</span>
+          <strong>{{ activeLeaseholdRate().unitRatio }}</strong>
+        </div>
+      }
     </div>
 
-    <!-- Card 2: Contracted Rent / Mo -->
+    <!-- Card 2: Tenancies summary-->
     <div class="kpi-card kpi-card-primary">
       <div class="kpi-card-header">
-        <span class="kpi-title">{{ contractedRent().title }}</span>
+        <span class="kpi-title">New Tenants</span>
         <div class="kpi-icon-bubble icon-primary">
-          <mat-icon class="kpi-icon">payments</mat-icon>
+          <mat-icon class="kpi-icon">groups</mat-icon>
         </div>
       </div>
-      <div class="kpi-main-val">
-        <span class="currency-prefix">{{ contractedRent().currency }}</span>
-        <span class="amount-val">{{ contractedRent().amount }}</span>
-      </div>
-      <div class="kpi-detail">
-        <span>{{ contractedRent().collectionLabel }}</span>
-        <strong>{{ contractedRent().collectedLabel }}</strong>
-      </div>
+      @if (isKpiLoading()) {
+        <div class="kpi-loading" role="status" aria-live="polite">
+          <mat-spinner diameter="24"></mat-spinner>
+        </div>
+      } @else {
+        <div class="kpi-main-val">
+          <span class="amount-val">{{ tenanciesSummary().newTenants }}</span>
+        </div>
+        <div class="kpi-detail">
+          <span>Active Tenancies</span>
+          <strong>{{ tenanciesSummary().activeTenants }}</strong>
+        </div>
+      }
     </div>
 
     <!-- Card 3: Expiring in 30 Days -->
     <div class="kpi-card kpi-card-error">
       <div class="kpi-card-header">
-        <span class="kpi-title">{{ expiringLeases().title }}</span>
+        <span class="kpi-title">Expiring in 30 Days</span>
         <div class="kpi-icon-bubble icon-error">
           <mat-icon class="kpi-icon">schedule</mat-icon>
         </div>
       </div>
-      <div class="kpi-flex-row">
-        <span class="amount-val">{{ expiringLeases().leasesCount }}</span>
-      </div>
-      <div class="kpi-detail">
-        <span>{{ expiringLeases().dispatchLabel }}</span>
-        <strong>{{ expiringLeases().pendingReview }}</strong>
-      </div>
+      @if (isKpiLoading()) {
+        <div class="kpi-loading" role="status" aria-live="polite">
+          <mat-spinner diameter="24"></mat-spinner>
+        </div>
+      } @else {
+        <div class="kpi-flex-row">
+          <span class="amount-val">{{ expiringLeases().leasesCount }}</span>
+        </div>
+        <div class="kpi-detail">
+          <span>Notice Dispatches</span>
+          <strong>{{ expiringLeases().pendingReview }}</strong>
+        </div>
+      }
     </div>
   </section>
 
@@ -64,20 +81,20 @@
           subscriptSizing="dynamic"
         >
           <mat-select
-            [ngModel]="selectedLedger()"
-            (ngModelChange)="selectedLedger.set($event)"
-            aria-label="Filter by ledger status"
+            [ngModel]="selectedStatus()"
+            (ngModelChange)="onStatusChange($event)"
+            aria-label="Filter by tenancy status"
           >
             <mat-select-trigger>
               <span class="ledger-select-trigger">
                 <mat-icon class="ledger-filter-icon">tune</mat-icon>
                 <span class="ledger-select-copy">
                   <span class="ledger-select-label">TENANCY STATUS</span>
-                  <span class="ledger-select-value">{{ selectedLedger() }}</span>
+                  <span class="ledger-select-value">{{ selectedStatus() }}</span>
                 </span>
               </span>
             </mat-select-trigger>
-            @for (option of ledgerOptions; track option) {
+            @for (option of statusOptions; track option) {
               <mat-option [value]="option">{{ option }}</mat-option>
             }
           </mat-select>
@@ -89,10 +106,10 @@
             matInput
             type="text"
             class="search-input"
-            placeholder="tenant name, phone, unit..."
+            placeholder="tenant name, phone"
             aria-label="Search tenants"
             [ngModel]="searchQuery()"
-            (ngModelChange)="searchQuery.set($event)"
+            (ngModelChange)="onSearchChange($event)"
           />
         </mat-form-field>
 
@@ -105,7 +122,7 @@
           <mat-icon>download</mat-icon>
         </button>
 
-        <button mat-raised-button class="register-btn" color="primary">
+        <button mat-raised-button class="register-btn" color="primary" (click)="openTenantRegistration()">
           <mat-icon class="btn-icon">person_add</mat-icon>
           Register New Tenant
         </button>
@@ -145,9 +162,9 @@
             </td>
           </ng-container>
 
-          <!-- Tenure Column -->
+          <!-- Start Date Column -->
           <ng-container matColumnDef="tenure">
-            <th mat-header-cell *matHeaderCellDef>Tenure</th>
+            <th mat-header-cell *matHeaderCellDef>Start Date</th>
             <td mat-cell *matCellDef="let tenant">
               <div class="tenure-info">
                 <div class="start-date">{{ tenant.startDate }}</div>
@@ -161,24 +178,8 @@
             <th mat-header-cell *matHeaderCellDef>Contract Rent</th>
             <td mat-cell *matCellDef="let tenant">
               <div class="contract-rent">
-                <span class="rent-amount">KES {{ tenant.contractRent }}</span>
+                <span class="rent-amount">{{ tenant.currency }} {{ tenant.contractRent }}</span>
                 <span class="rent-period">{{ tenant.rentPeriod }}</span>
-              </div>
-            </td>
-          </ng-container>
-
-          <!-- Ledger Balance Column -->
-          <ng-container matColumnDef="ledgerBalance">
-            <th mat-header-cell *matHeaderCellDef>Ledger Balance</th>
-            <td mat-cell *matCellDef="let tenant">
-              <div
-                class="ledger-balance"
-                [ngClass]="getBalanceClass(tenant.ledgerBalance, tenant.balanceStatus)"
-              >
-                <mat-icon class="ledger-balance-icon">
-                  {{ getBalanceIcon(tenant.ledgerBalance, tenant.balanceStatus) }}
-                </mat-icon>
-                {{ getBalanceStatus(tenant.ledgerBalance, tenant.balanceStatus) }}
               </div>
             </td>
           </ng-container>
@@ -213,25 +214,47 @@
               <button mat-icon-button class="action-btn" aria-label="View tenant ledger" matTooltip="View tenant ledger">
                 <mat-icon>receipt_long</mat-icon>
               </button>
-              <button mat-icon-button class="action-btn" aria-label="Message tenant" matTooltip="Message tenant">
-                <mat-icon>chat_bubble_outline</mat-icon>
+              <button mat-icon-button class="action-btn" aria-label="Message tenant" matTooltip="Message tenant"
+                      (click)="openTenantMessage(tenant)">
+                <mat-icon>sms</mat-icon>
               </button>
-              <button mat-icon-button class="action-btn" aria-label="More options">
-                <mat-icon>more_vert</mat-icon>
+              <button mat-icon-button class="action-btn" aria-label="Edit tenant" matTooltip="Edit tenant"
+                      (click)="openTenantEdit(tenant.tenant)">
+                <mat-icon>edit</mat-icon>
               </button>
             </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          <tr *matNoDataRow>
+            <td class="mat-cell table-message-cell" [attr.colspan]="displayedColumns.length">
+              @if (isLoading()) {
+                <div class="table-message" role="status" aria-live="polite">
+                  <mat-spinner diameter="32" aria-label="Loading tenants"></mat-spinner>
+                  <span>Loading tenants...</span>
+                </div>
+              } @else if (hasLoadError()) {
+                <div class="table-message" role="alert">
+                  <span>Unable to load tenants.</span>
+                  <button mat-button color="primary" (click)="loadTenants()">Try again</button>
+                </div>
+              } @else {
+                <div class="table-message" role="status">
+                  <mat-icon aria-hidden="true">people_outline</mat-icon>
+                  <span>No tenants found.</span>
+                </div>
+              }
+            </td>
+          </tr>
         </table>
       </div>
 
       <!-- Pagination -->
       <div class="table-pagination">
         <mat-paginator
-          [length]="142"
-          [pageSize]="5"
+          [length]="pagination().totalCount"
+          [pageSize]="pagination().limit"
           [pageSizeOptions]="[5, 10, 25, 50]"
           [showFirstLastButtons]="true"
           aria-label="Select page"
@@ -239,4 +262,28 @@
       </div>
     </div>
   </section>
+
+  @if (isTenantRegistrationOpen()) {
+    <app-register-tenant-modal
+      (closed)="closeTenantRegistration()"
+      (created)="onTenantCreated()"
+    />
+  }
+
+  @if (editingTenant(); as tenant) {
+    <app-edit-tenant-modal
+      [tenant]="tenant"
+      (closed)="closeTenantEdit()"
+      (saved)="onTenantUpdated()"
+    />
+  }
+
+  @if (messagingTenant(); as tenant) {
+    <app-send-tenant-message-modal
+      [tenant]="tenant"
+      [sending]="sendingTenantMessage()"
+      (closed)="closeTenantMessage()"
+      (sendRequested)="onTenantMessageRequested($event)"
+    />
+  }
 </div>

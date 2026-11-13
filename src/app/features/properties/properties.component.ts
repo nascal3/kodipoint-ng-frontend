@@ -45,6 +45,7 @@ export class PropertiesComponent implements OnInit {
     subtitleLabel: 'Gross portfolio valuation:',
     valuation: 'KES 1.42B',
   });
+  readonly projectedRentLoading = signal(true);
 
   readonly occupancyKpi = signal({
     title: 'Portfolio Occupancy',
@@ -53,6 +54,7 @@ export class PropertiesComponent implements OnInit {
     progress: 91.4,
     vacantText: '13 Vacant Units',
   });
+  readonly occupancyKpiLoading = signal(true);
 
   readonly collectedVsOwed = signal({
     title: 'Total Collected vs. Owed',
@@ -66,6 +68,7 @@ export class PropertiesComponent implements OnInit {
     owedPercent: 8.8,
     periodNote: 'Based on the last 30 days',
   });
+  readonly collectedVsOwedLoading = signal(true);
 
   readonly tenantAvatars = signal([
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
@@ -281,9 +284,11 @@ export class PropertiesComponent implements OnInit {
             valuation: `KES ${summary.totalPotentialRent}`,
           }));
         }
+        this.projectedRentLoading.set(false);
       },
       error: (error) => {
         console.error('Failed to load projected rent data:', error);
+        this.projectedRentLoading.set(false);
         this.snackbarService.error('Could not load projected rent data.');
       },
     });
@@ -300,9 +305,11 @@ export class PropertiesComponent implements OnInit {
           progress: occupancyPercentage,
           vacantText: `${vacantUnits} Vacant Units`,
         }));
+        this.occupancyKpiLoading.set(false);
       },
       error: (error) => {
         console.error('Failed to load projected rent data:', error);
+        this.occupancyKpiLoading.set(false);
         this.snackbarService.error('Could not load portfolio occupancy data.');
       },
     });
@@ -334,9 +341,11 @@ export class PropertiesComponent implements OnInit {
           owedPercent,
           owedLabel: `Owed (${owedPercent.toFixed(1)}%)`,
         }));
+        this.collectedVsOwedLoading.set(false);
       },
       error: (error) => {
         console.error('Failed to load total rent owed data:', error);
+        this.collectedVsOwedLoading.set(false);
         this.snackbarService.error('Could not load rent collection data.');
       },
     });

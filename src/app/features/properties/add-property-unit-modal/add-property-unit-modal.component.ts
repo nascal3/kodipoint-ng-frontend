@@ -43,6 +43,7 @@ export class AddPropertyUnitModalComponent implements OnInit {
   readonly unitStatuses: { value: UnitStatus; label: string }[] = [
     { value: 'AVAILABLE', label: 'Available' },
     { value: 'MAINTENANCE', label: 'Maintenance' },
+    { value: 'UNAVAILABLE', label: 'Unavailable' },
   ];
   readonly unitForm = new FormGroup({
     unitNumber: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)] }),
@@ -117,10 +118,10 @@ export class AddPropertyUnitModalComponent implements OnInit {
         this.isSaving.set(false);
         this.created.emit();
       },
-      error: (error: unknown) => {
+      error: (error: any) => {
         console.error('Failed to create property unit:', error);
-        this.formError.set('Could not create unit. Please check the details and try again.');
-        this.snackbarService.error('Could not create unit. Please try again.');
+        this.formError.set(error.error?.message || 'Could not create unit. Please check the details and try again.');
+        this.snackbarService.error( (error.error?.message || 'Could not create unit. Please try again.'));
         this.isSaving.set(false);
       },
     });
