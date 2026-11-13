@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -30,7 +30,6 @@ import {
   styleUrl: './tenants.component.scss',
 })
 export class TenantsComponent implements OnInit {
-  @Output() readonly tenantMessageRequested = new EventEmitter<TenantMessageDraft>();
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly tenantsService = inject(TenantsService);
@@ -200,8 +199,24 @@ export class TenantsComponent implements OnInit {
   }
 
   onTenantMessageRequested(draft: TenantMessageDraft): void {
-    this.tenantMessageRequested.emit(draft);
-    this.closeTenantMessage();
+    this.tenantsService
+      .sendTenantMessage({
+        email: draft.recipient.email,
+        phone: draft.recipient.phone,
+        sendSms: draft.channels.sms,
+        sendEmail: draft.channels.email,
+        subject: draft.subject,
+        message: draft.content,
+      })
+      .subscribe({
+        next: () => {
+          this.snackbarService.success('Message sent successfully.');
+          this.closeTenantMessage();
+        },
+        error: () => {
+          this.snackbarService.error('Failed to send message. Please try again.');
+        },
+      });
   }
 
   private resetPageAndLoad(): void {

@@ -80,6 +80,15 @@ export interface Tenant {
   tenancies: Tenancy[];
 }
 
+export interface SendTenantMessageRequest {
+  email: string;
+  phone: string;
+  sendSms: boolean;
+  sendEmail: boolean;
+  subject: string;
+  message: string;
+}
+
 export interface TenantsResponse {
   data: Tenant[];
   pagination: {

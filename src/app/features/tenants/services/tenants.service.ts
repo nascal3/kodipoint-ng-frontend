@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   CreateTenantRequest,
+  SendTenantMessageRequest,
   Tenant,
   TenantsResponse,
   TenanciesResponse,
@@ -36,6 +37,10 @@ export class TenantsService {
 
   updateTenant(id: string, tenant: UpdateTenantRequest): Observable<Tenant> {
     return this.http.patch<Tenant>(`${environment.apiUrl}/tenants/${id}`, tenant);
+  }
+
+  sendTenantMessage(payload: SendTenantMessageRequest): Observable<unknown> {
+    return this.http.post(`${environment.apiUrl}/documents/send-tenant-message`, payload);
   }
 
   getProjectedRent(
