@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { TenantItem } from '../models/tenants.interface';
 
@@ -22,7 +22,7 @@ export interface TenantMessageDraft {
 @Component({
   selector: 'app-send-tenant-message-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ...MATERIAL_MODULES],
+  imports: [CommonModule, ReactiveFormsModule, ...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './send-tenant-message-modal.component.html',
   styleUrl: './send-tenant-message-modal.component.scss',
@@ -32,21 +32,23 @@ export class SendTenantMessageModalComponent {
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly sendRequested = new EventEmitter<TenantMessageDraft>();
 
-  readonly sendSms = signal(true);
-  readonly sendEmail = signal(true);
-  readonly subject = signal('');
-  readonly content = signal('');
   readonly formError = signal('');
+  readonly messageForm = new FormGroup({
+    sendSms: new FormControl(true, { nonNullable: true }),
+    sendEmail: new FormControl(true, { nonNullable: true }),
+    subject: new FormControl('', { nonNullable: true }),
+    content: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  });
 
   ngOnInit(): void {
-    this.subject.set(`Tenant Notice - ${this.tenant.premises} ${this.tenant.unit}`);
-    this.content.set(
-      `Dear ${this.tenant.name},\n\nWe would like to share an important update regarding your tenancy at ${this.tenant.premises}, ${this.tenant.unit}. Please contact the property management team if you have any questions.\n\nThank you,\nKodiPoint`
-    );
+    this.messageForm.patchValue({
+      subject: `Tenant Notice - ${this.tenant.premises} ${this.tenant.unit}`,
+      content: `Dear ${this.tenant.name},\n\nWe would like to share an important update regarding your tenancy at ${this.tenant.premises}, ${this.tenant.unit}. Please contact the property management team if you have any questions.\n\nThank you,\nKodiPoint`,
+    });
   }
 
   get smsSegments(): number {
-    const length = this.content().length;
+    const length = this.messageForm.controls.content.value.length;
     return length <= 160 ? 1 : Math.ceil(length / 153);
   }
 
@@ -70,14 +72,14 @@ export class SendTenantMessageModalComponent {
       },
     } as const;
     const selectedTemplate = templates[template];
-    this.subject.set(selectedTemplate.subject);
-    this.content.set(selectedTemplate.content);
+    this.messageForm.patchValue(selectedTemplate);
     this.formError.set('');
   }
 
   requestSend(): void {
-    const content = this.content().trim();
-    if (!this.sendSms() && !this.sendEmail()) {
+    const { sendSms, sendEmail, subject, content: rawContent } = this.messageForm.getRawValue();
+    const content = rawContent.trim();
+    if (!sendSms && !sendEmail) {
       this.formError.set('Select at least one delivery channel.');
       return;
     }
@@ -94,10 +96,10 @@ export class SendTenantMessageModalComponent {
         phone: this.tenant.phone,
       },
       channels: {
-        sms: this.sendSms(),
-        email: this.sendEmail(),
+        sms: sendSms,
+        email: sendEmail,
       },
-      subject: this.subject().trim(),
+      subject: subject.trim(),
       content,
     });
   }

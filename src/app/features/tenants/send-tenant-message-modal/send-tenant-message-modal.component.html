@@ -35,20 +35,20 @@
       </div>
     </div>
 
-    <form class="message-form" (ngSubmit)="requestSend()">
+    <form class="message-form" [formGroup]="messageForm" (ngSubmit)="requestSend()">
       <section class="message-form-body">
         <div class="field-label">Delivery Channels <span class="required-mark">*</span></div>
         <div class="delivery-options">
-          <label class="delivery-option" [class.selected]="sendSms()">
-            <mat-checkbox [checked]="sendSms()" (change)="sendSms.set($event.checked)" color="primary"></mat-checkbox>
+          <label class="delivery-option" [class.selected]="messageForm.controls.sendSms.value">
+            <mat-checkbox formControlName="sendSms" color="primary"></mat-checkbox>
             <span class="channel-icon sms-icon"><mat-icon>sms</mat-icon></span>
             <span class="delivery-copy">
               <strong>SMS Dispatch</strong>
               <small>Instant mobile SMS via your configured gateway</small>
             </span>
           </label>
-          <label class="delivery-option" [class.selected]="sendEmail()">
-            <mat-checkbox [checked]="sendEmail()" (change)="sendEmail.set($event.checked)" color="primary"></mat-checkbox>
+          <label class="delivery-option" [class.selected]="messageForm.controls.sendEmail.value">
+            <mat-checkbox formControlName="sendEmail" color="primary"></mat-checkbox>
             <span class="channel-icon email-icon"><mat-icon>mail</mat-icon></span>
             <span class="delivery-copy">
               <strong>Email Notice</strong>
@@ -64,9 +64,7 @@
           id="tenant-message-subject"
           class="message-input"
           type="text"
-          [ngModel]="subject()"
-          (ngModelChange)="subject.set($event)"
-          name="subject"
+          formControlName="subject"
           placeholder="Enter a subject or heading"
         />
 
@@ -88,16 +86,15 @@
 
         <div class="content-heading">
           <label class="field-label" for="tenant-message-content">Message Content <span class="required-mark">*</span></label>
-          @if (sendSms()) {
-            <span class="character-count">{{ content().length }} chars ({{ smsSegments }} SMS {{ smsSegments === 1 ? 'segment' : 'segments' }})</span>
+          @if (messageForm.controls.sendSms.value) {
+            <span class="character-count">{{ messageForm.controls.content.value.length }} chars ({{ smsSegments }} SMS {{ smsSegments === 1 ? 'segment' : 'segments' }})</span>
           }
         </div>
         <textarea
           id="tenant-message-content"
           class="message-content"
-          [ngModel]="content()"
-          (ngModelChange)="content.set($event); formError.set('')"
-          name="content"
+          formControlName="content"
+          (input)="formError.set('')"
           required
           rows="5"
           placeholder="Write your message..."
