@@ -14,7 +14,11 @@
         <h2 id="send-tenant-message-title">Send Tenant Message / Notice</h2>
         <p>{{ tenant.name }} <span>·</span> {{ tenant.premises }} - {{ tenant.unit }}
           <span class="lease-badge" [ngClass]="'status-' + tenant.tenancyStatus">
-            {{ tenant.tenancyStatus === 'active' ? 'Active Lease' : tenant.tenancyStatus === 'notice' ? 'Notice Period' : tenant.tenancyStatus === 'pending' ? 'Pending Lease' : 'Ended' }}
+            {{
+              tenant.tenancyStatus === 'active' ? 'Active Lease'
+                : tenant.tenancyStatus === 'notice' ? 'Notice Period'
+                  : tenant.tenancyStatus === 'pending' ? 'Pending Lease' : 'Ended'
+            }}
           </span>
         </p>
       </div>
