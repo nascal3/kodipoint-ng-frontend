@@ -214,7 +214,8 @@
               <button mat-icon-button class="action-btn" aria-label="View tenant ledger" matTooltip="View tenant ledger">
                 <mat-icon>receipt_long</mat-icon>
               </button>
-              <button mat-icon-button class="action-btn" aria-label="Message tenant" matTooltip="Message tenant">
+              <button mat-icon-button class="action-btn" aria-label="Message tenant" matTooltip="Message tenant"
+                      (click)="openTenantMessage(tenant)">
                 <mat-icon>sms</mat-icon>
               </button>
               <button mat-icon-button class="action-btn" aria-label="Edit tenant" matTooltip="Edit tenant"
@@ -274,6 +275,14 @@
       [tenant]="tenant"
       (closed)="closeTenantEdit()"
       (saved)="onTenantUpdated()"
+    />
+  }
+
+  @if (messagingTenant(); as tenant) {
+    <app-send-tenant-message-modal
+      [tenant]="tenant"
+      (closed)="closeTenantMessage()"
+      (sendRequested)="onTenantMessageRequested($event)"
     />
   }
 </div>

@@ -87,11 +87,11 @@ export class RegisterTenantModalComponent {
         this.snackbarService.success('Tenant registered successfully.');
         this.created.emit();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to register tenant:', error);
         this.isSubmitting.set(false);
-        this.submissionError.set('Could not register tenant. Please check the details and try again.');
-        this.snackbarService.error('Could not register tenant. Please try again.');
+        this.submissionError.set(error.error?.message || 'Could not register tenant. Please check the details and try again.');
+        this.snackbarService.error(error.error?.message || 'Could not register tenant. Please try again.');
       },
     });
   }

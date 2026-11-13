@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,10 @@ import { TenantsService } from './services/tenants.service';
 import { TenantItem, Tenant } from './models/tenants.interface';
 import { RegisterTenantModalComponent } from './register-tenant-modal/register-tenant-modal.component';
 import { EditTenantModalComponent } from './edit-tenant-modal/edit-tenant-modal.component';
+import {
+  SendTenantMessageModalComponent,
+  TenantMessageDraft,
+} from './send-tenant-message-modal/send-tenant-message-modal.component';
 
 @Component({
   selector: 'app-tenants',
@@ -18,6 +22,7 @@ import { EditTenantModalComponent } from './edit-tenant-modal/edit-tenant-modal.
     FormsModule,
     RegisterTenantModalComponent,
     EditTenantModalComponent,
+    SendTenantMessageModalComponent,
     ...MATERIAL_MODULES,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +30,8 @@ import { EditTenantModalComponent } from './edit-tenant-modal/edit-tenant-modal.
   styleUrl: './tenants.component.scss',
 })
 export class TenantsComponent implements OnInit {
+  @Output() readonly tenantMessageRequested = new EventEmitter<TenantMessageDraft>();
+
   private readonly destroyRef = inject(DestroyRef);
   private readonly tenantsService = inject(TenantsService);
   private readonly snackbarService = inject(SnackbarService);
@@ -61,6 +68,7 @@ export class TenantsComponent implements OnInit {
   readonly searchQuery = signal('');
   readonly isTenantRegistrationOpen = signal(false);
   readonly editingTenant = signal<Tenant | null>(null);
+  readonly messagingTenant = signal<TenantItem | null>(null);
 
   readonly statusOptions = ['All', 'ACTIVE', 'NOTICE', 'ENDED'];
 
@@ -181,6 +189,19 @@ export class TenantsComponent implements OnInit {
   onTenantUpdated(): void {
     this.closeTenantEdit();
     this.loadTenants();
+  }
+
+  openTenantMessage(tenant: TenantItem): void {
+    this.messagingTenant.set(tenant);
+  }
+
+  closeTenantMessage(): void {
+    this.messagingTenant.set(null);
+  }
+
+  onTenantMessageRequested(draft: TenantMessageDraft): void {
+    this.tenantMessageRequested.emit(draft);
+    this.closeTenantMessage();
   }
 
   private resetPageAndLoad(): void {

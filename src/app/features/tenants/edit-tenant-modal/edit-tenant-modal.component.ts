@@ -110,11 +110,11 @@ export class EditTenantModalComponent {
         this.snackbarService.success('Tenant updated successfully.');
         this.saved.emit();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to update tenant:', error);
         this.isSubmitting.set(false);
-        this.submissionError.set('Could not update tenant. Please check the details and try again.');
-        this.snackbarService.error('Could not update tenant. Please try again.');
+        this.submissionError.set(error.error?.message || 'Could not update tenant. Please check the details and try again.');
+        this.snackbarService.error(error.error?.message || 'Could not update tenant. Please try again.');
       },
     });
   }
