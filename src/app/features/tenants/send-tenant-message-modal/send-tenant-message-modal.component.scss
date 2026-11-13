@@ -437,6 +437,25 @@
   font-size: 18px;
 }
 
+.send-button mat-spinner {
+  margin-right: 8px;
+}
+
+.send-button mat-spinner ::ng-deep circle {
+  stroke: #fff;
+}
+
+.send-button:disabled {
+  color: rgba(255, 255, 255, 0.7);
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+:host-context(html.dark-theme) .send-button:disabled {
+  color: rgba(255, 255, 255, 0.6);
+  background: #1e40af;
+}
+
 :host-context(html.dark-theme) .message-modal {
   color: #e2e8f0;
   background: #172536;

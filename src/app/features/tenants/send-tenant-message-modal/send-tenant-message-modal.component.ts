@@ -29,6 +29,7 @@ export interface TenantMessageDraft {
 })
 export class SendTenantMessageModalComponent {
   @Input({ required: true }) tenant!: TenantItem;
+  @Input() sending = false;
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly sendRequested = new EventEmitter<TenantMessageDraft>();
 
@@ -53,6 +54,9 @@ export class SendTenantMessageModalComponent {
   }
 
   close(): void {
+    if (this.sending) {
+      return;
+    }
     this.closed.emit();
   }
 

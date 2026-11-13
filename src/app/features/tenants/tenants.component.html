@@ -281,6 +281,7 @@
   @if (messagingTenant(); as tenant) {
     <app-send-tenant-message-modal
       [tenant]="tenant"
+      [sending]="sendingTenantMessage()"
       (closed)="closeTenantMessage()"
       (sendRequested)="onTenantMessageRequested($event)"
     />

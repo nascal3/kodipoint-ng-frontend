@@ -106,9 +106,14 @@
 
       <footer class="message-modal-footer">
         <button mat-button type="button" class="cancel-button" (click)="close()">Cancel</button>
-        <button mat-raised-button type="submit" class="send-button">
-          <mat-icon>send</mat-icon>
-          <span>Send Message</span>
+        <button mat-raised-button type="submit" class="send-button" [disabled]="sending">
+          @if (sending) {
+            <mat-spinner diameter="18"></mat-spinner>
+            <span>Sending...</span>
+          } @else {
+            <mat-icon>send</mat-icon>
+            <span>Send Message</span>
+          }
         </button>
       </footer>
     </form>

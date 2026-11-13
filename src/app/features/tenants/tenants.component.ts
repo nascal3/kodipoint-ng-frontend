@@ -68,6 +68,7 @@ export class TenantsComponent implements OnInit {
   readonly isTenantRegistrationOpen = signal(false);
   readonly editingTenant = signal<Tenant | null>(null);
   readonly messagingTenant = signal<TenantItem | null>(null);
+  readonly sendingTenantMessage = signal(false);
 
   readonly statusOptions = ['All', 'ACTIVE', 'NOTICE', 'ENDED'];
 
@@ -199,6 +200,7 @@ export class TenantsComponent implements OnInit {
   }
 
   onTenantMessageRequested(draft: TenantMessageDraft): void {
+    this.sendingTenantMessage.set(true);
     this.tenantsService
       .sendTenantMessage({
         email: draft.recipient.email,
@@ -208,6 +210,7 @@ export class TenantsComponent implements OnInit {
         subject: draft.subject,
         message: draft.content,
       })
+      .pipe(finalize(() => this.sendingTenantMessage.set(false)))
       .subscribe({
         next: () => {
           this.snackbarService.success('Message sent successfully.');
