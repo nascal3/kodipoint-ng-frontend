@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { TenantItem } from '../models/tenants.interface';
@@ -21,7 +22,7 @@ export interface TenantMessageDraft {
 @Component({
   selector: 'app-send-tenant-message-modal',
   standalone: true,
-  imports: [FormsModule, ...MATERIAL_MODULES],
+  imports: [CommonModule, FormsModule, ...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './send-tenant-message-modal.component.html',
   styleUrl: './send-tenant-message-modal.component.scss',

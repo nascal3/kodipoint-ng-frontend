@@ -13,7 +13,9 @@
       <div class="modal-heading-copy">
         <h2 id="send-tenant-message-title">Send Tenant Message / Notice</h2>
         <p>{{ tenant.name }} <span>·</span> {{ tenant.premises }} - {{ tenant.unit }}
-          <span class="lease-badge">{{ tenant.tenancyStatus === 'active' ? 'Active Lease' : 'Tenant' }}</span>
+          <span class="lease-badge" [ngClass]="'status-' + tenant.tenancyStatus">
+            {{ tenant.tenancyStatus === 'active' ? 'Active Lease' : tenant.tenancyStatus === 'notice' ? 'Notice Period' : tenant.tenancyStatus === 'pending' ? 'Pending Lease' : 'Ended' }}
+          </span>
         </p>
       </div>
       <button mat-icon-button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()">

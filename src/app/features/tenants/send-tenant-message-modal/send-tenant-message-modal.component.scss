@@ -72,13 +72,66 @@
 }
 
 .lease-badge {
-  display: inline-block;
-  padding: 3px 8px;
-  color: #059669;
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
   border-radius: 12px;
   font-size: 11px;
+  font-weight: 600;
+}
+
+.lease-badge.status-active {
+  color: #047857;
+  background: #a7f3d0;
+}
+
+.lease-badge.status-notice {
+  color: #92400e;
+  background: #fed7aa;
+}
+
+.lease-badge.status-pending {
+  color: #4338ca;
+  background: #ddd6fe;
+}
+
+.lease-badge.status-ended {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+.lease-badge.status-active::before,
+.lease-badge.status-notice::before,
+.lease-badge.status-pending::before,
+.lease-badge.status-ended::before {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+  content: '';
+}
+
+:host-context(html.dark-theme) .lease-badge.status-active {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.16);
+}
+
+:host-context(html.dark-theme) .lease-badge.status-notice {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.18);
+}
+
+:host-context(html.dark-theme) .lease-badge.status-pending {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.16);
+}
+
+:host-context(html.dark-theme) .lease-badge.status-ended {
+  color: #cbd5e1;
+  background: #334155;
 }
 
 .modal-close-button {
@@ -180,16 +233,44 @@
 }
 
 .delivery-option mat-checkbox {
-  flex: 0 0 auto;
+  display: flex;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
 }
 
-.delivery-option ::ng-deep .mdc-checkbox {
-  padding: 4px;
+.delivery-option mat-checkbox ::ng-deep .mdc-checkbox {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  padding: 8px;
+  margin-top: 10px;
 }
 
-.delivery-option ::ng-deep .mdc-checkbox__background {
+.delivery-option mat-checkbox ::ng-deep .mdc-checkbox__background {
   width: 16px;
   height: 16px;
+}
+
+.delivery-option mat-checkbox ::ng-deep .mdc-checkbox__native-control:enabled:not(:checked) ~ .mdc-checkbox__background {
+  border: 2px solid #64748b !important;
+  background-color: transparent !important;
+}
+
+.delivery-option mat-checkbox ::ng-deep .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+  border-color: #3b82f6 !important;
+  background-color: #3b82f6 !important;
+}
+
+.delivery-option mat-checkbox ::ng-deep .mdc-checkbox__checkmark {
+  color: #fff;
+}
+
+:host-context(html.dark-theme) .delivery-option mat-checkbox ::ng-deep .mdc-checkbox__native-control:enabled:not(:checked) ~ .mdc-checkbox__background {
+  border-color: #94a3b8 !important;
+  background-color: transparent !important;
 }
 
 .channel-icon {
