@@ -6,8 +6,11 @@ export interface ProjectedRentProperty {
     name: string;
     address: string;
   };
+  income: string;
+  occupiedRent: string;
   occupiedUnits: number;
   projectedRent: string;
+  status: string;
   currency: string;
 }
 

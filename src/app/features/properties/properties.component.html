@@ -316,7 +316,7 @@
                 class="vacant-status"
                 [class]="`vacant-${property.status.toLocaleLowerCase()}`"
               >
-                {{ property.vacantUnits }} Units {{ property.vacantUnits > 0 ? 'Vacant' : 'Available' }}
+                {{ property.vacantUnits }} Units {{ property.status === 'INACTIVE' || property.vacantUnits === 0 ? 'Available' : 'Vacant' }}
               </span>
               <span class="yield-tag">
                 {{ property.propertyUseType === 'MIXED' ? 'MIXED USE' : property.propertyUseType }}
