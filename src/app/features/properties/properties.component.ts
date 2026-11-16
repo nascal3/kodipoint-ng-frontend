@@ -39,34 +39,29 @@ export class PropertiesComponent implements OnInit {
   private readonly propertyFiltersChanged = new Subject<void>();
 
   readonly projectedRent = signal({
-    title: 'Projected Monthly Rent',
-    currency: 'KES',
-    amount: '18,500,000',
-    subtitleLabel: 'Gross portfolio valuation:',
-    valuation: 'KES 1.42B',
+    currency: '--',
+    amount: '--',
+    valuation: '--',
   });
   readonly projectedRentLoading = signal(true);
 
   readonly occupancyKpi = signal({
-    title: 'Portfolio Occupancy',
-    percentage: '91.4%',
-    unitRatio: '142 / 155 Units',
-    progress: 91.4,
-    vacantText: '13 Vacant Units',
+    percentage: '--',
+    unitRatio: '-- / --',
+    progress: 0,
+    vacantText: '--',
   });
   readonly occupancyKpiLoading = signal(true);
 
   readonly collectedVsOwed = signal({
-    title: 'Total Collected vs. Owed',
-    collectedLabel: 'Collected (91.2%)',
-    collectedCurrency: 'KES',
-    collectedAmount: '14,820,000',
-    owedLabel: 'Owed (8.8%)',
-    owedCurrency: 'KES',
-    owedAmount: '1,420,000',
-    collectedPercent: 91.2,
-    owedPercent: 8.8,
-    periodNote: 'Based on the last 30 days',
+    collectedLabel: 'Collected (--%)',
+    collectedCurrency: '--',
+    collectedAmount: '--',
+    owedLabel: 'Owed (--%)',
+    owedCurrency: '--',
+    owedAmount: '--',
+    collectedPercent: 0,
+    owedPercent: 0
   });
   readonly collectedVsOwedLoading = signal(true);
 
@@ -280,8 +275,9 @@ export class PropertiesComponent implements OnInit {
         if (summary) {
           this.projectedRent.update((current) => ({
             ...current,
+            currency: summary.currency,
             amount: summary.totalProjectedRent.toLocaleString(),
-            valuation: `KES ${summary.totalPotentialRent}`,
+            valuation: `${summary.currency} ${summary.totalPotentialRent.toLocaleString()}`,
           }));
         }
         this.projectedRentLoading.set(false);
@@ -331,6 +327,8 @@ export class PropertiesComponent implements OnInit {
 
         const owedPercent = totalAmount > 0 ? (totalOwed / totalAmount) * 100 : 0;
         const collectedPercent = totalAmount > 0 ? (totalCollected / totalAmount) * 100 : 0;
+        const owedCurrency = owed.summary.currency ?? '--';
+        const collectedCurrency = collected.summary.currency ?? '--';
 
         this.collectedVsOwed.update((current) => ({
           ...current,
@@ -338,7 +336,9 @@ export class PropertiesComponent implements OnInit {
           collectedAmount: totalCollected.toLocaleString(),
           owedAmount: totalOwed.toLocaleString(),
           collectedPercent,
+          collectedCurrency,
           owedPercent,
+          owedCurrency,
           owedLabel: `Owed (${owedPercent.toFixed(1)}%)`,
         }));
         this.collectedVsOwedLoading.set(false);

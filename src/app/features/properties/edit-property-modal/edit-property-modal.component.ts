@@ -36,7 +36,6 @@ export class EditPropertyModalComponent {
     description: new FormControl<string | null>(null),
     currency: new FormControl('KES', { nonNullable: true, validators: Validators.required }),
     monthlyRent: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
-    unitCount: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
     status: new FormControl('ACTIVE', { nonNullable: true, validators: Validators.required }),
   });
   readonly countries = input<Country[]>([]);
@@ -66,7 +65,6 @@ export class EditPropertyModalComponent {
           description: prop.description || null,
           currency: prop.currency,
           monthlyRent: Number(prop.monthlyRent),
-          unitCount: prop.unitCount,
           status: prop.status,
         });
         if (countryId) {
@@ -142,10 +140,10 @@ export class EditPropertyModalComponent {
         this.snackbarService.success('Property updated successfully');
         this.updated.emit();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Failed to update property:', error);
-        this.propertyUpdateError.set('Could not update property. Please check the details and try again.');
-        this.snackbarService.error('Could not update property. Please check the details and try again.');
+        this.propertyUpdateError.set(error.error?.message || 'Could not update property. Please check the details and try again.');
+        this.snackbarService.error(error.error?.message || 'Could not update property. Please check the details and try again.');
         this.isUpdatingProperty.set(false);
       },
     });

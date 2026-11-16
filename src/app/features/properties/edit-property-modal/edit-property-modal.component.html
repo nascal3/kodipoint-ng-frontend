@@ -111,16 +111,6 @@
         </div>
         <div class="form-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Total Units</mat-label>
-            <mat-icon class="material-symbol" matPrefix>tag</mat-icon>
-            <input matInput id="property-unit-count" formControlName="unitCount" type="number" min="1" step="1" />
-            @if (propertyForm.controls.unitCount.hasError('required') && propertyForm.controls.unitCount.touched) {
-              <mat-error>Total units is required.</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div class="form-field">
-          <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Currency</mat-label>
             <mat-icon class="material-symbol" matPrefix>paid</mat-icon>
             <mat-select id="property-currency" formControlName="currency">

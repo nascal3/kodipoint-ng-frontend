@@ -4,7 +4,7 @@
     <!-- Card 1: Projected Monthly Rent -->
     <div class="kpi-card" [attr.aria-busy]="projectedRentLoading()">
       <div class="kpi-card-header">
-        <span class="kpi-title">{{ projectedRent().title }}</span>
+        <span class="kpi-title">Projected Monthly Rent</span>
         <div class="kpi-icon-bubble bubble-purple">
           <mat-icon class="kpi-icon">account_balance_wallet</mat-icon>
         </div>
@@ -21,7 +21,7 @@
           <span class="amount-val">{{ projectedRent().amount }}</span>
         </div>
         <div class="kpi-sub-text">
-          <span class="sub-label">{{ projectedRent().subtitleLabel }}</span>
+          <span class="sub-label">Gross portfolio valuation:</span>
           <span class="sub-bold">{{ projectedRent().valuation }}</span>
         </div>
       }
@@ -30,7 +30,7 @@
     <!-- Card 2: Portfolio Occupancy -->
     <div class="kpi-card" [attr.aria-busy]="occupancyKpiLoading()">
       <div class="kpi-card-header">
-        <span class="kpi-title">{{ occupancyKpi().title }}</span>
+        <span class="kpi-title">Portfolio Occupancy</span>
         <div class="kpi-icon-bubble bubble-green">
           <mat-icon class="kpi-icon">apartment</mat-icon>
         </div>
@@ -66,7 +66,7 @@
     <!-- Card 3: Total Collected vs. Owed -->
     <div class="kpi-card" [attr.aria-busy]="collectedVsOwedLoading()">
       <div class="kpi-card-header">
-        <span class="kpi-title">{{ collectedVsOwed().title }}</span>
+        <span class="kpi-title">Total Collected vs. Owed</span>
         <div class="kpi-icon-bubble bubble-lavender">
           <mat-icon class="kpi-icon">donut_large</mat-icon>
         </div>
@@ -108,7 +108,7 @@
             [style.width.%]="collectedVsOwed().owedPercent"
           ></div>
         </div>
-        <div class="kpi-period-note">{{ collectedVsOwed().periodNote }}</div>
+        <div class="kpi-period-note">Based on the last 30 days</div>
       }
     </div>
   </section>

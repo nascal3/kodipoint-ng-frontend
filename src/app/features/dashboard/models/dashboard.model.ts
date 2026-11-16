@@ -3,6 +3,7 @@ export interface TotalRentOwedResponse {
     totalOwed: string;
     totalOutstandingInvoices: number;
     totalProperties: number;
+    currency: string;
   };
   monthlyTotals: MonthlyTotal[];
   properties: unknown[];
@@ -21,6 +22,7 @@ export interface AllPropertiesIncomeResponse {
     totalIncome: string;
     totalPayments: number;
     totalProperties: number;
+    currency: string;
   };
   monthlyTotals: MonthlyTotal[];
   properties: unknown[];

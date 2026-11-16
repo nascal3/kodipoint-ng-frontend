@@ -40,7 +40,6 @@ export class AddPropertyModalComponent {
     description: new FormControl<string | null>(null),
     currency: new FormControl('KES', { nonNullable: true, validators: Validators.required }),
     monthlyRent: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
-    unitCount: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
     status: new FormControl('ACTIVE', { nonNullable: true, validators: Validators.required }),
   });
   readonly countries = input<Country[]>([]);
