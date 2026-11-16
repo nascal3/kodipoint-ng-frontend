@@ -37,6 +37,7 @@ export class PropertiesComponent implements OnInit {
   private readonly snackbarService = inject(SnackbarService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly propertyFiltersChanged = new Subject<void>();
+  private readonly nonArchivedStatuses = ['ACTIVE', 'INACTIVE', 'MAINTENANCE'];
 
   readonly projectedRent = signal({
     currency: '--',
@@ -251,14 +252,14 @@ export class PropertiesComponent implements OnInit {
     });
   }
 
-  private getPropertyFilters(): { country?: string; status?: string; name?: string } {
+  private getPropertyFilters(): { country?: string; status?: string | string[]; name?: string } {
     const country = this.selectedCountry();
     const status = this.selectedStatus();
     const name = this.searchQuery().trim();
 
     return {
       ...(country !== 'All Countries' ? { country } : {}),
-      ...(status !== 'ALL' ? { status } : {}),
+      ...(status !== 'ALL' ? { status } : { status: this.nonArchivedStatuses }),
       ...(name ? { name } : {}),
     };
   }
