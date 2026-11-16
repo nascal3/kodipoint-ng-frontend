@@ -114,4 +114,8 @@ export class PropertyService {
   updateProperty(propertyId: string, property: CreatePropertyRequest): Observable<CreatePropertyResponse> {
     return this.http.patch<CreatePropertyResponse>(`${environment.apiUrl}/properties/${propertyId}`, property);
   }
+
+  deleteProperty(propertyId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/properties/${propertyId}`);
+  }
 }

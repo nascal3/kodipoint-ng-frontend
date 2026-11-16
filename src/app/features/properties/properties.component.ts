@@ -98,6 +98,14 @@ export class PropertiesComponent implements OnInit {
     { code: 'ARCHIVED', label: 'Deleted' },
   ];
 
+  ngOnInit(): void {
+    this.watchPropertyFilters();
+    this.loadCountries();
+    this.loadProjectedRent();
+    this.loadOccupancyData();
+    this.loadTotalRentOwed();
+  }
+
   setView(view: 'grid' | 'list'): void {
     this.currentView.set(view);
   }
@@ -186,6 +194,11 @@ export class PropertiesComponent implements OnInit {
     this.propertyFiltersChanged.next();
   }
 
+  onPropertyDeleted(): void {
+    this.closeEditPropertyModal();
+    this.propertyFiltersChanged.next();
+  }
+
   loadMoreProperties(): void {
     if (this.isLoadingMore() || !this.hasNextPage()) {
       return;
@@ -208,14 +221,6 @@ export class PropertiesComponent implements OnInit {
       this.hasNextPage.set(response.pagination.hasNextPage);
       this.isLoadingMore.set(false);
     });
-  }
-
-  ngOnInit(): void {
-    this.watchPropertyFilters();
-    this.loadCountries();
-    this.loadProjectedRent();
-    this.loadOccupancyData();
-    this.loadTotalRentOwed();
   }
 
   private watchPropertyFilters(): void {

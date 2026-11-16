@@ -20,8 +20,11 @@ export class EditPropertyModalComponent {
 
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly updated = new EventEmitter<void>();
+  @Output() readonly deleted = new EventEmitter<void>();
 
   readonly isUpdatingProperty = signal(false);
+  readonly isDeletingProperty = signal(false);
+  readonly isDeleteConfirmOpen = signal(false);
   readonly isLoadingCities = signal(false);
   readonly propertyUpdateError = signal('');
   readonly propertyForm = new FormGroup({
@@ -117,8 +120,43 @@ export class EditPropertyModalComponent {
   }
 
   close(): void {
-    if (this.isUpdatingProperty()) return;
+    if (this.isUpdatingProperty() || this.isDeletingProperty()) return;
+    this.isDeleteConfirmOpen.set(false);
     this.closed.emit();
+  }
+
+  openDeleteConfirm(): void {
+    if (this.isDeletingProperty() || this.isUpdatingProperty()) return;
+    this.isDeleteConfirmOpen.set(true);
+  }
+
+  cancelDeleteConfirm(): void {
+    this.isDeleteConfirmOpen.set(false);
+  }
+
+  deleteProperty(): void {
+    const prop = this.property();
+    if (!prop?.id || this.isDeletingProperty() || this.isUpdatingProperty()) return;
+
+    this.isDeletingProperty.set(true);
+    this.isDeleteConfirmOpen.set(false);
+    this.propertyUpdateError.set('');
+
+    this.propertyService.deleteProperty(prop.id).subscribe({
+      next: () => {
+        this.isDeletingProperty.set(false);
+        this.snackbarService.success('Property deleted successfully.');
+        this.closed.emit();
+        this.deleted.emit();
+      },
+      error: (error: any) => {
+        console.error('Failed to delete property:', error);
+        this.isDeletingProperty.set(false);
+        const message = error?.error?.message || 'Could not delete property. Please try again.';
+        this.propertyUpdateError.set(message);
+        this.snackbarService.error(message);
+      },
+    });
   }
 
   updateProperty(): void {

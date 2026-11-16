@@ -304,12 +304,12 @@
               <div class="alloc-row-bottom">
               <span
                 class="vacant-status"
-                [class]="'vacant-teal'"
+                [class]="`vacant-${property.status.toLocaleLowerCase()}`"
               >
                 {{ property.vacantUnits }} Units Vacant
               </span>
               <span class="yield-tag">
-                {{ property.propertyUseType }}
+                {{ property.propertyUseType === 'MIXED' ? 'MIXED USE' : property.propertyUseType }}
               </span>
               </div>
             </div>
@@ -332,7 +332,13 @@
 
               <!-- Card Actions Footer -->
               <div class="card-footer">
-                <button type="button" class="btn-assign" matTooltip="Create a new Unit" (click)="openAddUnitModal(property)" [disabled]="property.status === 'INACTIVE'">
+                <button
+                  type="button"
+                  class="btn-assign"
+                  matTooltip="Create a new Unit"
+                  (click)="openAddUnitModal(property)"
+                  [disabled]="property.status === 'INACTIVE' || property.status === 'ARCHIVED'"
+                >
                   <mat-icon class="action-btn-icon">add_home</mat-icon>
                   <span>Add Unit</span>
                 </button>
@@ -352,6 +358,7 @@
                   class="btn-icon-square btn-settings-icon"
                   aria-label="Property settings"
                   matTooltip="Property charges settings"
+                  [disabled]="property.status === 'ARCHIVED'"
                   (click)="openChargesModal(property.id)"
                 >
                   <mat-icon class="action-btn-icon">settings</mat-icon>
@@ -410,7 +417,13 @@
 }
 
 @if (isEditPropertyModalOpen()) {
-  <app-edit-property-modal [countries]="countries()" [property]="selectedProperty()" (closed)="closeEditPropertyModal()" (updated)="onPropertyUpdated()"/>
+  <app-edit-property-modal
+    [countries]="countries()"
+    [property]="selectedProperty()"
+    (closed)="closeEditPropertyModal()"
+    (updated)="onPropertyUpdated()"
+    (deleted)="onPropertyDeleted()"
+  />
 }
 
 @if (isAddUnitModalOpen() && selectedProperty(); as property) {
