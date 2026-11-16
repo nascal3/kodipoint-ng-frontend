@@ -816,7 +816,7 @@
       &.dot-active { background: #10b981; }
       &.dot-maintenance { background: #f59e0b; }
       &.dot-inactive { background: #ef4444; }
-      &.dot-archived { background: #22354a }
+      &.dot-archived { background: #64748b; }
     }
   }
 
@@ -961,7 +961,7 @@
       &.vacant-active { color: #10b981; }
       &.vacant-maintenance { color: #f59e0b; }
       &.vacant-inactive { color: #ef4444; }
-      &.vacant-archived { color: #22354a; }
+      &.vacant-archived { color: #64748b; }
     }
 
     .yield-tag {
@@ -1068,7 +1068,17 @@
       width: 32px;
       height: 32px;
       &:hover { background: #f1f5f9; }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f1f5f9;
+        color: #94a3b8;
+
+        .action-btn-icon { color: #94a3b8; }
+      }
     }
+
   }
 }
 
@@ -1176,6 +1186,10 @@
 
     button {
       color: #f8fafc !important;
+
+      &.archived {
+        color: #94a3b8 !important;
+      }
 
       &:hover {
         color: #3d81f6 !important;
@@ -1295,6 +1309,16 @@
       &:hover {
         background: #1d3045;
         color: #60a5fa;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #1a2738;
+        border-color: #26384a;
+        color: #94a3b8;
+
+        .action-btn-icon { color: #64748b; }
       }
     }
   }

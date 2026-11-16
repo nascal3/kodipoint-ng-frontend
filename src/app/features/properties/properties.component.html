@@ -248,7 +248,7 @@
               class="badge-dot"
               [class]="`dot-${property.status.toLowerCase()}`"
             ></span>
-              <span class="badge-text">{{ property.status }}</span>
+              <span class="badge-text">{{ property.status === 'ARCHIVED' ? 'DELETED' : property.status }}</span>
             </div>
 
             <!-- Floating Bookmark Button -->
@@ -272,16 +272,24 @@
             <div class="property-details">
               <div class="title-price-row">
                 <h3 class="property-name">
-                  <button matButton type="button" class="property-name-trigger" (click)="openPropertyUnits(property)" [attr.aria-label]="'View units for ' + property.name">
+                  <button
+                    matButton type="button"
+                    class="property-name-trigger"
+                    [class]="`${property.status.toLocaleLowerCase()}`"
+                    (click)="openPropertyUnits(property)"
+                    [attr.aria-label]="'View units for ' + property.name"
+                  >
                     <mat-icon>open_in_new</mat-icon>
                     {{ property.name }}
                   </button>
                 </h3>
                 <div class="property-rent">
-                <span class="rent-amount">
-                  {{ property.currency }} {{ property.minRent }} - {{ property.maxRent }}
-                </span>
-                  <span class="rent-period">/mo</span>
+                  @if (property.status !== 'ARCHIVED') {
+                    <span class="rent-amount">
+                      {{ property.currency }} {{ property.minRent }} - {{ property.maxRent }}
+                    </span>
+                    <span class="rent-period">/mo</span>
+                  }
                 </div>
               </div>
 
@@ -306,7 +314,7 @@
                 class="vacant-status"
                 [class]="`vacant-${property.status.toLocaleLowerCase()}`"
               >
-                {{ property.vacantUnits }} Units Vacant
+                {{ property.vacantUnits }} Units {{ property.vacantUnits > 0 ? 'Vacant' : 'Available' }}
               </span>
               <span class="yield-tag">
                 {{ property.propertyUseType === 'MIXED' ? 'MIXED USE' : property.propertyUseType }}

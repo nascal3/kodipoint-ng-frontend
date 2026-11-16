@@ -149,8 +149,10 @@ export class PropertiesComponent implements OnInit {
   }
 
   openPropertyUnits(property: PropertyItem): void {
-    this.selectedProperty.set(property);
-    this.isUnitsModalOpen.set(true);
+    if (property.status !== 'ARCHIVED') {
+      this.selectedProperty.set(property);
+      this.isUnitsModalOpen.set(true);
+    }
   }
 
   closeUnitsModal(): void {

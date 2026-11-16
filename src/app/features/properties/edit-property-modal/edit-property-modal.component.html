@@ -19,6 +19,7 @@
 
     <form [formGroup]="propertyForm" class="property-form auth-form" (ngSubmit)="updateProperty()">
       <div class="property-form-fields">
+        @if (property()?.status !== 'ARCHIVED') {
         <div class="form-field full-width">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Property Name</mat-label>
@@ -136,6 +137,7 @@
             }
           </mat-form-field>
         </div>
+        }
 
         <fieldset class="form-field full-width status-field">
           <legend>Operational Status</legend>
@@ -146,12 +148,14 @@
           </mat-radio-group>
         </fieldset>
 
+        @if (property()?.status !== 'ARCHIVED') {
         <div class="form-field full-width description-field">
           <mat-form-field class="auth-input" appearance="outline" subscriptSizing="dynamic">
             <mat-label>Property Description</mat-label>
             <textarea matInput id="property-description" formControlName="description" rows="3" placeholder="Add details about this property"></textarea>
           </mat-form-field>
         </div>
+        }
       </div>
 
       @if (propertyUpdateError()) {
@@ -159,20 +163,22 @@
       }
 
       <footer class="property-modal-footer">
-        <button
-          matButton="outlined"
-          type="button"
-          class="modal-delete-button"
-          [disabled]="isDeletingProperty() || isUpdatingProperty()"
-          (click)="openDeleteConfirm()"
-        >
-          @if (isDeletingProperty()) {
-            <mat-spinner diameter="18" aria-label="Deleting property"></mat-spinner>
-          } @else {
-            <mat-icon>delete_outline</mat-icon>
-          }
-          <span>{{ isDeletingProperty() ? 'Deleting...' : 'Delete Property' }}</span>
-        </button>
+        @if (property()?.status !== 'ARCHIVED') {
+          <button
+            matButton="outlined"
+            type="button"
+            class="modal-delete-button"
+            [disabled]="isDeletingProperty() || isUpdatingProperty()"
+            (click)="openDeleteConfirm()"
+          >
+            @if (isDeletingProperty()) {
+              <mat-spinner diameter="18" aria-label="Deleting property"></mat-spinner>
+            } @else {
+              <mat-icon>delete_outline</mat-icon>
+            }
+            <span>{{ isDeletingProperty() ? 'Deleting...' : 'Delete Property' }}</span>
+          </button>
+        }
 
         <div class="property-modal-footer-actions">
           <button matButton="outlined" type="button" class="modal-cancel-button" (click)="close()">Cancel</button>
