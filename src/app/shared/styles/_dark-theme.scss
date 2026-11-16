@@ -459,6 +459,11 @@ html.dark-theme {
     --mat-option-selected-state-label-text-color: #93c5fd;
   }
 
+  .property-status-select-panel .mat-pseudo-checkbox:not(.mat-pseudo-checkbox-checked) {
+    background-color: #1e293b !important;
+    border-color: #cbd5e1 !important;
+  }
+
   .mat-calendar-period-button .mat-calendar-arrow {
     fill: #d7e0eb !important;
   }

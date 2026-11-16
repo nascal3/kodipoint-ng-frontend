@@ -86,13 +86,12 @@ export class PropertiesComponent implements OnInit {
   readonly selectedPropertyId = signal('');
   readonly selectedProperty = signal<PropertyItem | null>(null);
   readonly selectedCountry = signal('All Countries');
-  readonly selectedStatus = signal('ALL');
+  readonly selectedStatus = signal<string[]>([...this.nonArchivedStatuses]);
   readonly searchQuery = signal('');
   readonly currentView = signal<'grid' | 'list'>('grid');
   readonly countries = signal<Country[]>([]);
 
   readonly statuses = [
-    { code: 'ALL', label: 'All Statuses' },
     { code: 'ACTIVE', label: 'Active' },
     { code: 'MAINTENANCE', label: 'Under Maintenance' },
     { code: 'INACTIVE', label: 'Inactive' },
@@ -121,8 +120,8 @@ export class PropertiesComponent implements OnInit {
     this.propertyFiltersChanged.next();
   }
 
-  onStatusChange(status: string): void {
-    this.selectedStatus.set(status);
+  onStatusChange(statuses: string[]): void {
+    this.selectedStatus.set(statuses);
     this.propertyFiltersChanged.next();
   }
 
@@ -254,12 +253,12 @@ export class PropertiesComponent implements OnInit {
 
   private getPropertyFilters(): { country?: string; status?: string | string[]; name?: string } {
     const country = this.selectedCountry();
-    const status = this.selectedStatus();
+    const selectedStatuses = this.selectedStatus();
     const name = this.searchQuery().trim();
 
     return {
       ...(country !== 'All Countries' ? { country } : {}),
-      ...(status !== 'ALL' ? { status } : { status: this.nonArchivedStatuses }),
+      status: selectedStatuses.length > 0 ? selectedStatuses : this.nonArchivedStatuses,
       ...(name ? { name } : {}),
     };
   }

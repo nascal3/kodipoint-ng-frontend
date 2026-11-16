@@ -149,6 +149,8 @@
       <div class="dropdown-wrapper">
         <mat-select
           class="custom-select"
+          multiple
+          panelClass="property-status-select-panel"
           [ngModel]="selectedStatus()"
           (ngModelChange)="onStatusChange($event)"
         >
