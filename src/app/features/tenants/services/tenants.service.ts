@@ -79,7 +79,7 @@ export class TenantsService {
     let params = new HttpParams()
       .set('page', page)
       .set('limit', limit)
-      .set('status', 'EXPIRING');
+      .set('status', 'NOTICE');
 
     return this.http.get<TenanciesResponse>(`${environment.apiUrl}/tenancies`, { params });
   }
