@@ -258,10 +258,11 @@ export class TenantsComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         const { totalOccupiedUnits, totalVacantUnits, totalProperties } = response.summary;
+        const totalUnits = totalOccupiedUnits + totalVacantUnits;
         const percentage = totalProperties > 0
-          ? ((totalOccupiedUnits / totalProperties) * 100).toFixed(1) + '%'
+          ? ((totalOccupiedUnits / totalUnits) * 100).toFixed(1) + '%'
           : '0%';
-        const unitRatio = `${totalOccupiedUnits} / ${totalProperties} Units`;
+        const unitRatio = `${totalOccupiedUnits} / ${totalUnits} Units`;
 
         this.activeLeaseholdRate.set({ percentage, unitRatio });
       },
@@ -323,7 +324,9 @@ export class TenantsComponent implements OnInit {
         email: tenant.email,
         premises: activeTenancy?.property?.name || 'N/A',
         unit: activeTenancy?.unit?.unitNumber || 'N/A',
-        unitType: activeTenancy?.unit?.bedroomCount || 'N/A',
+        propertyUseType: activeTenancy?.unit?.propertyUseType || 'N/A',
+        unitType: activeTenancy?.unit?.propertyUseType === 'RESIDENTIAL'
+          ? `${activeTenancy?.unit?.bedroomCount} Bedrooms` : `${activeTenancy?.unit?.bedroomCount} Rooms`,
         currency: activeTenancy?.property?.currency || 'N/A',
         startDate: tenant.createdAt ? this.formatDate(tenant.createdAt) : 'N/A',
         tenure: tenant.createdAt ? this.calculateTenure(tenant.createdAt) : 'N/A',

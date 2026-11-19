@@ -55,6 +55,7 @@ export interface Tenancy {
   };
   unit: {
     unitNumber: string;
+    propertyUseType: string;
     marketRent: string;
     billingFrequency: string;
     bedroomCount: string;

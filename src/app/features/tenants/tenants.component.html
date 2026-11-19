@@ -151,11 +151,15 @@
             <th mat-header-cell *matHeaderCellDef>Premises & Unit</th>
             <td mat-cell *matCellDef="let tenant">
               <div class="premises-unit">
-                <div class="premises-name">{{ tenant.premises }}</div>
+                <div class="premises-name">
+                  {{ tenant.premises }}
+                </div>
                 <div class="unit-detail">
-                  {{ tenant.unit }}
+                  {{ tenant.unit }} <span class="unit-type">({{ tenant.propertyUseType }})</span>
                   @if (tenant.unitType) {
-                    <span class="unit-type">• {{ tenant.unitType }}</span>
+                    <div>
+                      <span class="unit-type">• {{ tenant.unitType }}</span>
+                    </div>
                   }
                 </div>
               </div>
