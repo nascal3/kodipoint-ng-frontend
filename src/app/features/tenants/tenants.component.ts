@@ -58,8 +58,8 @@ export class TenantsComponent implements OnInit {
   });
 
   readonly expiringLeases = signal({
-    leasesCount: '8 Leases',
-    pendingReview: '8',
+    leasesCount: '--',
+    pendingReview: '--',
   });
 
 

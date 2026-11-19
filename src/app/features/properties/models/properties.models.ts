@@ -6,8 +6,11 @@ export interface ProjectedRentProperty {
     name: string;
     address: string;
   };
+  income: string;
+  occupiedRent: string;
   occupiedUnits: number;
   projectedRent: string;
+  status: string;
   currency: string;
 }
 
@@ -18,6 +21,7 @@ export interface ProjectedRentResponse {
     totalOccupiedUnits: number;
     totalVacantUnits: number;
     totalProperties: number;
+    currency: string;
   };
   properties: ProjectedRentProperty[];
   pagination: {
@@ -83,7 +87,6 @@ export interface CreatePropertyRequest {
   description: string | null;
   currency: string;
   monthlyRent: number;
-  unitCount: number;
   status: string;
 }
 

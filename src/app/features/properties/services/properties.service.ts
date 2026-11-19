@@ -37,7 +37,7 @@ export class PropertyService {
     page: number = 1,
     limit: number = 10,
     sortOrder: 'ASC' | 'DESC' = 'DESC',
-    filters: { country?: string; status?: string; name?: string } = {}
+    filters: { country?: string; status?: string | string[]; name?: string } = {}
   ): Observable<PropertiesResponse> {
     let params = new HttpParams()
       .set('page', page)
@@ -45,7 +45,12 @@ export class PropertyService {
       .set('sortOrder', sortOrder);
 
     if (filters.country) params = params.set('country', filters.country);
-    if (filters.status) params = params.set('status', filters.status);
+    if (filters.status) {
+      const statuses = Array.isArray(filters.status) ? filters.status : [filters.status];
+      statuses.forEach((status) => {
+        params = params.append('status', status);
+      });
+    }
     if (filters.name) params = params.set('name', filters.name);
 
     return this.http.get<PropertiesResponse>(`${environment.apiUrl}/properties`, { params });
@@ -113,5 +118,9 @@ export class PropertyService {
 
   updateProperty(propertyId: string, property: CreatePropertyRequest): Observable<CreatePropertyResponse> {
     return this.http.patch<CreatePropertyResponse>(`${environment.apiUrl}/properties/${propertyId}`, property);
+  }
+
+  deleteProperty(propertyId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/properties/${propertyId}`);
   }
 }

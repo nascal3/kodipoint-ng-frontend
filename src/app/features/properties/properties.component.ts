@@ -37,36 +37,33 @@ export class PropertiesComponent implements OnInit {
   private readonly snackbarService = inject(SnackbarService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly propertyFiltersChanged = new Subject<void>();
+  private readonly kpiRefresh = new Subject<void>();
+  private readonly nonArchivedStatuses = ['ACTIVE', 'INACTIVE', 'MAINTENANCE'];
 
   readonly projectedRent = signal({
-    title: 'Projected Monthly Rent',
-    currency: 'KES',
-    amount: '18,500,000',
-    subtitleLabel: 'Gross portfolio valuation:',
-    valuation: 'KES 1.42B',
+    currency: '--',
+    amount: '--',
+    valuation: '--',
   });
   readonly projectedRentLoading = signal(true);
 
   readonly occupancyKpi = signal({
-    title: 'Portfolio Occupancy',
-    percentage: '91.4%',
-    unitRatio: '142 / 155 Units',
-    progress: 91.4,
-    vacantText: '13 Vacant Units',
+    percentage: '--',
+    unitRatio: '-- / --',
+    progress: 0,
+    vacantText: '--',
   });
   readonly occupancyKpiLoading = signal(true);
 
   readonly collectedVsOwed = signal({
-    title: 'Total Collected vs. Owed',
-    collectedLabel: 'Collected (91.2%)',
-    collectedCurrency: 'KES',
-    collectedAmount: '14,820,000',
-    owedLabel: 'Owed (8.8%)',
-    owedCurrency: 'KES',
-    owedAmount: '1,420,000',
-    collectedPercent: 91.2,
-    owedPercent: 8.8,
-    periodNote: 'Based on the last 30 days',
+    collectedLabel: 'Collected (--%)',
+    collectedCurrency: '--',
+    collectedAmount: '--',
+    owedLabel: 'Owed (--%)',
+    owedCurrency: '--',
+    owedAmount: '--',
+    collectedPercent: 0,
+    owedPercent: 0
   });
   readonly collectedVsOwedLoading = signal(true);
 
@@ -90,18 +87,26 @@ export class PropertiesComponent implements OnInit {
   readonly selectedPropertyId = signal('');
   readonly selectedProperty = signal<PropertyItem | null>(null);
   readonly selectedCountry = signal('All Countries');
-  readonly selectedStatus = signal('ALL');
+  readonly selectedStatus = signal<string[]>([...this.nonArchivedStatuses]);
   readonly searchQuery = signal('');
   readonly currentView = signal<'grid' | 'list'>('grid');
   readonly countries = signal<Country[]>([]);
 
   readonly statuses = [
-    { code: 'ALL', label: 'All Statuses' },
     { code: 'ACTIVE', label: 'Active' },
     { code: 'MAINTENANCE', label: 'Under Maintenance' },
     { code: 'INACTIVE', label: 'Inactive' },
     { code: 'ARCHIVED', label: 'Deleted' },
   ];
+
+  ngOnInit(): void {
+    this.watchPropertyFilters();
+    this.watchKpiRefresh();
+    this.loadCountries();
+    this.loadProjectedRent();
+    this.loadOccupancyData();
+    this.loadTotalRentOwed();
+  }
 
   setView(view: 'grid' | 'list'): void {
     this.currentView.set(view);
@@ -117,8 +122,8 @@ export class PropertiesComponent implements OnInit {
     this.propertyFiltersChanged.next();
   }
 
-  onStatusChange(status: string): void {
-    this.selectedStatus.set(status);
+  onStatusChange(statuses: string[]): void {
+    this.selectedStatus.set(statuses);
     this.propertyFiltersChanged.next();
   }
 
@@ -133,6 +138,7 @@ export class PropertiesComponent implements OnInit {
   onPropertyCreated(): void {
     this.closeAddPropertyModal();
     this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
   }
 
   openChargesModal(propertyId: string): void {
@@ -146,8 +152,10 @@ export class PropertiesComponent implements OnInit {
   }
 
   openPropertyUnits(property: PropertyItem): void {
-    this.selectedProperty.set(property);
-    this.isUnitsModalOpen.set(true);
+    if (property.status !== 'ARCHIVED') {
+      this.selectedProperty.set(property);
+      this.isUnitsModalOpen.set(true);
+    }
   }
 
   closeUnitsModal(): void {
@@ -169,6 +177,7 @@ export class PropertiesComponent implements OnInit {
   onUnitCreated(): void {
     this.closeAddUnitModal();
     this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
   }
 
   closeChargesModal(): void {
@@ -189,6 +198,13 @@ export class PropertiesComponent implements OnInit {
   onPropertyUpdated(): void {
     this.closeEditPropertyModal();
     this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
+  }
+
+  onPropertyDeleted(): void {
+    this.closeEditPropertyModal();
+    this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
   }
 
   loadMoreProperties(): void {
@@ -213,14 +229,6 @@ export class PropertiesComponent implements OnInit {
       this.hasNextPage.set(response.pagination.hasNextPage);
       this.isLoadingMore.set(false);
     });
-  }
-
-  ngOnInit(): void {
-    this.watchPropertyFilters();
-    this.loadCountries();
-    this.loadProjectedRent();
-    this.loadOccupancyData();
-    this.loadTotalRentOwed();
   }
 
   private watchPropertyFilters(): void {
@@ -249,14 +257,27 @@ export class PropertiesComponent implements OnInit {
     });
   }
 
-  private getPropertyFilters(): { country?: string; status?: string; name?: string } {
+  private watchKpiRefresh(): void {
+    this.kpiRefresh.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.projectedRentLoading.set(true);
+      this.occupancyKpiLoading.set(true);
+      this.collectedVsOwedLoading.set(true);
+      this.loadProjectedRent();
+      this.loadOccupancyData();
+      this.loadTotalRentOwed();
+    });
+  }
+
+  private getPropertyFilters(): { country?: string; status?: string | string[]; name?: string } {
     const country = this.selectedCountry();
-    const status = this.selectedStatus();
+    const selectedStatuses = this.selectedStatus();
     const name = this.searchQuery().trim();
 
     return {
       ...(country !== 'All Countries' ? { country } : {}),
-      ...(status !== 'ALL' ? { status } : {}),
+      status: selectedStatuses.length > 0 ? selectedStatuses : this.nonArchivedStatuses,
       ...(name ? { name } : {}),
     };
   }
@@ -280,8 +301,9 @@ export class PropertiesComponent implements OnInit {
         if (summary) {
           this.projectedRent.update((current) => ({
             ...current,
+            currency: summary.currency,
             amount: summary.totalProjectedRent.toLocaleString(),
-            valuation: `KES ${summary.totalPotentialRent}`,
+            valuation: `${summary.currency} ${summary.totalPotentialRent.toLocaleString()}`,
           }));
         }
         this.projectedRentLoading.set(false);
@@ -331,6 +353,8 @@ export class PropertiesComponent implements OnInit {
 
         const owedPercent = totalAmount > 0 ? (totalOwed / totalAmount) * 100 : 0;
         const collectedPercent = totalAmount > 0 ? (totalCollected / totalAmount) * 100 : 0;
+        const owedCurrency = owed.summary.currency ?? '--';
+        const collectedCurrency = collected.summary.currency ?? '--';
 
         this.collectedVsOwed.update((current) => ({
           ...current,
@@ -338,7 +362,9 @@ export class PropertiesComponent implements OnInit {
           collectedAmount: totalCollected.toLocaleString(),
           owedAmount: totalOwed.toLocaleString(),
           collectedPercent,
+          collectedCurrency,
           owedPercent,
+          owedCurrency,
           owedLabel: `Owed (${owedPercent.toFixed(1)}%)`,
         }));
         this.collectedVsOwedLoading.set(false);
