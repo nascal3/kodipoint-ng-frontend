@@ -139,3 +139,7 @@ export interface CreateTenancyRequest {
   startDate: string;
   notes: string;
 }
+
+export interface UnassignTenancyRequest {
+  endDate: string;
+}

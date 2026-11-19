@@ -9,6 +9,7 @@ import { PropertyItem, PropertyUnit, propertyUseType } from '@app/features/prope
 import { PropertyService } from '@app/features/properties/services/properties.service';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import { AssignTenantModalComponent } from '@app/features/properties/assign-tenant-modal/assign-tenant-modal.component';
+import { TenantsService } from '@app/features/tenants/services/tenants.service';
 
 interface UnitRequest {
   page: number;
@@ -26,6 +27,7 @@ interface UnitRequest {
 })
 export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
   private readonly propertyService = inject(PropertyService);
+  private readonly tenantsService = inject(TenantsService);
   private readonly snackbarService = inject(SnackbarService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
@@ -92,6 +94,20 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
       .reduce((total, unit) => total + Number(unit.marketRent), 0)
   );
   readonly assigningUnit = signal<PropertyUnit | null>(null);
+  readonly unassigningUnit = signal<PropertyUnit | null>(null);
+  readonly isUnassigning = signal(false);
+  readonly unassignError = signal('');
+  readonly unassignEndDate = signal<Date | null>(null);
+  readonly minimumUnassignDate = computed(() => {
+    const assignedAt = this.unassigningUnit()?.assigned_at;
+    if (!assignedAt) return null;
+
+    const assignedDate = this.parseCalendarDate(assignedAt);
+    return assignedDate
+      ? new Date(assignedDate.getFullYear(), assignedDate.getMonth(), assignedDate.getDate() + 1)
+      : null;
+  });
+  readonly unassignDateFilter = (date: Date | null): boolean => this.isUnassignDateAllowed(date);
 
   ngOnInit(): void {
     this.lockPageScroll();
@@ -201,6 +217,56 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
     this.tenantAssigned.emit();
   }
 
+  openUnassignConfirmation(unit: PropertyUnit): void {
+    this.unassignError.set('');
+    this.unassignEndDate.set(null);
+    this.unassigningUnit.set(unit);
+  }
+
+  closeUnassignConfirmation(): void {
+    if (this.isUnassigning()) return;
+
+    this.unassignError.set('');
+    this.unassigningUnit.set(null);
+  }
+
+  confirmUnassign(unit: PropertyUnit): void {
+    if (this.isUnassigning()) return;
+    if (!unit.tenancyId) {
+      this.unassignError.set('Could not unassign this tenant because the tenancy ID is unavailable.');
+      return;
+    }
+    const endDate = this.unassignEndDate();
+    if (!endDate || !this.isUnassignDateAllowed(endDate)) {
+      this.unassignError.set('Choose an end date later than the tenancy assignment date.');
+      return;
+    }
+
+    this.isUnassigning.set(true);
+    this.unassignError.set('');
+    this.tenantsService.unassignTenancy(unit.tenancyId, { endDate: this.formatDate(endDate) })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isUnassigning.set(false);
+          this.closeUnassignConfirmation();
+          this.snackbarService.success('Tenant unassigned successfully.');
+          this.refreshCurrentPage();
+        },
+        error: (error: unknown) => {
+          console.error('Failed to unassign tenant from property unit:', error);
+          this.unassignError.set('Could not unassign tenant. Please try again.');
+          this.snackbarService.error(this.unassignError());
+          this.isUnassigning.set(false);
+        },
+      });
+  }
+
+  isUnassignDateAllowed(date: Date | null): boolean {
+    const minimumDate = this.minimumUnassignDate();
+    return Boolean(date && minimumDate && date >= minimumDate);
+  }
+
   formatRent(amount: number | string): string {
     const value = Number(amount);
     return Number.isFinite(value) ? value.toLocaleString('en-KE') : String(amount);
@@ -268,6 +334,25 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
   private applyFilters(): void {
     this.pagination.update((current) => ({ ...current, page: 1 }));
     this.loadUnits(1, this.pagination().limit);
+  }
+
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private parseCalendarDate(value: string): Date | null {
+    const isoDate = /^(\d{4})-(\d{2})-(\d{2})(?:$|T)/.exec(value);
+    const parsedDate = isoDate
+      ? new Date(Number(isoDate[1]), Number(isoDate[2]) - 1, Number(isoDate[3]))
+      : new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) return null;
+
+    const calendarDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+    if (isoDate && this.formatDate(calendarDate) !== `${isoDate[1]}-${isoDate[2]}-${isoDate[3]}`) return null;
+    return calendarDate;
   }
 
   private lockPageScroll(): void {

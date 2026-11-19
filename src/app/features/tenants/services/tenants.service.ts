@@ -11,6 +11,7 @@ import {
   Tenancy,
   TenantsResponse,
   TenanciesResponse,
+  UnassignTenancyRequest,
   UpdateTenantRequest,
 } from '../models/tenants.interface';
 import { ProjectedRentResponse } from '@app/features/properties/models/properties.models';
@@ -49,6 +50,13 @@ export class TenantsService {
 
   createTenancy(tenancy: CreateTenancyRequest): Observable<Tenancy> {
     return this.http.post<Tenancy>(`${environment.apiUrl}/tenancies`, tenancy);
+  }
+
+  unassignTenancy(tenancyId: string, request: UnassignTenancyRequest): Observable<void> {
+    return this.http.patch<void>(
+      `${environment.apiUrl}/tenancies/${encodeURIComponent(tenancyId)}/unassign`,
+      request
+    );
   }
 
   updateTenant(id: string, tenant: UpdateTenantRequest): Observable<Tenant> {

@@ -166,6 +166,10 @@ export interface PropertyUnit {
   status: string;
   marketRent: string;
   billingFrequency: UnitBillingFrequency;
+  tenancyId?: string | null;
+  tenant_id?: string | null;
+  assigned_at?: string | null;
+  unassignedAt?: string | null;
   createdAt: string;
   updatedAt: string;
   tenantName: string | null;

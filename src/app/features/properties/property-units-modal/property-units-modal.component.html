@@ -239,7 +239,7 @@
                     matButton="filled"
                     type="button"
                     class="unassign-button"
-                    [disabled]="property().status !== 'ACTIVE'"
+                    (click)="openUnassignConfirmation(unit)"
                   >
                     <mat-icon>person_remove</mat-icon>
                     Unassign
@@ -308,4 +308,83 @@
     (closed)="closeAssignTenant()"
     (assigned)="onTenantAssigned()"
   />
+}
+
+@if (unassigningUnit(); as unit) {
+  <div
+    class="unassign-confirm-backdrop"
+    (click)="closeUnassignConfirmation()"
+    (keydown.escape)="$event.stopPropagation(); closeUnassignConfirmation()"
+  >
+    <section
+      class="unassign-confirm-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="unassign-confirm-title"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="unassign-confirm-icon"><mat-icon>person_remove</mat-icon></div>
+      <h2 id="unassign-confirm-title">Unassign tenant?</h2>
+      <p>
+        Are you sure you want to unassign <strong>{{ unit.tenantName || 'the current tenant' }}</strong> from
+        Unit <strong>{{ unit.unitNumber }}</strong>?
+      </p>
+      <p>This will end the current tenancy.</p>
+      <div class="unassign-date-field">
+        <label class="unassign-date-label" for="unassign-end-date">Tenancy end date</label>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <input
+            id="unassign-end-date"
+            matInput
+            [matDatepicker]="unassignDatePicker"
+            [ngModel]="unassignEndDate()"
+            (ngModelChange)="unassignEndDate.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            [min]="minimumUnassignDate()"
+            [matDatepickerFilter]="unassignDateFilter"
+            [disabled]="isUnassigning() || !minimumUnassignDate()"
+            required
+            aria-label="Tenancy end date"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="unassignDatePicker" [disabled]="isUnassigning() || !minimumUnassignDate()"></mat-datepicker-toggle>
+          <mat-datepicker #unassignDatePicker></mat-datepicker>
+        </mat-form-field>
+        @if (!minimumUnassignDate()) {
+          <span class="unassign-date-hint error" role="alert">
+            The tenancy assignment date is unavailable. Refresh the unit list before unassigning.
+          </span>
+        } @else {
+          <span class="unassign-date-hint">Choose a date after the tenant's assignment date.</span>
+        }
+      </div>
+      @if (unassignError()) {
+        <p class="unassign-confirm-error" role="alert">{{ unassignError() }}</p>
+      }
+      <footer class="unassign-confirm-actions">
+        <button
+          matButton="outlined"
+          type="button"
+          class="unassign-cancel-button"
+          (click)="closeUnassignConfirmation()"
+          [disabled]="isUnassigning()"
+        >
+          Cancel
+        </button>
+        <button
+          matButton="filled"
+          type="button"
+          class="unassign-confirm-button"
+          (click)="confirmUnassign(unit)"
+          [disabled]="isUnassigning() || !isUnassignDateAllowed(unassignEndDate())"
+        >
+          @if (isUnassigning()) {
+            <mat-spinner diameter="18" aria-label="Unassigning tenant"></mat-spinner>
+          } @else {
+            <mat-icon>person_remove</mat-icon>
+          }
+          {{ isUnassigning() ? 'Unassigning...' : 'Yes, Unassign' }}
+        </button>
+      </footer>
+    </section>
+  </div>
 }

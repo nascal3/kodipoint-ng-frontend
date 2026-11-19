@@ -76,6 +76,7 @@ export class TenantsComponent implements OnInit {
     'tenantProfile',
     'premisesUnit',
     'tenure',
+    'endDate',
     'contractRent',
     'emergency',
     'tenancyStatus',
@@ -328,8 +329,10 @@ export class TenantsComponent implements OnInit {
         unitType: activeTenancy?.unit?.propertyUseType === 'RESIDENTIAL'
           ? `${activeTenancy?.unit?.bedroomCount} Bedrooms` : `${activeTenancy?.unit?.bedroomCount} Rooms`,
         currency: activeTenancy?.property?.currency || 'N/A',
-        startDate: tenant.createdAt ? this.formatDate(tenant.createdAt) : 'N/A',
-        tenure: tenant.createdAt ? this.calculateTenure(tenant.createdAt) : 'N/A',
+        startDate: activeTenancy?.assignedAt ? this.formatDate(activeTenancy.assignedAt) : 'N/A',
+        tenure: activeTenancy?.assignedAt ? this.calculateTenure(activeTenancy.assignedAt) : 'N/A',
+        endDate: activeTenancy?.unassignedAt ? this.formatDate(activeTenancy.unassignedAt) : 'N/A',
+        endTenure: activeTenancy?.unassignedAt ? this.calculateEndTenure(activeTenancy.unassignedAt) : 'N/A',
         contractRent: activeTenancy?.unit?.marketRent || '0',
         rentPeriod: activeTenancy?.unit?.billingFrequency || 'N/A',
         emergencyContact: tenant.emergencyContactName,
@@ -361,6 +364,26 @@ export class TenantsComponent implements OnInit {
       return `${remainingMonths} Mo`;
     }
     const days = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    return `${days} Days`;
+  }
+
+  private calculateEndTenure(endDate: string): string {
+    const end = new Date(endDate);
+    const now = new Date();
+    let months = (end.getFullYear() - now.getFullYear()) * 12 + (end.getMonth() - now.getMonth());
+    if (end.getDate() < now.getDate()) {
+      months--;
+    }
+    const years = Math.floor(months / 12);
+    const remainingMonths = months % 12;
+
+    if (years > 0) {
+      return remainingMonths > 0 ? `${years} Yrs ${remainingMonths} Mo` : `${years} Yrs`;
+    }
+    if (remainingMonths > 0) {
+      return `${remainingMonths} Mo`;
+    }
+    const days = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     return `${days} Days`;
   }
 
