@@ -575,6 +575,16 @@
   background: #d97706;
 }
 
+.status-pill.notice {
+  color: #b45309;
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.status-pill.notice .status-dot {
+  background: #d97706;
+}
+
 .charges-cell {
   max-width: 260px;
   white-space: normal !important;
@@ -1163,6 +1173,16 @@
 }
 
 :host-context(html.dark-theme) .status-pill.maintenance .status-dot {
+  background: #fbbf24;
+}
+
+:host-context(html.dark-theme) .status-pill.notice {
+  color: #fbbf24;
+  background: #0f1d30;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+:host-context(html.dark-theme) .status-pill.notice .status-dot {
   background: #fbbf24;
 }
 

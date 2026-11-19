@@ -203,9 +203,15 @@
                       <mat-icon>inventory_2</mat-icon>
                       Archived · Not In Service
                     </span>
-                  } @else if (unit.tenantName) {
+                  } @else if (unit.status === 'OCCUPIED') {
                     <span class="tenant-avatar" [class]="getAvatarColor(index)">{{ getInitials(unit.tenantName) }}</span>
                     <span class="tenant-name">{{ unit.tenantName }}</span>
+                  } @else if (unit.status === 'NOTICE') {
+                    <span class="tenant-avatar" [class]="getAvatarColor(index)">{{ getInitials(unit.tenantName) }}</span>
+                    <span class="tenant-name">{{ unit.tenantName }}</span>
+                  }  @else if (unit.status === 'NOTICE') {
+                      <span class="tenant-avatar" [class]="getAvatarColor(index)">{{ getInitials(unit.tenantName) }}</span>
+                      <span class="tenant-name">{{ unit.tenantName }}</span>
                   } @else if (unit.status === 'AVAILABLE') {
                     <span class="vacant-lease">
                       <mat-icon>vpn_key</mat-icon>
@@ -235,6 +241,25 @@
                     <mat-icon>unarchive</mat-icon>
                   </button>
                 } @else if (unit.status === 'OCCUPIED') {
+                  <button
+                    matButton="filled"
+                    type="button"
+                    class="unassign-button"
+                    (click)="openUnassignConfirmation(unit)"
+                  >
+                    <mat-icon>person_remove</mat-icon>
+                    Unassign
+                  </button>
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="row-action"
+                    aria-label="View tenancy ledger"
+                    matTooltip="View tenancy ledger"
+                  >
+                    <mat-icon>receipt_long</mat-icon>
+                  </button>
+                } @else if (unit.status === 'NOTICE') {
                   <button
                     matButton="filled"
                     type="button"

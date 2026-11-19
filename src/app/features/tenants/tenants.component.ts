@@ -329,10 +329,10 @@ export class TenantsComponent implements OnInit {
         unitType: activeTenancy?.unit?.propertyUseType === 'RESIDENTIAL'
           ? `${activeTenancy?.unit?.bedroomCount} Bedrooms` : `${activeTenancy?.unit?.bedroomCount} Rooms`,
         currency: activeTenancy?.property?.currency || 'N/A',
-        startDate: activeTenancy?.assignedAt ? this.formatDate(activeTenancy.assignedAt) : 'N/A',
-        tenure: activeTenancy?.assignedAt ? this.calculateTenure(activeTenancy.assignedAt) : 'N/A',
-        endDate: activeTenancy?.unassignedAt ? this.formatDate(activeTenancy.unassignedAt) : 'N/A',
-        endTenure: activeTenancy?.unassignedAt ? this.calculateEndTenure(activeTenancy.unassignedAt) : 'N/A',
+        startDate: activeTenancy?.startDate ? this.formatDate(activeTenancy.startDate) : 'N/A',
+        tenure: activeTenancy?.startDate ? this.calculateTenure(activeTenancy.startDate) : 'N/A',
+        endDate: activeTenancy?.endDate ? this.formatDate(activeTenancy.endDate) : 'N/A',
+        endTenure: activeTenancy?.endDate ? this.calculateEndTenure(activeTenancy.endDate) : 'N/A',
         contractRent: activeTenancy?.unit?.marketRent || '0',
         rentPeriod: activeTenancy?.unit?.billingFrequency || 'N/A',
         emergencyContact: tenant.emergencyContactName,
@@ -378,13 +378,13 @@ export class TenantsComponent implements OnInit {
     const remainingMonths = months % 12;
 
     if (years > 0) {
-      return remainingMonths > 0 ? `${years} Yrs ${remainingMonths} Mo` : `${years} Yrs`;
+      return remainingMonths > 0 ? `${years} Yrs ${remainingMonths} Mo to Expiry` : `${years} Yrs to Expiry`;
     }
     if (remainingMonths > 0) {
-      return `${remainingMonths} Mo`;
+      return `${remainingMonths} Mo to Expiry`;
     }
     const days = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    return `${days} Days`;
+    return `${days} Days to Expiry`;
   }
 
   private mapTenancyStatus(status: string): 'active' | 'notice' | 'pending' | 'ended' {

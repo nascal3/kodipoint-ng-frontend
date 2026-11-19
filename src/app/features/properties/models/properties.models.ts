@@ -196,7 +196,7 @@ export interface UpdatePropertyCharge {
 }
 
 export type UnitBillingFrequency = 'MONTHLY' | 'QUARTERLY' | 'BI_ANNUALLY' | 'ANNUALLY';
-export type UnitStatus = 'AVAILABLE' | 'MAINTENANCE' | 'UNAVAILABLE' | 'OCCUPIED' | 'ARCHIVED';
+export type UnitStatus = 'AVAILABLE' | 'NOTICE' | 'MAINTENANCE' | 'UNAVAILABLE' | 'OCCUPIED' | 'ARCHIVED';
 
 export interface CreatePropertyUnitRequest {
   propertyId: string;
