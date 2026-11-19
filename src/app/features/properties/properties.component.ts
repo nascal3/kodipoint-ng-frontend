@@ -182,6 +182,11 @@ export class PropertiesComponent implements OnInit {
     this.kpiRefresh.next();
   }
 
+  onTenantAssigned(): void {
+    this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
+  }
+
   closeChargesModal(): void {
     this.isChargesModalOpen.set(false);
     this.selectedPropertyId.set('');

@@ -8,6 +8,7 @@ import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { PropertyItem, PropertyUnit, propertyUseType } from '@app/features/properties/models/properties.models';
 import { PropertyService } from '@app/features/properties/services/properties.service';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
+import { AssignTenantModalComponent } from '@app/features/properties/assign-tenant-modal/assign-tenant-modal.component';
 
 interface UnitRequest {
   page: number;
@@ -18,7 +19,7 @@ interface UnitRequest {
 @Component({
   selector: 'app-property-units-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ...MATERIAL_MODULES],
+  imports: [CommonModule, FormsModule, AssignTenantModalComponent, ...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './property-units-modal.component.html',
   styleUrl: './property-units-modal.component.scss',
@@ -36,6 +37,7 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
 
   @Output() readonly closed = new EventEmitter<void>();
   @Output() readonly addUnitRequested = new EventEmitter<void>();
+  @Output() readonly tenantAssigned = new EventEmitter<void>();
 
   readonly property = input.required<PropertyItem>();
   readonly units = signal<PropertyUnit[]>([]);
@@ -87,6 +89,7 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
   readonly pageRentTotal = computed(() =>
     this.units().reduce((total, unit) => total + Number(unit.marketRent), 0)
   );
+  readonly assigningUnit = signal<PropertyUnit | null>(null);
 
   ngOnInit(): void {
     this.lockPageScroll();
@@ -176,6 +179,24 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
   refresh(): void {
     this.pagination.update((current) => ({ ...current, page: 1 }));
     this.loadUnits(1, this.pagination().limit);
+  }
+
+  refreshCurrentPage(): void {
+    this.loadUnits(this.pagination().page, this.pagination().limit);
+  }
+
+  openAssignTenant(unit: PropertyUnit): void {
+    this.assigningUnit.set(unit);
+  }
+
+  closeAssignTenant(): void {
+    this.assigningUnit.set(null);
+  }
+
+  onTenantAssigned(): void {
+    this.closeAssignTenant();
+    this.refreshCurrentPage();
+    this.tenantAssigned.emit();
   }
 
   formatRent(amount: number | string): string {

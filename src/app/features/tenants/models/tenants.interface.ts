@@ -101,6 +101,21 @@ export interface TenantsResponse {
   };
 }
 
+export interface TenantSearchResult {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  status: string;
+  createdAt: string;
+}
+
+export interface TenantSearchResponse {
+  data: TenantSearchResult[];
+  pagination: TenantsResponse['pagination'];
+}
+
 export interface TenanciesResponse {
   data: Tenancy[];
   pagination: {
@@ -111,4 +126,15 @@ export interface TenanciesResponse {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
   };
+}
+
+export type TenancyStatus = 'ACTIVE' | 'PENDING' | 'NOTICE' | 'ENDED';
+
+export interface CreateTenancyRequest {
+  status: TenancyStatus;
+  propertyId: string;
+  propertyUnit: string;
+  tenantId: string;
+  startDate: string;
+  notes: string;
 }
