@@ -37,6 +37,7 @@ export class PropertiesComponent implements OnInit {
   private readonly snackbarService = inject(SnackbarService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly propertyFiltersChanged = new Subject<void>();
+  private readonly kpiRefresh = new Subject<void>();
   private readonly nonArchivedStatuses = ['ACTIVE', 'INACTIVE', 'MAINTENANCE'];
 
   readonly projectedRent = signal({
@@ -100,6 +101,7 @@ export class PropertiesComponent implements OnInit {
 
   ngOnInit(): void {
     this.watchPropertyFilters();
+    this.watchKpiRefresh();
     this.loadCountries();
     this.loadProjectedRent();
     this.loadOccupancyData();
@@ -136,6 +138,7 @@ export class PropertiesComponent implements OnInit {
   onPropertyCreated(): void {
     this.closeAddPropertyModal();
     this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
   }
 
   openChargesModal(propertyId: string): void {
@@ -174,6 +177,7 @@ export class PropertiesComponent implements OnInit {
   onUnitCreated(): void {
     this.closeAddUnitModal();
     this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
   }
 
   closeChargesModal(): void {
@@ -194,11 +198,13 @@ export class PropertiesComponent implements OnInit {
   onPropertyUpdated(): void {
     this.closeEditPropertyModal();
     this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
   }
 
   onPropertyDeleted(): void {
     this.closeEditPropertyModal();
     this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
   }
 
   loadMoreProperties(): void {
@@ -248,6 +254,19 @@ export class PropertiesComponent implements OnInit {
       this.currentPage.set(1);
       this.hasNextPage.set(response.pagination.hasNextPage);
       this.isLoadingProperties.set(false);
+    });
+  }
+
+  private watchKpiRefresh(): void {
+    this.kpiRefresh.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.projectedRentLoading.set(true);
+      this.occupancyKpiLoading.set(true);
+      this.collectedVsOwedLoading.set(true);
+      this.loadProjectedRent();
+      this.loadOccupancyData();
+      this.loadTotalRentOwed();
     });
   }
 
