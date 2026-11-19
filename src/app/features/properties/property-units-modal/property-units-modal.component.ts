@@ -173,6 +173,11 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
     this.loadUnits(this.pagination().page, this.pagination().limit);
   }
 
+  refresh(): void {
+    this.pagination.update((current) => ({ ...current, page: 1 }));
+    this.loadUnits(1, this.pagination().limit);
+  }
+
   formatRent(amount: number | string): string {
     const value = Number(amount);
     return Number.isFinite(value) ? value.toLocaleString('en-KE') : String(amount);

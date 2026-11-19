@@ -436,6 +436,14 @@
   />
 }
 
+@if (isUnitsModalOpen() && unitsModalProperty(); as property) {
+  <app-property-units-modal
+    [property]="property"
+    (closed)="closeUnitsModal()"
+    (addUnitRequested)="addUnitFromUnitsModal()"
+  />
+}
+
 @if (isAddUnitModalOpen() && selectedProperty(); as property) {
   <app-add-property-unit-modal
     [propertyId]="property.id"
@@ -443,13 +451,5 @@
     [propertyUseType]="property.propertyUseType"
     (closed)="closeAddUnitModal()"
     (created)="onUnitCreated()"
-  />
-}
-
-@if (isUnitsModalOpen() && selectedProperty(); as property) {
-  <app-property-units-modal
-    [property]="property"
-    (closed)="closeUnitsModal()"
-    (addUnitRequested)="addUnitFromUnitsModal()"
   />
 }
