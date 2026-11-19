@@ -87,7 +87,9 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
     return count ? Math.round((this.occupiedCount() / count) * 100) : 0;
   });
   readonly pageRentTotal = computed(() =>
-    this.units().reduce((total, unit) => total + Number(unit.marketRent), 0)
+    this.units()
+      .filter((unit) => unit.status === 'OCCUPIED')
+      .reduce((total, unit) => total + Number(unit.marketRent), 0)
   );
   readonly assigningUnit = signal<PropertyUnit | null>(null);
 

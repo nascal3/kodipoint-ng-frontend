@@ -736,6 +736,31 @@
   background: #94a3b8;
 }
 
+.unassign-button {
+  min-height: 30px;
+  margin-right: 4px;
+  padding: 0 10px;
+  color: #fff;
+  background: #ffc100;
+  border-radius: 7px;
+  font-size: 10px;
+  line-height: 30px;
+}
+
+.unassign-button mat-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 2px;
+  font-size: 14px;
+}
+
+.unassign-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #94a3b8;
+}
+
+
 .charge-chip {
   display: inline-block;
   margin: 2px 4px 2px 0;
