@@ -23,35 +23,35 @@
         <div class="field-group full-width">
           <label class="field-label">Tenant Profile</label>
           <mat-form-field appearance="outline" subscriptSizing="fixed">
-            <input
-              matInput
-              type="text"
-              [formControl]="tenantSearchControl"
-              [matAutocomplete]="tenantAutocomplete"
+            <mat-select
+              formControlName="tenantId"
               aria-label="Tenant Profile"
-              placeholder="Search by First Name, Last Name or Phone"
-              autocomplete="off"
-            />
-            @if (isLoadingTenants()) {
-              <mat-spinner matSuffix diameter="18" aria-label="Searching tenants"></mat-spinner>
-            }
-            <mat-autocomplete
-              #tenantAutocomplete="matAutocomplete"
-              [displayWith]="displayTenant"
-              (optionSelected)="selectTenant($event.option.value)"
+              panelClass="tenant-select-panel"
+              (selectionChange)="selectTenant($event.value)"
             >
-              @for (tenant of tenants(); track tenant.id) {
-                <mat-option [value]="tenant">
+              <mat-select-trigger>
+                @if (selectedTenant(); as tenant) {
+                  {{ tenantName(tenant) }} &nbsp;  {{ tenant.phone }}
+                }
+              </mat-select-trigger>
+              <mat-option>
+                <ngx-mat-select-search
+                  [formControl]="tenantSearchControl"
+                  [searching]="isLoadingTenants()"
+                  [placeholderLabel]="'Search by First / Last Name or Phone Number'"
+                  [noEntriesFoundLabel]="tenantSearchMessage()"
+                  ariaLabel="Search tenant profiles"
+                ></ngx-mat-select-search>
+              </mat-option>
+              @for (tenant of tenantOptions(); track tenant.id) {
+                <mat-option [value]="tenant.id">
                   <span class="tenant-option">
                     <strong>{{ tenantName(tenant) }}</strong>
                     <small>{{ tenant.email }} · {{ tenant.phone }}</small>
                   </span>
                 </mat-option>
               }
-              @if (tenantSearchControl.value && typeof tenantSearchControl.value === 'string' && tenantSearchControl.value.trim().length >= 2 && !isLoadingTenants() && !tenants().length && !tenantsError()) {
-                <mat-option [disabled]="true">No matching tenants found.</mat-option>
-              }
-            </mat-autocomplete>
+            </mat-select>
             @if (form.controls.tenantId.invalid && form.controls.tenantId.touched) {
               <mat-error>Select a tenant.</mat-error>
             }
@@ -131,7 +131,7 @@
           matButton="filled"
           type="submit"
           class="submit-button"
-          [disabled]="form.invalid || isLoadingTenants() || !!tenantsError() || !tenants().length || isSubmitting()"
+          [disabled]="form.invalid || isLoadingTenants() || !selectedTenant() || isSubmitting()"
         >
           @if (isSubmitting()) {
             <mat-spinner diameter="18" aria-label="Assigning tenant"></mat-spinner>

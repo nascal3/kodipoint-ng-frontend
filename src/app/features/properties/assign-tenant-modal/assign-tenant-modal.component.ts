@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, OnInit, Output, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, OnInit, Output, computed, inject, input, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { EMPTY, catchError, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
+import { EMPTY, catchError, debounceTime, distinctUntilChanged, startWith, switchMap, tap } from 'rxjs';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { PropertyItem, PropertyUnit } from '@app/features/properties/models/properties.models';
 import { TenantSearchResult, TenancyStatus } from '@app/features/tenants/models/tenants.interface';
@@ -14,7 +14,7 @@ import { SnackbarService } from '@app/shared/components/snackbar/snackbar.servic
 @Component({
   selector: 'app-assign-tenant-modal',
   standalone: true,
-  imports: [DecimalPipe, MatAutocompleteModule, ReactiveFormsModule, ...MATERIAL_MODULES],
+  imports: [DecimalPipe, NgxMatSelectSearchModule, ReactiveFormsModule, ...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './assign-tenant-modal.component.html',
   styleUrl: './assign-tenant-modal.component.scss',
@@ -30,6 +30,14 @@ export class AssignTenantModalComponent implements OnInit {
   readonly property = input.required<PropertyItem>();
   readonly unit = input.required<PropertyUnit>();
   readonly tenants = signal<TenantSearchResult[]>([]);
+  readonly selectedTenant = signal<TenantSearchResult | null>(null);
+  readonly tenantOptions = computed(() => {
+    const selected = this.selectedTenant();
+    const results = this.tenants();
+    return selected && !results.some((tenant) => tenant.id === selected.id)
+      ? [selected, ...results]
+      : results;
+  });
   readonly isLoadingTenants = signal(false);
   readonly tenantsError = signal('');
   readonly isSubmitting = signal(false);
@@ -45,34 +53,30 @@ export class AssignTenantModalComponent implements OnInit {
     status: new FormControl<TenancyStatus>('ACTIVE', { nonNullable: true, validators: Validators.required }),
     notes: new FormControl('', { nonNullable: true }),
   });
-  readonly tenantSearchControl = new FormControl<string | TenantSearchResult>('', { nonNullable: true });
+  readonly tenantSearchControl = new FormControl('', { nonNullable: true });
 
   ngOnInit(): void {
     this.tenantSearchControl.valueChanges.pipe(
-      tap((value) => {
-        if (typeof value === 'string') {
-          this.form.controls.tenantId.setValue('');
-          this.tenantsError.set('');
-        }
+      startWith(this.tenantSearchControl.value),
+      tap(() => {
+        this.tenantsError.set('');
+        this.tenants.set([]);
       }),
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((value) => {
-        if (typeof value !== 'string') return EMPTY;
         const query = value.trim();
-        if (query.length < 2) {
-          this.tenants.set([]);
-          this.isLoadingTenants.set(false);
-          return EMPTY;
-        }
-
         this.isLoadingTenants.set(true);
         this.tenantsError.set('');
-        return this.tenantsService.searchTenants(query, 1, 10).pipe(
+        const request = query.length < 2
+          ? this.tenantsService.getTenants(1, 10)
+          : this.tenantsService.searchTenants(query, 1, 10);
+
+        return request.pipe(
           catchError((error: unknown) => {
-            console.error('Failed to search tenants for assignment:', error);
+            console.error('Failed to load tenants for assignment:', error);
             this.tenants.set([]);
-            this.tenantsError.set(this.errorMessage(error, 'Could not search tenants. Please try again.'));
+            this.tenantsError.set(this.errorMessage(error, 'Could not load tenants. Please try again.'));
             this.snackbarService.error(this.tenantsError());
             this.isLoadingTenants.set(false);
             return EMPTY;
@@ -81,7 +85,20 @@ export class AssignTenantModalComponent implements OnInit {
       }),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe((response) => {
-      this.tenants.set(response.data);
+      this.tenants.set(
+        response.data
+          .slice()
+          .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+          .map(({ id, firstName, lastName, email, phone, status, createdAt }) => ({
+            id,
+            firstName,
+            lastName,
+            email,
+            phone,
+            status,
+            createdAt,
+          })),
+      );
       this.isLoadingTenants.set(false);
     });
   }
@@ -94,22 +111,23 @@ export class AssignTenantModalComponent implements OnInit {
     return `${tenant.firstName} ${tenant.lastName}`;
   }
 
-  displayTenant = (value: string | TenantSearchResult | null): string => {
-    if (!value) return '';
-    return typeof value === 'string'
-      ? value
-      : `${this.tenantName(value)} — ${value.email} (${value.phone})`;
-  };
+  selectTenant(tenantId: string): void {
+    const tenant = this.tenantOptions().find((option) => option.id === tenantId);
+    if (!tenant) return;
 
-  selectTenant(tenant: TenantSearchResult): void {
-    this.form.controls.tenantId.setValue(tenant.id);
+    this.selectedTenant.set(tenant);
     this.form.controls.tenantId.markAsTouched();
-    this.tenantSearchControl.setValue(tenant, { emitEvent: false });
     this.tenantsError.set('');
   }
 
+  tenantSearchMessage(): string {
+    return this.tenantSearchControl.value.trim().length < 2
+      ? 'Type at least 2 characters to search.'
+      : 'No matching tenants found.';
+  }
+
   assignTenant(): void {
-    if (this.isSubmitting() || this.isLoadingTenants() || this.tenantsError()) return;
+    if (this.isSubmitting() || this.isLoadingTenants() || !this.selectedTenant()) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
