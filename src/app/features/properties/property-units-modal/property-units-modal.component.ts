@@ -67,7 +67,7 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
     { value: '', label: 'All Unit Types' },
     { value: 'RESIDENTIAL', label: 'Residential' },
     { value: 'COMMERCIAL', label: 'Commercial' },
-    { value: 'MIXED', label: 'Mixed' },
+    { value: 'MIXED', label: 'Mixed Use' },
   ];
   readonly hasActiveFilters = computed(() =>
     Boolean(this.selectedStatus() || this.selectedPropertyUseType() || this.unitNumberQuery().trim())
@@ -82,7 +82,7 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
     'tenantLease',
     'actions',
   ];
-  readonly occupiedCount = computed(() => this.units().filter((unit) => unit.status === 'OCCUPIED').length);
+  readonly occupiedCount = computed(() => this.units().filter((unit) => unit.status === 'OCCUPIED' || unit.status === 'NOTICE').length);
   readonly availableCount = computed(() => this.units().filter((unit) => unit.status === 'AVAILABLE').length);
   readonly occupiedRate = computed(() => {
     const count = this.units().length;
@@ -90,7 +90,7 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
   });
   readonly pageRentTotal = computed(() =>
     this.units()
-      .filter((unit) => unit.status === 'OCCUPIED')
+      .filter((unit) => unit.status === 'OCCUPIED'|| unit.status === 'NOTICE')
       .reduce((total, unit) => total + Number(unit.marketRent), 0)
   );
   readonly assigningUnit = signal<PropertyUnit | null>(null);
