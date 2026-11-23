@@ -215,7 +215,7 @@
                 @if (isTenantExpanded(tenant.id)) {
                   <div class="detail-heading">
                     <mat-icon>receipt_long</mat-icon>
-                    <span>Tenancy Agreements &amp; History ({{ tenant.tenant.tenancies?.length || 0 }})</span>
+                    <span>Tenancy History ({{ tenant.tenant.tenancies?.length || 0 }})</span>
                   </div>
 
                   @if (tenant.tenant.tenancies?.length) {
@@ -252,8 +252,8 @@
                               <strong>{{ getTenancyPeriod(tenancy) }}</strong>
                               <span
                                 class="period-status"
-                                [class.status-current]="mapTenancyStatus(tenancy.status) === 'active'"
-                                [class.status-alert]="mapTenancyStatus(tenancy.status) === 'notice'"
+                                [ngClass]="getAgreementStatusClass(tenancy.status)"
+                                [style.color]="getPeriodStatusColor(tenancy.endDate)"
                               >
                                 {{ mapTenancyStatus(tenancy.status) === 'active'
                                   ? 'Present'

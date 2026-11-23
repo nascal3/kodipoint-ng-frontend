@@ -95,7 +95,7 @@ export class TenantsComponent implements OnInit {
     return 'check_circle';
   }
 
-  getTenancyStatusClass(status: 'active' | 'notice' | 'pending' | 'ended'): string {
+  getTenancyStatusClass(status: 'active' | 'notice' | 'ended'): string {
     switch (status) {
       case 'active':
         return 'status-active';
@@ -103,14 +103,12 @@ export class TenantsComponent implements OnInit {
         return 'status-notice';
       case 'ended':
         return 'status-ended';
-      case 'pending':
-        return 'status-pending';
       default:
         return '';
     }
   }
 
-  getTenancyStatusLabel(status: 'active' | 'notice' | 'pending' | 'ended'): string {
+  getTenancyStatusLabel(status: 'active' | 'notice' | 'ended'): string {
     switch (status) {
       case 'active':
         return 'Active Tenancy';
@@ -118,8 +116,6 @@ export class TenantsComponent implements OnInit {
         return 'Notice Period';
       case 'ended':
         return 'Ended';
-      case 'pending':
-        return 'Pending Lease';
       default:
         return '';
     }
@@ -147,6 +143,41 @@ export class TenantsComponent implements OnInit {
 
   formatAgreementDate(date: string | null): string {
     return date ? this.formatDate(date) : 'Ongoing';
+  }
+
+  getPeriodStatusColor(endDate: string | null): string | null {
+    const parsedEndDate = this.parseEndDate(endDate);
+    if (!parsedEndDate) {
+      return null;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    parsedEndDate.setHours(0, 0, 0, 0);
+    return today > parsedEndDate ? '#fb7185' : '#fbbf24';
+  }
+
+  private parseEndDate(endDate: string | null): Date | null {
+    if (!endDate) {
+      return null;
+    }
+
+    const isoDate = /^(\d{4})-(\d{2})-(\d{2})/.exec(endDate);
+    if (isoDate) {
+      const [, year, month, day] = isoDate;
+      const parsedDate = new Date(Number(year), Number(month) - 1, Number(day));
+      if (
+        parsedDate.getFullYear() !== Number(year)
+        || parsedDate.getMonth() !== Number(month) - 1
+        || parsedDate.getDate() !== Number(day)
+      ) {
+        return null;
+      }
+      return parsedDate;
+    }
+
+    const parsedDate = new Date(endDate);
+    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
   }
 
   getTenancyPeriod(tenancy: import('./models/tenants.interface').Tenancy): string {
@@ -434,11 +465,10 @@ export class TenantsComponent implements OnInit {
     return `${days} Days ${suffix}`;
   }
 
-  private mapTenancyStatus(status: string): 'active' | 'notice' | 'pending' | 'ended' {
-    const statusMap: Record<string, 'active' | 'notice' | 'pending' | 'ended'> = {
+  private mapTenancyStatus(status: string): 'active' | 'notice' | 'ended' {
+    const statusMap: Record<string, 'active' | 'notice'| 'ended'> = {
       ACTIVE: 'active',
       NOTICE: 'notice',
-      PENDING: 'pending',
       ENDED: 'ended',
     };
     return statusMap[status] || 'pending';

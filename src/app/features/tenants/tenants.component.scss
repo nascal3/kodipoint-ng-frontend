@@ -552,7 +552,7 @@
 .tenant-detail {
   box-sizing: border-box;
   min-height: 0;
-  margin: 0 24px 18px;
+  margin: 24px 18px;
   padding: 0;
   border: 0;
   border-radius: 10px;
@@ -717,14 +717,22 @@
 .billing-frequency {
   color: #64748b;
   font-size: 10.5px;
+}
 
-  &.status-current {
-    color: #059669;
-  }
+.period-status.status-active {
+  color: #047857;
+}
 
-  &.status-alert {
-    color: #dc2626;
-  }
+.period-status.status-notice {
+  color: #92400e;
+}
+
+.period-status.status-pending {
+  color: #4338ca;
+}
+
+.period-status.status-ended {
+  color: #475569;
 }
 
 .agreement-footer {
@@ -816,24 +824,31 @@
 :host-context(html.dark-theme) .agreement-meta strong,
 :host-context(html.dark-theme) .agreement-footer,
 :host-context(html.dark-theme) .meta-label,
-:host-context(html.dark-theme) .period-status,
 :host-context(html.dark-theme) .billing-frequency,
 :host-context(html.dark-theme) .identification-type,
 :host-context(html.dark-theme) .tenant-email {
   color: #8492a8;
 }
 
-:host-context(html.dark-theme) .agreement-meta,
-:host-context(html.dark-theme) .agreement-footer {
-  border-top-color: #1d2b40;
-}
-
-:host-context(html.dark-theme) .period-status.status-current {
+:host-context(html.dark-theme) .period-status.status-active {
   color: #34d399;
 }
 
-:host-context(html.dark-theme) .period-status.status-alert {
-  color: #fb7185;
+:host-context(html.dark-theme) .period-status.status-notice {
+  color: #fbbf24;
+}
+
+:host-context(html.dark-theme) .period-status.status-pending {
+  color: #60a5fa;
+}
+
+:host-context(html.dark-theme) .period-status.status-ended {
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .agreement-meta,
+:host-context(html.dark-theme) .agreement-footer {
+  border-top-color: #1d2b40;
 }
 
 :host-context(html.dark-theme) .agreement-status.status-active {
