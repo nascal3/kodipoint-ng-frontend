@@ -6,9 +6,13 @@ export interface TenantItem {
   email: string;
   premises: string;
   unit: string;
+  propertyUseType: string;
   unitType: string;
+  currency: string;
   startDate: string;
   tenure: string;
+  endDate: string;
+  endTenure: string;
   contractRent: string;
   rentPeriod: string;
   emergencyContact: string;

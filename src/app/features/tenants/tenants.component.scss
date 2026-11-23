@@ -413,40 +413,28 @@
 
 .tenants-table {
   width: 100%;
-  min-width: 1097px;
+  min-width: 760px;
   table-layout: fixed;
 
   th:nth-child(1),
   td:nth-child(1) {
-    width: 169px;
+    width: 52px;
   }
   th:nth-child(2),
   td:nth-child(2) {
-    width: 139px;
+    width: 260px;
   }
   th:nth-child(3),
   td:nth-child(3) {
-    width: 104px;
+    width: 180px;
   }
   th:nth-child(4),
   td:nth-child(4) {
-    width: 124px;
+    width: 180px;
   }
   th:nth-child(5),
   td:nth-child(5) {
-    width: 159px;
-  }
-  th:nth-child(6),
-  td:nth-child(6) {
-    width: 139px;
-  }
-  th:nth-child(7),
-  td:nth-child(7) {
-    width: 159px;
-  }
-  th:nth-child(8),
-  td:nth-child(8) {
-    width: 104px;
+    width: 88px;
   }
 
   ::ng-deep .mat-mdc-header-row {
@@ -529,6 +517,343 @@
   mat-icon {
     color: #64748b;
   }
+}
+
+.expand-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: #64748b;
+
+  ::ng-deep .mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+}
+
+.tenant-detail-row {
+  background: #f7f7ff;
+}
+
+.tenant-detail-row.hidden-detail-row {
+  display: none;
+}
+
+.tenant-detail-row ::ng-deep .mat-mdc-cell {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.tenant-row.expanded-row {
+  background: #fbfcff;
+}
+
+.tenant-detail {
+  box-sizing: border-box;
+  min-height: 0;
+  margin: 0 24px 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+
+  &.detail-expanded {
+    min-height: 0;
+    padding: 14px 16px 16px;
+    border: 1px solid #e8e8f0;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  }
+}
+
+.detail-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f5;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 700;
+
+  mat-icon {
+    color: #4f46e5;
+  }
+}
+
+.agreement-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.agreement-card {
+  overflow: hidden;
+  border: 1px solid #e8e3f1;
+  border-radius: 10px;
+  background: #faf8ff;
+}
+
+.agreement-card.status-notice {
+  border-color: #e7e1ef;
+  background: #faf8ff;
+}
+
+.agreement-card.status-active {
+  border-color: #9af1d0;
+  background: #effdf7;
+}
+
+.agreement-card.status-pending,
+.agreement-card.status-ended {
+  background: #faf8ff;
+}
+
+.agreement-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px 4px;
+}
+
+.agreement-title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+
+  strong {
+    overflow: hidden;
+    color: #0f172a;
+    font-size: 13.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.property-use {
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.agreement-status {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  &::before {
+    display: none;
+  }
+
+  &.status-active {
+    color: #047857;
+    background: #a7f3d0;
+  }
+
+  &.status-notice {
+    color: #92400e;
+    background: #fed7aa;
+  }
+
+  &.status-pending {
+    color: #4338ca;
+    background: #ddd6fe;
+  }
+
+  &.status-ended {
+    color: #475569;
+    background: #e2e8f0;
+  }
+}
+
+.agreement-subtitle {
+  padding: 0 12px 10px;
+  color: #64748b;
+  font-size: 11.5px;
+}
+
+.agreement-meta {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 12px;
+  margin: 0 12px;
+  padding: 10px 0;
+  border-top: 1px solid #f1f5f9;
+
+  > div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  strong {
+    overflow: hidden;
+    color: #334155;
+    font-size: 11.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.meta-label {
+  color: #64748b;
+  font-size: 9.5px;
+  font-weight: 600;
+}
+
+.period-status,
+.billing-frequency {
+  color: #64748b;
+  font-size: 10.5px;
+
+  &.status-current {
+    color: #059669;
+  }
+
+  &.status-alert {
+    color: #dc2626;
+  }
+}
+
+.agreement-footer {
+  margin-top: 4px;
+  padding: 10px 12px;
+  border-top: 1px solid #f1f5f9;
+  color: #64748b;
+  font-size: 10.5px;
+}
+
+.no-agreements {
+  padding: 24px 0;
+  color: #64748b;
+  text-align: center;
+  font-size: 12px;
+}
+
+.identification-info,
+.tenant-email {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.identification-number {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.identification-type,
+.tenant-email {
+  color: #94a3b8;
+  font-size: 11.5px;
+}
+
+:host-context(html.dark-theme) .tenant-detail-row {
+  background: #0f1d30;
+}
+
+:host-context(html.dark-theme) .tenant-row.expanded-row {
+  background: #263244;
+}
+
+:host-context(html.dark-theme) .tenant-detail-row ::ng-deep .mat-mdc-cell {
+  border-bottom-color: transparent;
+}
+
+:host-context(html.dark-theme) .tenant-detail.detail-expanded {
+  border-color: #1d2b40;
+  background: #202c3e;
+  box-shadow: none;
+}
+
+:host-context(html.dark-theme) .detail-heading,
+:host-context(html.dark-theme) .agreement-title strong,
+:host-context(html.dark-theme) .identification-number {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .detail-heading {
+  border-bottom-color: #2b3a4e;
+}
+
+:host-context(html.dark-theme) .agreement-card {
+  border-color: #294056;
+  background: #14243a;
+  box-shadow: none;
+}
+
+:host-context(html.dark-theme) .agreement-card.status-notice,
+:host-context(html.dark-theme) .agreement-card.status-pending,
+:host-context(html.dark-theme) .agreement-card.status-ended {
+  border-color: #334155;
+  background: #202c3e;
+}
+
+:host-context(html.dark-theme) .agreement-card.status-active {
+  border-color: #0b5b4b;
+  background: #1a3038;
+}
+
+:host-context(html.dark-theme) .property-use {
+  background: #1d3148;
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .agreement-subtitle,
+:host-context(html.dark-theme) .agreement-meta strong,
+:host-context(html.dark-theme) .agreement-footer,
+:host-context(html.dark-theme) .meta-label,
+:host-context(html.dark-theme) .period-status,
+:host-context(html.dark-theme) .billing-frequency,
+:host-context(html.dark-theme) .identification-type,
+:host-context(html.dark-theme) .tenant-email {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .agreement-meta,
+:host-context(html.dark-theme) .agreement-footer {
+  border-top-color: #1d2b40;
+}
+
+:host-context(html.dark-theme) .period-status.status-current {
+  color: #34d399;
+}
+
+:host-context(html.dark-theme) .period-status.status-alert {
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .agreement-status.status-active {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.16);
+}
+
+:host-context(html.dark-theme) .agreement-status.status-notice {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.18);
+}
+
+:host-context(html.dark-theme) .agreement-status.status-pending {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.16);
+}
+
+:host-context(html.dark-theme) .agreement-status.status-ended {
+  color: #cbd5e1;
+  background: #334155;
 }
 
 .tenant-profile {

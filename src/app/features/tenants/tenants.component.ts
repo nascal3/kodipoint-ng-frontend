@@ -69,17 +69,15 @@ export class TenantsComponent implements OnInit {
   readonly editingTenant = signal<Tenant | null>(null);
   readonly messagingTenant = signal<TenantItem | null>(null);
   readonly sendingTenantMessage = signal(false);
+  readonly expandedTenantId = signal<string | null>(null);
 
   readonly statusOptions = ['All', 'ACTIVE', 'NOTICE', 'ENDED'];
 
   displayedColumns: string[] = [
+    'expand',
     'tenantProfile',
-    'premisesUnit',
-    'tenure',
-    'endDate',
-    'contractRent',
+    'identification',
     'emergency',
-    'tenancyStatus',
     'actions',
   ];
 
@@ -125,6 +123,38 @@ export class TenantsComponent implements OnInit {
       default:
         return '';
     }
+  }
+
+  toggleTenantExpansion(tenantId: string): void {
+    this.expandedTenantId.update((expandedId) =>
+      expandedId === tenantId ? null : tenantId
+    );
+  }
+
+  isTenantExpanded(tenantId: string): boolean {
+    return this.expandedTenantId() === tenantId;
+  }
+
+  getAgreementStatusClass(status: string): string {
+    return this.getTenancyStatusClass(this.mapTenancyStatus(status));
+  }
+
+  getAgreementStatusLabel(status: string): string {
+    return this.mapTenancyStatus(status) === 'active'
+      ? 'Active Lease'
+      : this.getTenancyStatusLabel(this.mapTenancyStatus(status));
+  }
+
+  formatAgreementDate(date: string | null): string {
+    return date ? this.formatDate(date) : 'Ongoing';
+  }
+
+  getTenancyPeriod(tenancy: import('./models/tenants.interface').Tenancy): string {
+    const start = this.formatAgreementDate(tenancy.startDate);
+    const end = tenancy.status === 'ACTIVE' && !tenancy.endDate
+      ? 'Ongoing'
+      : this.formatAgreementDate(tenancy.endDate);
+    return `${start} – ${end}`;
   }
 
   getBalanceClass(balance: string, status: 'overdue' | 'settled' | 'credit'): string {
