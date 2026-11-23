@@ -370,21 +370,38 @@ export class TenantsComponent implements OnInit {
   private calculateEndTenure(endDate: string): string {
     const end = new Date(endDate);
     const now = new Date();
-    let months = (end.getFullYear() - now.getFullYear()) * 12 + (end.getMonth() - now.getMonth());
-    if (end.getDate() < now.getDate()) {
-      months--;
+    const endMidnight = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    const nowMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const hasExpired = endMidnight.getTime() < nowMidnight.getTime();
+    const suffix = hasExpired ? 'after Expiry' : 'to Expiry';
+
+    let months: number;
+    if (hasExpired) {
+      months = (nowMidnight.getFullYear() - endMidnight.getFullYear()) * 12
+        + (nowMidnight.getMonth() - endMidnight.getMonth());
+      if (nowMidnight.getDate() < endMidnight.getDate()) {
+        months--;
+      }
+    } else {
+      months = (endMidnight.getFullYear() - nowMidnight.getFullYear()) * 12
+        + (endMidnight.getMonth() - nowMidnight.getMonth());
+      if (endMidnight.getDate() < nowMidnight.getDate()) {
+        months--;
+      }
     }
+
+    months = Math.max(months, 0);
     const years = Math.floor(months / 12);
     const remainingMonths = months % 12;
 
     if (years > 0) {
-      return remainingMonths > 0 ? `${years} Yrs ${remainingMonths} Mo to Expiry` : `${years} Yrs to Expiry`;
+      return remainingMonths > 0 ? `${years} Yrs ${remainingMonths} Mo ${suffix}` : `${years} Yrs ${suffix}`;
     }
     if (remainingMonths > 0) {
-      return `${remainingMonths} Mo to Expiry`;
+      return `${remainingMonths} Mo ${suffix}`;
     }
-    const days = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    return `${days} Days to Expiry`;
+    const days = Math.ceil(Math.abs(end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    return `${days} Days ${suffix}`;
   }
 
   private mapTenancyStatus(status: string): 'active' | 'notice' | 'pending' | 'ended' {
