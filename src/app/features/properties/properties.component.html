@@ -18,7 +18,7 @@
       } @else {
         <div class="kpi-main-val">
           <span class="currency-prefix">{{ projectedRent().currency }}</span>
-          <span class="amount-val">{{ projectedRent().amount }}</span>
+          <span class="amount-val">{{ formatAmount(projectedRent().amount) }}</span>
         </div>
         <div class="kpi-sub-text">
           <span class="sub-label">Gross portfolio valuation:</span>
@@ -279,7 +279,7 @@
                     class="property-name-trigger"
                     [class]="`${property.status.toLocaleLowerCase()}`"
                     (click)="openPropertyUnits(property)"
-                    [attr.aria-label]="'View units for ' + property.name"
+                    [attr.aria-label]="`View units for ${property.name}`"
                   >
                     <mat-icon>open_in_new</mat-icon>
                     {{ property.name }}
@@ -288,7 +288,7 @@
                 <div class="property-rent">
                   @if (property.status !== 'ARCHIVED') {
                     <span class="rent-amount">
-                      {{ property.currency }} {{ property.minRent }} - {{ property.maxRent }}
+                      {{ property.currency }} {{ formatAmount(property.minRent) }} - {{ formatAmount(property.maxRent) }}
                     </span>
                     <span class="rent-period">/mo</span>
                   }
@@ -436,6 +436,15 @@
   />
 }
 
+@if (isUnitsModalOpen() && unitsModalProperty(); as property) {
+  <app-property-units-modal
+    [property]="property"
+    (closed)="closeUnitsModal()"
+    (addUnitRequested)="addUnitFromUnitsModal()"
+    (tenantAssigned)="onTenantAssigned()"
+  />
+}
+
 @if (isAddUnitModalOpen() && selectedProperty(); as property) {
   <app-add-property-unit-modal
     [propertyId]="property.id"
@@ -443,13 +452,5 @@
     [propertyUseType]="property.propertyUseType"
     (closed)="closeAddUnitModal()"
     (created)="onUnitCreated()"
-  />
-}
-
-@if (isUnitsModalOpen() && selectedProperty(); as property) {
-  <app-property-units-modal
-    [property]="property"
-    (closed)="closeUnitsModal()"
-    (addUnitRequested)="addUnitFromUnitsModal()"
   />
 }

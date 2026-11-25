@@ -166,6 +166,12 @@ export interface PropertyUnit {
   status: string;
   marketRent: string;
   billingFrequency: UnitBillingFrequency;
+  tenancyId?: string | null;
+  tenant_id?: string | null;
+  assigned_at?: string | null;
+  unassignedAt?: string | null;
+  startDate: string | null;
+  endDate: string | null;
   createdAt: string;
   updatedAt: string;
   tenantName: string | null;
@@ -192,7 +198,7 @@ export interface UpdatePropertyCharge {
 }
 
 export type UnitBillingFrequency = 'MONTHLY' | 'QUARTERLY' | 'BI_ANNUALLY' | 'ANNUALLY';
-export type UnitStatus = 'AVAILABLE' | 'MAINTENANCE' | 'UNAVAILABLE' | 'OCCUPIED' | 'ARCHIVED';
+export type UnitStatus = 'AVAILABLE' | 'NOTICE' | 'MAINTENANCE' | 'UNAVAILABLE' | 'OCCUPIED' | 'ARCHIVED';
 
 export interface CreatePropertyUnitRequest {
   propertyId: string;
@@ -202,6 +208,21 @@ export interface CreatePropertyUnitRequest {
   propertyUseType: propertyUseType;
   marketRent: number;
   billingFrequency: UnitBillingFrequency;
+  propertyCharges: Array<{
+    propertyChargeId: string;
+    amount: number;
+  }>;
+}
+
+export interface UpdatePropertyUnitRequest {
+  propertyId: string;
+  unitNumber: string;
+  bedroomCount: number;
+  status: string;
+  propertyUseType: propertyUseType;
+  marketRent: number;
+  billingFrequency: UnitBillingFrequency;
+  propertyChargeIds: string[];
   propertyCharges: Array<{
     propertyChargeId: string;
     amount: number;

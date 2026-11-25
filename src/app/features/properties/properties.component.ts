@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ViewChild, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
@@ -36,6 +36,7 @@ export class PropertiesComponent implements OnInit {
   private readonly dashboardService = inject(DashboardService);
   private readonly snackbarService = inject(SnackbarService);
   private readonly destroyRef = inject(DestroyRef);
+  @ViewChild(PropertyUnitsModalComponent) private readonly unitsModal?: PropertyUnitsModalComponent;
   private readonly propertyFiltersChanged = new Subject<void>();
   private readonly kpiRefresh = new Subject<void>();
   private readonly nonArchivedStatuses = ['ACTIVE', 'INACTIVE', 'MAINTENANCE'];
@@ -86,6 +87,7 @@ export class PropertiesComponent implements OnInit {
   readonly isUnitsModalOpen = signal(false);
   readonly selectedPropertyId = signal('');
   readonly selectedProperty = signal<PropertyItem | null>(null);
+  readonly unitsModalProperty = signal<PropertyItem | null>(null);
   readonly selectedCountry = signal('All Countries');
   readonly selectedStatus = signal<string[]>([...this.nonArchivedStatuses]);
   readonly searchQuery = signal('');
@@ -106,6 +108,18 @@ export class PropertiesComponent implements OnInit {
     this.loadProjectedRent();
     this.loadOccupancyData();
     this.loadTotalRentOwed();
+  }
+
+  formatAmount(amount: number | string): string {
+    const raw = String(amount).trim();
+    const [integerPart, ...fractionParts] = raw.split('.');
+    const fraction = fractionParts.length ? `.${fractionParts.join('.')}` : '';
+    const negative = integerPart.startsWith('-');
+    const digits = negative ? integerPart.slice(1) : integerPart;
+    if (!/^\d+$/.test(digits)) {
+      return raw;
+    }
+    return `${negative ? '-' : ''}${digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${fraction}`;
   }
 
   setView(view: 'grid' | 'list'): void {
@@ -153,19 +167,18 @@ export class PropertiesComponent implements OnInit {
 
   openPropertyUnits(property: PropertyItem): void {
     if (property.status !== 'ARCHIVED') {
-      this.selectedProperty.set(property);
+      this.unitsModalProperty.set(property);
       this.isUnitsModalOpen.set(true);
     }
   }
 
   closeUnitsModal(): void {
     this.isUnitsModalOpen.set(false);
-    this.selectedProperty.set(null);
+    this.unitsModalProperty.set(null);
   }
 
   addUnitFromUnitsModal(): void {
-    const property = this.selectedProperty();
-    this.closeUnitsModal();
+    const property = this.unitsModalProperty();
     if (property) this.openAddUnitModal(property);
   }
 
@@ -176,6 +189,12 @@ export class PropertiesComponent implements OnInit {
 
   onUnitCreated(): void {
     this.closeAddUnitModal();
+    this.unitsModal?.refresh();
+    this.propertyFiltersChanged.next();
+    this.kpiRefresh.next();
+  }
+
+  onTenantAssigned(): void {
     this.propertyFiltersChanged.next();
     this.kpiRefresh.next();
   }
@@ -264,6 +283,7 @@ export class PropertiesComponent implements OnInit {
       this.projectedRentLoading.set(true);
       this.occupancyKpiLoading.set(true);
       this.collectedVsOwedLoading.set(true);
+      this.dashboardService.clearPortfolioOccupancyCache();
       this.loadProjectedRent();
       this.loadOccupancyData();
       this.loadTotalRentOwed();
@@ -302,8 +322,8 @@ export class PropertiesComponent implements OnInit {
           this.projectedRent.update((current) => ({
             ...current,
             currency: summary.currency,
-            amount: summary.totalProjectedRent.toLocaleString(),
-            valuation: `${summary.currency} ${summary.totalPotentialRent.toLocaleString()}`,
+            amount: summary.totalProjectedRent,
+            valuation: `${summary.currency} ${this.formatAmount(summary.totalPotentialRent)}`,
           }));
         }
         this.projectedRentLoading.set(false);
@@ -359,8 +379,8 @@ export class PropertiesComponent implements OnInit {
         this.collectedVsOwed.update((current) => ({
           ...current,
           collectedLabel: `Collected (${collectedPercent.toFixed(1)}%)`,
-          collectedAmount: totalCollected.toLocaleString(),
-          owedAmount: totalOwed.toLocaleString(),
+          collectedAmount: this.formatAmount(collected.summary.totalIncome),
+          owedAmount: this.formatAmount(owed.summary.totalOwed),
           collectedPercent,
           collectedCurrency,
           owedPercent,

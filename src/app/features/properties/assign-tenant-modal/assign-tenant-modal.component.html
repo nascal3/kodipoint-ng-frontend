@@ -1,0 +1,146 @@
+<div
+  class="assign-modal-backdrop"
+  (click)="$event.stopPropagation(); close()"
+  (keydown.escape)="$event.stopPropagation(); close()"
+>
+  <section class="assign-modal" role="dialog" aria-modal="true" aria-labelledby="assign-tenant-title" (click)="$event.stopPropagation()">
+    <header class="assign-modal-header">
+      <div class="modal-heading-icon"><mat-icon>person_add</mat-icon></div>
+      <div class="modal-heading-copy">
+        <h2 id="assign-tenant-title">
+          Assign Tenant to Unit
+          <span class="unit-pill"><span class="unit-dot"></span> Unit {{ unit().unitNumber }}</span>
+        </h2>
+        <p><mat-icon>apartment</mat-icon>{{ property().name }} · {{ unit().bedroomCount }} Bedrooms · {{ property().city }}</p>
+      </div>
+      <button type="button" class="modal-close-button" aria-label="Close dialog" (click)="close()" [disabled]="isSubmitting()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <form [formGroup]="form" class="assign-form" (ngSubmit)="assignTenant()">
+      <main class="assign-form-content">
+        <div class="field-group full-width">
+          <label class="field-label">Tenant Profile</label>
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
+            <mat-select
+              formControlName="tenantId"
+              aria-label="Tenant Profile"
+              panelClass="tenant-select-panel"
+              (selectionChange)="selectTenant($event.value)"
+            >
+              <mat-select-trigger>
+                @if (selectedTenant(); as tenant) {
+                  {{ tenantName(tenant) }} &nbsp;  {{ tenant.phone }}
+                }
+              </mat-select-trigger>
+              <mat-option>
+                <ngx-mat-select-search
+                  [formControl]="tenantSearchControl"
+                  [searching]="isLoadingTenants()"
+                  [placeholderLabel]="'Search by First / Last Name or Phone Number'"
+                  [noEntriesFoundLabel]="tenantSearchMessage()"
+                  ariaLabel="Search tenant profiles"
+                ></ngx-mat-select-search>
+              </mat-option>
+              @for (tenant of tenantOptions(); track tenant.id) {
+                <mat-option [value]="tenant.id">
+                  <span class="tenant-option">
+                    <strong>{{ tenantName(tenant) }}</strong>
+                    <small>{{ tenant.email }} · {{ tenant.phone }}</small>
+                  </span>
+                </mat-option>
+              }
+            </mat-select>
+            @if (form.controls.tenantId.invalid && form.controls.tenantId.touched) {
+              <mat-error>Select a tenant.</mat-error>
+            }
+          </mat-form-field>
+          @if (tenantsError()) {
+            <p class="tenant-search-error" role="alert">{{ tenantsError() }}</p>
+          }
+        </div>
+
+        <div class="form-grid">
+          <div class="field-group">
+            <span class="field-label">Property Unit</span>
+            <div class="readonly-field">
+              <mat-icon>door_front</mat-icon>
+              <strong>{{ unit().unitNumber }}</strong>
+              <span>
+                ({{ unit().propertyUseType }} · {{ unit().bedroomCount }} {{ unit().propertyUseType === 'RESIDENTIAL' ? 'Bedrooms' : 'Rooms' }})
+              </span>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Lease Start Date</label>
+            <mat-form-field appearance="outline" subscriptSizing="fixed">
+              <input
+                matInput
+                [matDatepicker]="startDatePicker"
+                formControlName="startDate"
+                aria-label="Lease Start Date"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #startDatePicker></mat-datepicker>
+              @if (form.controls.startDate.invalid && form.controls.startDate.touched) {
+                <mat-error>Choose a lease start date.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="field-group">
+            <span class="field-label">Agreed Monthly Rent</span>
+            <div class="readonly-field rent-field"><span>{{ property().currency }}</span><strong>{{ unit().marketRent | number:'1.0-2' }}</strong></div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Initial Tenancy Status</label>
+            <mat-form-field appearance="outline" subscriptSizing="fixed">
+              <mat-select formControlName="status" aria-label="Initial Tenancy Status">
+                @for (status of statusOptions; track status.value) {
+                  <mat-option [value]="status.value">{{ status.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="field-group full-width notes-group">
+          <label class="field-label">Agreement Notes &amp; Special Conditions</label>
+          <mat-form-field class="notes-field" appearance="outline" subscriptSizing="dynamic">
+            <textarea
+              matInput
+              rows="3"
+              formControlName="notes"
+              aria-label="Agreement Notes and Special Conditions"
+              placeholder="Add agreement notes or special conditions..."
+            ></textarea>
+          </mat-form-field>
+        </div>
+
+        @if (formError()) {
+          <p class="form-error" role="alert">{{ formError() }}</p>
+        }
+      </main>
+
+      <footer class="assign-modal-footer">
+        <button matButton="outlined" type="button" class="cancel-button" (click)="close()" [disabled]="isSubmitting()">Cancel</button>
+        <button
+          matButton="filled"
+          type="submit"
+          class="submit-button"
+          [disabled]="form.invalid || isLoadingTenants() || !selectedTenant() || isSubmitting()"
+        >
+          @if (isSubmitting()) {
+            <mat-spinner diameter="18" aria-label="Assigning tenant"></mat-spinner>
+          } @else {
+            <mat-icon>vpn_key</mat-icon>
+          }
+          <span>{{ isSubmitting() ? 'Assigning...' : 'Confirm Assignment' }}</span>
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>

@@ -413,40 +413,28 @@
 
 .tenants-table {
   width: 100%;
-  min-width: 1097px;
+  min-width: 760px;
   table-layout: fixed;
 
   th:nth-child(1),
   td:nth-child(1) {
-    width: 169px;
+    width: 52px;
   }
   th:nth-child(2),
   td:nth-child(2) {
-    width: 139px;
+    width: 260px;
   }
   th:nth-child(3),
   td:nth-child(3) {
-    width: 104px;
+    width: 180px;
   }
   th:nth-child(4),
   td:nth-child(4) {
-    width: 124px;
+    width: 180px;
   }
   th:nth-child(5),
   td:nth-child(5) {
-    width: 159px;
-  }
-  th:nth-child(6),
-  td:nth-child(6) {
-    width: 139px;
-  }
-  th:nth-child(7),
-  td:nth-child(7) {
-    width: 159px;
-  }
-  th:nth-child(8),
-  td:nth-child(8) {
-    width: 104px;
+    width: 88px;
   }
 
   ::ng-deep .mat-mdc-header-row {
@@ -529,6 +517,643 @@
   mat-icon {
     color: #64748b;
   }
+}
+
+.expand-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: #64748b;
+
+  ::ng-deep .mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+}
+
+.tenant-detail-row {
+  background: #f7f7ff;
+}
+
+.tenant-detail-row.hidden-detail-row {
+  display: none;
+}
+
+.tenant-detail-row ::ng-deep .mat-mdc-cell {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.tenant-row.expanded-row {
+  background: #fbfcff;
+}
+
+.tenant-detail {
+  box-sizing: border-box;
+  min-height: 0;
+  margin: 24px 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+
+  &.detail-expanded {
+    min-height: 0;
+    padding: 14px 16px 16px;
+    border: 1px solid #e8e8f0;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  }
+}
+
+.detail-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f5;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 700;
+
+  mat-icon {
+    color: #4f46e5;
+  }
+}
+
+.agreement-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.agreement-card {
+  overflow: hidden;
+  border: 1px solid #e8e3f1;
+  border-radius: 10px;
+  background: #faf8ff;
+}
+
+.agreement-card.status-notice {
+  border-color: #e7e1ef;
+  background: #faf8ff;
+}
+
+.agreement-card.status-active {
+  border-color: #9af1d0;
+  background: #effdf7;
+}
+
+.agreement-card.status-pending,
+.agreement-card.status-ended {
+  background: #faf8ff;
+}
+
+.agreement-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px 4px;
+}
+
+.agreement-title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+
+  strong {
+    overflow: hidden;
+    color: #0f172a;
+    font-size: 13.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.property-use {
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.agreement-status {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  &::before {
+    display: none;
+  }
+
+  &.status-active {
+    color: #047857;
+    background: #a7f3d0;
+  }
+
+  &.status-notice {
+    color: #92400e;
+    background: #fed7aa;
+  }
+
+  &.status-pending {
+    color: #4338ca;
+    background: #ddd6fe;
+  }
+
+  &.status-ended {
+    color: #475569;
+    background: #e2e8f0;
+  }
+}
+
+.agreement-subtitle {
+  padding: 0 12px 10px;
+  color: #64748b;
+  font-size: 11.5px;
+}
+
+.agreement-meta {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 12px;
+  margin: 0 12px;
+  padding: 10px 0;
+  border-top: 1px solid #f1f5f9;
+
+  > div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  strong {
+    overflow: hidden;
+    color: #334155;
+    font-size: 11.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.meta-label {
+  color: #64748b;
+  font-size: 9.5px;
+  font-weight: 600;
+}
+
+.period-status,
+.billing-frequency {
+  color: #64748b;
+  font-size: 10.5px;
+}
+
+.period-status.status-active {
+  color: #047857;
+}
+
+.period-status.status-notice {
+  color: #92400e;
+}
+
+.period-status.status-pending {
+  color: #4338ca;
+}
+
+.period-status.status-ended {
+  color: #475569;
+}
+
+.agreement-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 10px 12px;
+  border-top: 1px solid #f1f5f9;
+  color: #64748b;
+  font-size: 10.5px;
+}
+
+.end-lease-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 0 10px;
+  color: #fff;
+  background: #ffc100;
+  border: none;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.end-lease-button mat-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+
+.end-lease-button:hover {
+  background: #e0a800;
+}
+
+.unassign-confirm-backdrop {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(3, 10, 18, 0.72);
+  backdrop-filter: blur(5px);
+}
+
+.unassign-confirm-dialog {
+  display: flex;
+  width: min(440px, 100%);
+  flex-direction: column;
+  align-items: center;
+  padding: 28px;
+  color: #0f172a;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+  text-align: center;
+}
+
+.unassign-confirm-icon {
+  display: flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  color: #b45309;
+  background: #fef3c7;
+  border-radius: 14px;
+}
+
+.unassign-confirm-dialog h2 {
+  margin: 16px 0 8px;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.unassign-confirm-dialog > p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.6;
+
+  strong {
+    color: #000000;
+  }
+}
+
+.unassign-date-field {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.unassign-date-label {
+  margin-bottom: 4px;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.unassign-start-date-value {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.unassign-date-field .mat-mdc-form-field {
+  width: 100%;
+  --mat-form-field-container-height: 44px;
+  --mat-form-field-container-vertical-padding: 10px;
+}
+
+.unassign-date-field input {
+  color: #0f172a;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+}
+
+.unassign-date-hint {
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.unassign-date-hint.error {
+  color: #b91c1c;
+}
+
+.unassign-confirm-dialog > .unassign-confirm-error {
+  width: 100%;
+  margin-top: 12px;
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+.unassign-confirm-actions {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.unassign-cancel-button,
+.unassign-confirm-button {
+  min-height: 40px;
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.unassign-cancel-button {
+  --mat-button-outlined-outline-color: #e2e8f0;
+  --mat-button-outlined-label-text-color: #0f172a;
+}
+
+.unassign-confirm-button {
+  --mat-button-filled-container-color: #b45309;
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-container-shape: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.unassign-confirm-button ::ng-deep .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.unassign-confirm-button mat-spinner {
+  flex: 0 0 auto;
+}
+
+.unassign-confirm-button:hover:not(:disabled) {
+  --mat-button-filled-container-color: #92400e;
+}
+
+.unassign-confirm-button:disabled {
+  --mat-button-filled-disabled-container-color: #fef3c7;
+  --mat-button-filled-disabled-label-text-color: #78350f;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.unassign-confirm-button mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+:host-context(html.dark-theme) .unassign-confirm-dialog {
+  color: #e2e8f0;
+  background: #0f2030;
+  border-color: #203447;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.52);
+}
+
+:host-context(html.dark-theme) .unassign-confirm-icon {
+  color: #fbbf24;
+  background: #3a2b17;
+}
+
+:host-context(html.dark-theme) .unassign-confirm-dialog h2 {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .unassign-confirm-dialog > p {
+  color: #9aabbd;
+  strong {
+    color: #ffffff;
+  }
+}
+
+:host-context(html.dark-theme) .unassign-date-label,
+:host-context(html.dark-theme) .unassign-date-field input,
+:host-context(html.dark-theme) .unassign-start-date-value {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .unassign-date-hint {
+  color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .unassign-date-hint.error {
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .unassign-date-field ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #0a1928;
+}
+
+:host-context(html.dark-theme) .unassign-date-field ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .unassign-date-field ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .unassign-date-field ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #294056;
+}
+
+:host-context(html.dark-theme) .unassign-date-field mat-datepicker-toggle {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .unassign-confirm-dialog > .unassign-confirm-error {
+  color: #fb7185;
+}
+
+:host-context(html.dark-theme) .unassign-cancel-button {
+  --mat-button-outlined-outline-color: #47627b;
+  --mat-button-outlined-label-text-color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .unassign-confirm-button {
+  --mat-button-filled-container-color: #d97706;
+  --mat-button-filled-label-text-color: #fff;
+}
+
+:host-context(html.dark-theme) .unassign-confirm-button:hover:not(:disabled) {
+  --mat-button-filled-container-color: #b45309;
+}
+
+:host-context(html.dark-theme) .unassign-confirm-button:disabled {
+  --mat-button-filled-disabled-container-color: #713f12;
+  --mat-button-filled-disabled-label-text-color: #fef3c7;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+:host-context(html.dark-theme) .unassign-confirm-button:disabled mat-icon,
+:host-context(html.dark-theme) .unassign-confirm-button:disabled mat-spinner {
+  color: #fef3c7;
+  --mdc-circular-progress-active-indicator-color: #fef3c7;
+}
+
+.no-agreements {
+  padding: 24px 0;
+  color: #64748b;
+  text-align: center;
+  font-size: 12px;
+}
+
+.identification-info,
+.tenant-email {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.identification-number {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.identification-type,
+.tenant-email {
+  color: #94a3b8;
+  font-size: 11.5px;
+}
+
+:host-context(html.dark-theme) .tenant-detail-row {
+  background: #0f1d30;
+}
+
+:host-context(html.dark-theme) .tenant-row.expanded-row {
+  background: #263244;
+}
+
+:host-context(html.dark-theme) .tenant-detail-row ::ng-deep .mat-mdc-cell {
+  border-bottom-color: transparent;
+}
+
+:host-context(html.dark-theme) .tenant-detail.detail-expanded {
+  border-color: #1d2b40;
+  background: #202c3e;
+  box-shadow: none;
+}
+
+:host-context(html.dark-theme) .detail-heading,
+:host-context(html.dark-theme) .agreement-title strong,
+:host-context(html.dark-theme) .identification-number {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .detail-heading {
+  border-bottom-color: #2b3a4e;
+}
+
+:host-context(html.dark-theme) .agreement-card {
+  border-color: #294056;
+  background: #14243a;
+  box-shadow: none;
+}
+
+:host-context(html.dark-theme) .agreement-card.status-notice,
+:host-context(html.dark-theme) .agreement-card.status-pending,
+:host-context(html.dark-theme) .agreement-card.status-ended {
+  border-color: #334155;
+  background: #202c3e;
+}
+
+:host-context(html.dark-theme) .agreement-card.status-active {
+  border-color: #0b5b4b;
+  background: #1a3038;
+}
+
+:host-context(html.dark-theme) .property-use {
+  background: #1d3148;
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .agreement-subtitle,
+:host-context(html.dark-theme) .agreement-meta strong,
+:host-context(html.dark-theme) .agreement-footer,
+:host-context(html.dark-theme) .meta-label,
+:host-context(html.dark-theme) .billing-frequency,
+:host-context(html.dark-theme) .identification-type,
+:host-context(html.dark-theme) .tenant-email {
+  color: #8492a8;
+}
+
+:host-context(html.dark-theme) .period-status.status-active {
+  color: #34d399;
+}
+
+:host-context(html.dark-theme) .period-status.status-notice {
+  color: #fbbf24;
+}
+
+:host-context(html.dark-theme) .period-status.status-pending {
+  color: #60a5fa;
+}
+
+:host-context(html.dark-theme) .period-status.status-ended {
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .agreement-meta,
+:host-context(html.dark-theme) .agreement-footer {
+  border-top-color: #1d2b40;
+}
+
+:host-context(html.dark-theme) .agreement-status.status-active {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.16);
+}
+
+:host-context(html.dark-theme) .agreement-status.status-notice {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.18);
+}
+
+:host-context(html.dark-theme) .agreement-status.status-pending {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.16);
+}
+
+:host-context(html.dark-theme) .agreement-status.status-ended {
+  color: #cbd5e1;
+  background: #334155;
 }
 
 .tenant-profile {

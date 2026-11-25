@@ -73,6 +73,10 @@ export class DashboardService {
     );
   }
 
+  clearPortfolioOccupancyCache(): void {
+    this.portfolioOccupancyCache.set(null);
+  }
+
   getPortfolioOccupancy(): Observable<PortfolioOccupancyResponse> {
     const cached = this.portfolioOccupancyCache();
     if (cached) {

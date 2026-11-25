@@ -4,10 +4,14 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   CreateTenantRequest,
+  CreateTenancyRequest,
   SendTenantMessageRequest,
   Tenant,
+  TenantSearchResponse,
+  Tenancy,
   TenantsResponse,
   TenanciesResponse,
+  UnassignTenancyRequest,
   UpdateTenantRequest,
 } from '../models/tenants.interface';
 import { ProjectedRentResponse } from '@app/features/properties/models/properties.models';
@@ -31,8 +35,28 @@ export class TenantsService {
     return this.http.get<TenantsResponse>(`${environment.apiUrl}/tenants`, { params });
   }
 
+  searchTenants(query: string, page: number = 1, limit: number = 10): Observable<TenantSearchResponse> {
+    const params = new HttpParams()
+      .set('q', query)
+      .set('page', page)
+      .set('limit', limit);
+
+    return this.http.get<TenantSearchResponse>(`${environment.apiUrl}/tenants/search`, { params });
+  }
+
   createTenant(tenant: CreateTenantRequest): Observable<Tenant> {
     return this.http.post<Tenant>(`${environment.apiUrl}/tenants`, tenant);
+  }
+
+  createTenancy(tenancy: CreateTenancyRequest): Observable<Tenancy> {
+    return this.http.post<Tenancy>(`${environment.apiUrl}/tenancies`, tenancy);
+  }
+
+  unassignTenancy(tenancyId: string, request: UnassignTenancyRequest): Observable<void> {
+    return this.http.patch<void>(
+      `${environment.apiUrl}/tenancies/${encodeURIComponent(tenancyId)}/unassign`,
+      request
+    );
   }
 
   updateTenant(id: string, tenant: UpdateTenantRequest): Observable<Tenant> {
@@ -63,7 +87,7 @@ export class TenantsService {
     let params = new HttpParams()
       .set('page', page)
       .set('limit', limit)
-      .set('status', 'EXPIRING');
+      .set('status', 'NOTICE');
 
     return this.http.get<TenanciesResponse>(`${environment.apiUrl}/tenancies`, { params });
   }

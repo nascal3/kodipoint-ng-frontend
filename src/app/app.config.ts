@@ -1,6 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 import {
@@ -33,6 +34,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([jwtInterceptor])),
+    provideNativeDateAdapter(),
     provideEchartsCore({ echarts })
   ]
 };

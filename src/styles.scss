@@ -28,6 +28,21 @@ html, body {
   height: var(--mat-form-field-container-height, 42px);
 }
 
+html.dark-theme .tenant-select-panel .mat-select-search-inner,
+html.dark-theme .tenant-select-panel .mat-select-search-input {
+  color: #e2e8f0;
+  background-color: #0a1928;
+}
+
+html.dark-theme .tenant-select-panel .mat-select-search-input::placeholder {
+  color: #aebed0;
+  opacity: 1;
+}
+
+html.dark-theme .tenant-select-panel .mat-select-search-inner mat-divider {
+  border-top-color: #294056;
+}
+
 app-property-charges-modal .mat-mdc-form-field.description-field .mdc-text-field--outlined {
   height: auto;
   min-height: 88px;
