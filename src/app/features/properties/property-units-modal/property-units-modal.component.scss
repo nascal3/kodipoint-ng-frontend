@@ -909,6 +909,29 @@
   --mat-button-filled-container-color: #b45309;
   --mat-button-filled-label-text-color: #fff;
   --mat-button-filled-container-shape: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.unassign-confirm-button ::ng-deep .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.unassign-confirm-button mat-spinner {
+  flex: 0 0 auto;
 }
 
 .unassign-confirm-button:hover:not(:disabled) {
