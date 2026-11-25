@@ -248,7 +248,7 @@
                     (click)="openUnassignConfirmation(unit)"
                   >
                     <mat-icon>person_remove</mat-icon>
-                    Unassign
+                    End Lease
                   </button>
                   <button
                     mat-icon-button
@@ -267,7 +267,7 @@
                     (click)="openUnassignConfirmation(unit)"
                   >
                     <mat-icon>person_remove</mat-icon>
-                    Unassign
+                    End Lease
                   </button>
                   <button
                     mat-icon-button
@@ -287,7 +287,7 @@
                     (click)="openAssignTenant(unit)"
                   >
                     <mat-icon>person_add</mat-icon>
-                    Assign
+                    Start Lease
                   </button>
                 }
                 <button
@@ -349,14 +349,14 @@
       (click)="$event.stopPropagation()"
     >
       <div class="unassign-confirm-icon"><mat-icon>person_remove</mat-icon></div>
-      <h2 id="unassign-confirm-title">Unassign tenant?</h2>
+      <h2 id="unassign-confirm-title">End lease?</h2>
       <p>
-        Are you sure you want to unassign <strong>{{ unit.tenantName || 'the current tenant' }}</strong> from
+        Are you sure you want to end the lease for <strong>{{ unit.tenantName || 'the current tenant' }}</strong> from
         Unit <strong>{{ unit.unitNumber }}</strong>?
       </p>
       <p>This will end the current tenancy.</p>
       <div class="unassign-date-field">
-        <label class="unassign-date-label" for="unassign-end-date">Tenancy end date</label>
+        <label class="unassign-date-label" for="unassign-end-date">Lease end date</label>
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <input
             id="unassign-end-date"
@@ -376,10 +376,10 @@
         </mat-form-field>
         @if (!minimumUnassignDate()) {
           <span class="unassign-date-hint error" role="alert">
-            The tenancy assignment date is unavailable. Refresh the unit list before unassigning.
+            The tenancy start lease date is unavailable. Refresh the unit list before unassigning.
           </span>
         } @else {
-          <span class="unassign-date-hint">Choose a date after the tenant's assignment date.</span>
+          <span class="unassign-date-hint">Choose a date after the tenant's start lease date.</span>
         }
       </div>
       @if (unassignError()) {
@@ -403,11 +403,11 @@
           [disabled]="isUnassigning() || !isUnassignDateAllowed(unassignEndDate())"
         >
           @if (isUnassigning()) {
-            <mat-spinner diameter="18" aria-label="Unassigning tenant"></mat-spinner>
+            <mat-spinner diameter="18" aria-label="Ending lease"></mat-spinner>
           } @else {
             <mat-icon>person_remove</mat-icon>
           }
-          {{ isUnassigning() ? 'Unassigning...' : 'Yes, Unassign' }}
+          {{ isUnassigning() ? 'Ending lease...' : 'Yes, End Lease' }}
         </button>
       </footer>
     </section>
