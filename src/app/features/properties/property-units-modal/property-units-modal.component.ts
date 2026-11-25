@@ -267,6 +267,14 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
     return Boolean(date && minimumDate && date >= minimumDate);
   }
 
+  formatLeaseStartDate(date: string | null): string {
+    if (!date) return 'N/A';
+    const parsedDate = this.parseCalendarDate(date);
+    return parsedDate
+      ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(parsedDate)
+      : 'N/A';
+  }
+
   formatRent(amount: number | string): string {
     const value = Number(amount);
     return Number.isFinite(value) ? value.toLocaleString('en-KE') : String(amount);

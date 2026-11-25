@@ -356,6 +356,10 @@
       </p>
       <p>This will end the current tenancy.</p>
       <div class="unassign-date-field">
+        <span class="unassign-date-label">Start Lease Date</span>
+        <span class="unassign-start-date-value">{{ formatLeaseStartDate(unit.startDate) }}</span>
+      </div>
+      <div class="unassign-date-field">
         <label class="unassign-date-label" for="unassign-end-date">Lease End Date</label>
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <input
