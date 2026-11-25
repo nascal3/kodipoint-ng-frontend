@@ -268,7 +268,17 @@
                           </div>
 
                           <div class="agreement-footer">
-                            Deposit: {{ tenancy.property?.currency || '' }} Not provided
+                            <span>Deposit: {{ tenancy.property?.currency || '' }} Not provided</span>
+                            @if (mapTenancyStatus(tenancy.status) !== 'ended') {
+                              <button
+                                type="button"
+                                class="end-lease-button"
+                                (click)="openUnassignConfirmation(tenancy, tenant.name); $event.stopPropagation()"
+                              >
+                                <mat-icon>person_remove</mat-icon>
+                                End Lease
+                              </button>
+                            }
                           </div>
                         </article>
                       }
@@ -352,5 +362,88 @@
       (closed)="closeTenantMessage()"
       (sendRequested)="onTenantMessageRequested($event)"
     />
+  }
+
+  @if (unassigningTenancy(); as target) {
+    <div
+      class="unassign-confirm-backdrop"
+      (click)="closeUnassignConfirmation()"
+      (keydown.escape)="$event.stopPropagation(); closeUnassignConfirmation()"
+    >
+      <section
+        class="unassign-confirm-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="unassign-confirm-title"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="unassign-confirm-icon"><mat-icon>person_remove</mat-icon></div>
+        <h2 id="unassign-confirm-title">End Lease?</h2>
+        <p>
+          Are you sure you want to end the lease for <strong>{{ target.tenantName }}</strong> from
+          <strong>{{ target.tenancy.property?.name || 'N/A' }} — {{ target.tenancy.unit?.unitNumber || 'N/A' }}</strong>?
+        </p>
+        <p>This will end the current tenancy.</p>
+        <div class="unassign-date-field">
+          <span class="unassign-date-label">Start Lease Date</span>
+          <span class="unassign-start-date-value">{{ formatLeaseStartDate(target.tenancy.startDate) }}</span>
+        </div>
+        <div class="unassign-date-field">
+          <label class="unassign-date-label" for="unassign-end-date">Lease End Date</label>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+            <input
+              id="unassign-end-date"
+              matInput
+              [matDatepicker]="unassignDatePicker"
+              [ngModel]="unassignEndDate()"
+              (ngModelChange)="unassignEndDate.set($event)"
+              [ngModelOptions]="{ standalone: true }"
+              [min]="minimumUnassignDate()"
+              [matDatepickerFilter]="unassignDateFilter"
+              [disabled]="isUnassigning() || !minimumUnassignDate()"
+              required
+              aria-label="Tenancy end date"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="unassignDatePicker" [disabled]="isUnassigning() || !minimumUnassignDate()"></mat-datepicker-toggle>
+            <mat-datepicker #unassignDatePicker></mat-datepicker>
+          </mat-form-field>
+          @if (!minimumUnassignDate()) {
+            <span class="unassign-date-hint error" role="alert">
+              The tenancy start lease date is unavailable. Refresh the tenant list before ending the lease.
+            </span>
+          } @else {
+            <span class="unassign-date-hint">Choose a date after the tenant's start lease date.</span>
+          }
+        </div>
+        @if (unassignError()) {
+          <p class="unassign-confirm-error" role="alert">{{ unassignError() }}</p>
+        }
+        <footer class="unassign-confirm-actions">
+          <button
+            matButton="outlined"
+            type="button"
+            class="unassign-cancel-button"
+            (click)="closeUnassignConfirmation()"
+            [disabled]="isUnassigning()"
+          >
+            Cancel
+          </button>
+          <button
+            matButton="filled"
+            type="button"
+            class="unassign-confirm-button"
+            (click)="confirmUnassign(target.tenancy)"
+            [disabled]="isUnassigning() || !isUnassignDateAllowed(unassignEndDate())"
+          >
+            @if (isUnassigning()) {
+              <mat-spinner diameter="18" aria-label="Ending lease"></mat-spinner>
+            } @else {
+              <mat-icon>person_remove</mat-icon>
+            }
+            {{ isUnassigning() ? 'Ending lease...' : 'Yes, End Lease' }}
+          </button>
+        </footer>
+      </section>
+    </div>
   }
 </div>

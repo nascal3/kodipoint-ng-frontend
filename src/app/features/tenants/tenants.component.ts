@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,7 +6,7 @@ import { debounceTime, finalize, Subject } from 'rxjs';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import { TenantsService } from './services/tenants.service';
-import { TenantItem, Tenant } from './models/tenants.interface';
+import { TenantItem, Tenant, Tenancy } from './models/tenants.interface';
 import { RegisterTenantModalComponent } from './register-tenant-modal/register-tenant-modal.component';
 import { EditTenantModalComponent } from './edit-tenant-modal/edit-tenant-modal.component';
 import {
@@ -70,6 +70,20 @@ export class TenantsComponent implements OnInit {
   readonly messagingTenant = signal<TenantItem | null>(null);
   readonly sendingTenantMessage = signal(false);
   readonly expandedTenantId = signal<string | null>(null);
+  readonly unassigningTenancy = signal<{ tenancy: Tenancy; tenantName: string } | null>(null);
+  readonly isUnassigning = signal(false);
+  readonly unassignError = signal('');
+  readonly unassignEndDate = signal<Date | null>(null);
+  readonly minimumUnassignDate = computed(() => {
+    const assignedAt = this.unassigningTenancy()?.tenancy.assignedAt;
+    if (!assignedAt) return null;
+
+    const assignedDate = this.parseCalendarDate(assignedAt);
+    return assignedDate
+      ? new Date(assignedDate.getFullYear(), assignedDate.getMonth(), assignedDate.getDate() + 1)
+      : null;
+  });
+  readonly unassignDateFilter = (date: Date | null): boolean => this.isUnassignDateAllowed(date);
 
   readonly statusOptions = ['All', 'ACTIVE', 'NOTICE', 'ENDED'];
 
@@ -261,6 +275,60 @@ export class TenantsComponent implements OnInit {
     this.messagingTenant.set(null);
   }
 
+  openUnassignConfirmation(tenancy: Tenancy, tenantName: string): void {
+    this.unassignError.set('');
+    this.unassignEndDate.set(null);
+    this.unassigningTenancy.set({ tenancy, tenantName });
+  }
+
+  closeUnassignConfirmation(): void {
+    if (this.isUnassigning()) return;
+
+    this.unassignError.set('');
+    this.unassigningTenancy.set(null);
+  }
+
+  confirmUnassign(tenancy: Tenancy): void {
+    if (this.isUnassigning()) return;
+    const endDate = this.unassignEndDate();
+    if (!endDate || !this.isUnassignDateAllowed(endDate)) {
+      this.unassignError.set('Choose an end date later than the tenancy assignment date.');
+      return;
+    }
+
+    this.isUnassigning.set(true);
+    this.unassignError.set('');
+    this.tenantsService.unassignTenancy(tenancy.id, { endDate: this.formatIsoDate(endDate) })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.isUnassigning.set(false);
+          this.closeUnassignConfirmation();
+          this.snackbarService.success('Lease ended successfully.');
+          this.loadTenants();
+        },
+        error: (error: unknown) => {
+          console.error('Failed to end tenancy:', error);
+          this.unassignError.set('Could not end the lease. Please try again.');
+          this.snackbarService.error(this.unassignError());
+          this.isUnassigning.set(false);
+        },
+      });
+  }
+
+  isUnassignDateAllowed(date: Date | null): boolean {
+    const minimumDate = this.minimumUnassignDate();
+    return Boolean(date && minimumDate && date >= minimumDate);
+  }
+
+  formatLeaseStartDate(date: string | null): string {
+    if (!date) return 'N/A';
+    const parsedDate = this.parseCalendarDate(date);
+    return parsedDate
+      ? new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(parsedDate)
+      : 'N/A';
+  }
+
   onTenantMessageRequested(draft: TenantMessageDraft): void {
     this.sendingTenantMessage.set(true);
     this.tenantsService
@@ -401,6 +469,25 @@ export class TenantsComponent implements OnInit {
         tenancyStatus: this.mapTenancyStatus(activeTenancy?.status || tenant.status),
       };
     });
+  }
+
+  private formatIsoDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private parseCalendarDate(value: string): Date | null {
+    const isoDate = /^(\d{4})-(\d{2})-(\d{2})(?:$|T)/.exec(value);
+    const parsedDate = isoDate
+      ? new Date(Number(isoDate[1]), Number(isoDate[2]) - 1, Number(isoDate[3]))
+      : new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) return null;
+
+    const calendarDate = new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+    if (isoDate && this.formatIsoDate(calendarDate) !== `${isoDate[1]}-${isoDate[2]}-${isoDate[3]}`) return null;
+    return calendarDate;
   }
 
   private formatDate(dateString: string): string {
