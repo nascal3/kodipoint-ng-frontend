@@ -9,7 +9,7 @@
     <header class="units-modal-header">
       <div class="modal-heading-icon"><mat-icon>apartment</mat-icon></div>
       <div class="modal-heading-copy">
-        <mat-chip class="property-status-pill" [ngClass]="'status-' + property().status.toLowerCase()">
+        <mat-chip class="property-status-pill" [ngClass]="`status-${property().status.toLowerCase()}`">
           {{ property().status }}
         </mat-chip>
         <div class="units-title-row">
@@ -349,14 +349,14 @@
       (click)="$event.stopPropagation()"
     >
       <div class="unassign-confirm-icon"><mat-icon>person_remove</mat-icon></div>
-      <h2 id="unassign-confirm-title">End lease?</h2>
+      <h2 id="unassign-confirm-title">End Lease?</h2>
       <p>
         Are you sure you want to end the lease for <strong>{{ unit.tenantName || 'the current tenant' }}</strong> from
         Unit <strong>{{ unit.unitNumber }}</strong>?
       </p>
       <p>This will end the current tenancy.</p>
       <div class="unassign-date-field">
-        <label class="unassign-date-label" for="unassign-end-date">Lease end date</label>
+        <label class="unassign-date-label" for="unassign-end-date">Lease End Date</label>
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <input
             id="unassign-end-date"
