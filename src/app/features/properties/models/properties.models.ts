@@ -170,6 +170,8 @@ export interface PropertyUnit {
   tenant_id?: string | null;
   assigned_at?: string | null;
   unassignedAt?: string | null;
+  startDate: string | null;
+  endDate: string | null;
   createdAt: string;
   updatedAt: string;
   tenantName: string | null;
