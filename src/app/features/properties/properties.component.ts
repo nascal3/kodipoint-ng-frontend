@@ -110,6 +110,18 @@ export class PropertiesComponent implements OnInit {
     this.loadTotalRentOwed();
   }
 
+  formatAmount(amount: number | string): string {
+    const raw = String(amount).trim();
+    const [integerPart, ...fractionParts] = raw.split('.');
+    const fraction = fractionParts.length ? `.${fractionParts.join('.')}` : '';
+    const negative = integerPart.startsWith('-');
+    const digits = negative ? integerPart.slice(1) : integerPart;
+    if (!/^\d+$/.test(digits)) {
+      return raw;
+    }
+    return `${negative ? '-' : ''}${digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${fraction}`;
+  }
+
   setView(view: 'grid' | 'list'): void {
     this.currentView.set(view);
   }
@@ -310,8 +322,8 @@ export class PropertiesComponent implements OnInit {
           this.projectedRent.update((current) => ({
             ...current,
             currency: summary.currency,
-            amount: summary.totalProjectedRent.toLocaleString(),
-            valuation: `${summary.currency} ${summary.totalPotentialRent.toLocaleString()}`,
+            amount: summary.totalProjectedRent,
+            valuation: `${summary.currency} ${this.formatAmount(summary.totalPotentialRent)}`,
           }));
         }
         this.projectedRentLoading.set(false);
@@ -367,8 +379,8 @@ export class PropertiesComponent implements OnInit {
         this.collectedVsOwed.update((current) => ({
           ...current,
           collectedLabel: `Collected (${collectedPercent.toFixed(1)}%)`,
-          collectedAmount: totalCollected.toLocaleString(),
-          owedAmount: totalOwed.toLocaleString(),
+          collectedAmount: this.formatAmount(collected.summary.totalIncome),
+          owedAmount: this.formatAmount(owed.summary.totalOwed),
           collectedPercent,
           collectedCurrency,
           owedPercent,

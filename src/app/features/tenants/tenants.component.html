@@ -262,7 +262,7 @@
                             </div>
                             <div>
                               <span class="meta-label">FINANCIALS</span>
-                              <strong>{{ tenancy.property?.currency || 'N/A' }} {{ tenancy.unit?.marketRent || '0' }}</strong>
+                              <strong>{{ tenancy.property?.currency || 'N/A' }} {{ (tenancy.unit?.marketRent || 0) | number: '1.0-0' }}</strong>
                               <span class="billing-frequency">{{ tenancy.unit?.billingFrequency || 'N/A' }}</span>
                             </div>
                           </div>

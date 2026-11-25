@@ -306,6 +306,7 @@ export class TenantsComponent implements OnInit {
           this.closeUnassignConfirmation();
           this.snackbarService.success('Lease ended successfully.');
           this.loadTenants();
+          this.loadKpiData();
         },
         error: (error: unknown) => {
           console.error('Failed to end tenancy:', error);
