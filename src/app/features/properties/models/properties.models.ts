@@ -213,3 +213,18 @@ export interface CreatePropertyUnitRequest {
     amount: number;
   }>;
 }
+
+export interface UpdatePropertyUnitRequest {
+  propertyId: string;
+  unitNumber: string;
+  bedroomCount: number;
+  status: string;
+  propertyUseType: propertyUseType;
+  marketRent: number;
+  billingFrequency: UnitBillingFrequency;
+  propertyChargeIds: string[];
+  propertyCharges: Array<{
+    propertyChargeId: string;
+    amount: number;
+  }>;
+}

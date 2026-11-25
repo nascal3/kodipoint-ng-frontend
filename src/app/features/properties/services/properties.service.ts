@@ -14,6 +14,7 @@ import {
   PropertyChargesResponse,
   PropertyUnitsResponse,
   UpdatePropertyCharge,
+  UpdatePropertyUnitRequest,
   propertyUseType,
 } from '@app/features/properties/models/properties.models';
 
@@ -62,6 +63,10 @@ export class PropertyService {
 
   createPropertyUnit(unit: CreatePropertyUnitRequest): Observable<void> {
     return this.http.post<void>(`${environment.apiUrl}/properties/units`, unit);
+  }
+
+  updatePropertyUnit(unitId: string, unit: UpdatePropertyUnitRequest): Observable<void> {
+    return this.http.patch<void>(`${environment.apiUrl}/properties/units/${unitId}`, unit);
   }
 
   createPropertyCharges(request: CreatePropertyChargesRequest): Observable<void> {

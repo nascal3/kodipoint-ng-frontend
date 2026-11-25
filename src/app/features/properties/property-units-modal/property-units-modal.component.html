@@ -296,6 +296,7 @@
                   class="row-action"
                   aria-label="Edit unit"
                   matTooltip="Edit unit"
+                  (click)="openEditUnit(unit)"
                 >
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -332,6 +333,15 @@
     [unit]="unit"
     (closed)="closeAssignTenant()"
     (assigned)="onTenantAssigned()"
+  />
+}
+
+@if (editingUnit(); as unit) {
+  <app-edit-property-unit-modal
+    [property]="property()"
+    [unit]="unit"
+    (closed)="closeEditUnit()"
+    (updated)="onUnitUpdated()"
   />
 }
 

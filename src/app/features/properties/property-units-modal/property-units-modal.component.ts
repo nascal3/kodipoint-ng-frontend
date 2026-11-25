@@ -9,6 +9,7 @@ import { PropertyItem, PropertyUnit, propertyUseType } from '@app/features/prope
 import { PropertyService } from '@app/features/properties/services/properties.service';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import { AssignTenantModalComponent } from '@app/features/properties/assign-tenant-modal/assign-tenant-modal.component';
+import { EditPropertyUnitModalComponent } from '@app/features/properties/edit-property-unit-modal/edit-property-unit-modal.component';
 import { TenantsService } from '@app/features/tenants/services/tenants.service';
 
 interface UnitRequest {
@@ -20,7 +21,7 @@ interface UnitRequest {
 @Component({
   selector: 'app-property-units-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, AssignTenantModalComponent, ...MATERIAL_MODULES],
+  imports: [CommonModule, FormsModule, AssignTenantModalComponent, EditPropertyUnitModalComponent, ...MATERIAL_MODULES],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './property-units-modal.component.html',
   styleUrl: './property-units-modal.component.scss',
@@ -94,6 +95,7 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
       .reduce((total, unit) => total + Number(unit.marketRent), 0)
   );
   readonly assigningUnit = signal<PropertyUnit | null>(null);
+  readonly editingUnit = signal<PropertyUnit | null>(null);
   readonly unassigningUnit = signal<PropertyUnit | null>(null);
   readonly isUnassigning = signal(false);
   readonly unassignError = signal('');
@@ -215,6 +217,19 @@ export class PropertyUnitsModalComponent implements OnInit, OnDestroy {
     this.closeAssignTenant();
     this.refreshCurrentPage();
     this.tenantAssigned.emit();
+  }
+
+  openEditUnit(unit: PropertyUnit): void {
+    this.editingUnit.set(unit);
+  }
+
+  closeEditUnit(): void {
+    this.editingUnit.set(null);
+  }
+
+  onUnitUpdated(): void {
+    this.closeEditUnit();
+    this.refreshCurrentPage();
   }
 
   openUnassignConfirmation(unit: PropertyUnit): void {
