@@ -407,6 +407,18 @@
   text-align: center;
   color: #94a3b8;
   font-size: 13px;
+
+  .empty-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    font-size: 20px;
+    vertical-align: middle;
+  }
+
+  .empty-text {
+    vertical-align: middle;
+  }
 }
 
 ::ng-deep .invoices-table .mat-mdc-cell.empty-cell {

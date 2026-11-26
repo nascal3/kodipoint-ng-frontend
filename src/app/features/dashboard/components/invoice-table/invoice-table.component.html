@@ -169,7 +169,8 @@
 
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell empty-cell" [attr.colspan]="displayedColumns.length">
-          No matching invoices found.
+          <mat-icon class="empty-icon">receipt_long</mat-icon>
+          <span class="empty-text">No invoices found</span>
         </td>
       </tr>
     </table>
