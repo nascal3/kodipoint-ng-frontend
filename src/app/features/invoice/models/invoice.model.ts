@@ -124,6 +124,7 @@ export interface InvoiceListResponse {
 
 export interface InvoiceQueryParams {
   status?: string;
+  invoiceNumber?: string;
   propertyId?: string;
   tenantId?: string;
   fromDate?: string;

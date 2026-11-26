@@ -95,7 +95,7 @@
           </mat-form-field>
           <mat-form-field appearance="outline" class="search-field">
             <mat-icon matPrefix>search</mat-icon>
-            <input matInput placeholder="Search invoices..." [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+            <input matInput placeholder="Search invoices..." [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)" />
           </mat-form-field>
 
           <button mat-icon-button class="refresh-button" aria-label="Refresh payments" matTooltip="Refresh Table" (click)="refreshTableData()">
@@ -205,8 +205,8 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"
               (click)="selectInvoice(row)"
               [class.selected-row]="selectedInvoice()?.id === row.id"></tr>
-          <tr mat-row *matNoDataRow class="empty-row">
-            <td class="empty-cell" [attr.colspan]="displayedColumns.length">
+          <tr *matNoDataRow class="mat-row empty-row">
+            <td class="mat-cell empty-cell" [attr.colspan]="displayedColumns.length">
               <mat-icon class="empty-icon">receipt_long</mat-icon>
               <span class="empty-text">No invoices found</span>
             </td>

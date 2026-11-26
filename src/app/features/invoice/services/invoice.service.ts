@@ -62,6 +62,7 @@ export class InvoiceService {
     let httpParams = new HttpParams();
 
     if (params.status) httpParams = httpParams.set('status', params.status);
+    if (params.invoiceNumber) httpParams = httpParams.set('invoiceNumber', params.invoiceNumber);
     if (params.propertyId) httpParams = httpParams.set('propertyId', params.propertyId);
     if (params.tenantId) httpParams = httpParams.set('tenantId', params.tenantId);
     if (params.fromDate) httpParams = httpParams.set('fromDate', params.fromDate);

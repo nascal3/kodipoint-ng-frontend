@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { InvoiceService } from './services/invoice.service';
 import type { Invoice, InvoiceDetails, InvoiceQueryParams, InvoiceSummaryResponse } from './models/invoice.model';
@@ -20,6 +21,7 @@ import type { Invoice, InvoiceDetails, InvoiceQueryParams, InvoiceSummaryRespons
 })
 export class InvoiceComponent {
   private readonly invoiceService = inject(InvoiceService);
+  private readonly searchInput$ = new Subject<string>();
 
   readonly invoices = this.invoiceService.getInvoices;
   readonly pagination = this.invoiceService.getPagination;
@@ -39,6 +41,13 @@ export class InvoiceComponent {
     });
 
     this.loadInvoices();
+
+    this.searchInput$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(() => {
+        this.page.set(1);
+        this.loadInvoices();
+      });
   }
 
   private formatQueryDate(date: Date): string {
@@ -56,6 +65,7 @@ export class InvoiceComponent {
 
     return {
       status: filter === 'all' ? undefined : filter,
+      invoiceNumber: this.searchQuery().trim() || undefined,
       fromDate: this.formatQueryDate(fromDate),
       toDate: this.formatQueryDate(toDate),
       page: this.page(),
@@ -71,6 +81,11 @@ export class InvoiceComponent {
     this.selectedFilter.set(value);
     this.page.set(1);
     this.loadInvoices();
+  }
+
+  onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+    this.searchInput$.next(value);
   }
 
   onPageChange(event: PageEvent): void {
