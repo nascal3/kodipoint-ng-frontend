@@ -19,6 +19,16 @@ export interface InvoiceSummaryResponse {
   };
 }
 
+export type InvoiceStatus =
+  | 'paid'
+  | 'overdue'
+  | 'sent'
+  | 'issued'
+  | 'draft'
+  | 'partially_paid'
+  | 'cancelled'
+  | 'pending';
+
 export interface Invoice {
   id: string;
   invoiceNumber: string;
@@ -33,7 +43,7 @@ export interface Invoice {
     additionalCharges: number;
   };
   amount: number;
-  status: 'paid' | 'overdue' | 'sent' | 'draft';
+  status: InvoiceStatus;
   delivery: {
     email?: string;
     emailStatus?: 'delivered' | 'pending';
@@ -59,4 +69,65 @@ export interface InvoiceDetails extends Invoice {
     phone: string;
     phoneStatus: 'ok' | 'pending';
   };
+}
+
+export interface InvoiceTenant {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+}
+
+export interface InvoiceProperty {
+  id: string;
+  name: string;
+}
+
+export interface InvoicePropertyUnit {
+  id: string;
+  unitNumber: string;
+}
+
+export interface InvoiceApiItem {
+  id: string;
+  invoiceNumber: string;
+  issueDate: string;
+  dueDate: string;
+  subtotal: string;
+  totalAmount: string;
+  amountPaid: string;
+  balanceDue: string;
+  status: string;
+  notes?: string;
+  smsSent?: string;
+  emailSend?: string;
+  paidDate?: string;
+  tenant?: InvoiceTenant;
+  property?: InvoiceProperty;
+  propertyUnit?: InvoicePropertyUnit;
+}
+
+export interface InvoicePagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface InvoiceListResponse {
+  data: InvoiceApiItem[];
+  pagination: InvoicePagination;
+}
+
+export interface InvoiceQueryParams {
+  status?: string;
+  propertyId?: string;
+  tenantId?: string;
+  fromDate?: string;
+  toDate?: string;
+  page?: number;
+  limit?: number;
 }

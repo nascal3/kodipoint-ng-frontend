@@ -2,109 +2,36 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import type { Invoice, InvoiceDetails, InvoiceSummaryData, InvoiceSummaryResponse } from '../models/invoice.model';
+import type {
+  Invoice,
+  InvoiceApiItem,
+  InvoiceDetails,
+  InvoiceListResponse,
+  InvoicePagination,
+  InvoiceQueryParams,
+  InvoiceStatus,
+  InvoiceSummaryData,
+  InvoiceSummaryResponse,
+} from '../models/invoice.model';
+
+const AVATAR_VARIANTS: Invoice['avatarVariant'][] = [
+  'primary',
+  'secondary',
+  'indigo',
+  'tertiary',
+];
 
 @Injectable({
   providedIn: 'root'
 })
 export class InvoiceService {
   private readonly http = inject(HttpClient);
-  private readonly invoices = signal<Invoice[]>([
-    {
-      id: '1',
-      invoiceNumber: '#INV-2026-0891',
-      tenant: 'John Doe',
-      tenantInitials: 'JD',
-      avatarVariant: 'primary',
-      propertyUnit: 'Apt 4B • Sapphire Heights',
-      dueDate: 'Oct 05, 2026',
-      daysInfo: 'Paid on Oct 03',
-      breakdown: {
-        baseRent: 75000,
-        additionalCharges: 3500
-      },
-      amount: 78500,
-      status: 'paid',
-      delivery: {
-        email: 'john.doe@enterprise.ke',
-        emailStatus: 'delivered',
-        sms: '+254 712 *** 890',
-        smsStatus: 'ok'
-      },
-      billingCycle: 'October Billing Cycle',
-      issueDate: '01 Oct 2026'
-    },
-    {
-      id: '2',
-      invoiceNumber: '#INV-2026-0892',
-      tenant: 'Faith Mwangi',
-      tenantInitials: 'FM',
-      avatarVariant: 'secondary',
-      propertyUnit: 'Unit 12C • Westland Towers',
-      dueDate: 'Oct 05, 2026',
-      daysInfo: '3 days overdue',
-      breakdown: {
-        baseRent: 110000,
-        additionalCharges: 12000
-      },
-      amount: 122000,
-      status: 'overdue',
-      delivery: {
-        email: 'faith.mwangi@email.com',
-        emailStatus: 'delivered',
-        sms: '+254 722 *** 456',
-        smsStatus: 'ok'
-      },
-      billingCycle: 'October Billing Cycle',
-      issueDate: '01 Oct 2026'
-    },
-    {
-      id: '3',
-      invoiceNumber: '#INV-2026-0893',
-      tenant: 'Amani Tech Ltd',
-      tenantInitials: 'AT',
-      avatarVariant: 'indigo',
-      propertyUnit: 'Suite 201 • Commercial Plaza',
-      dueDate: 'Oct 10, 2026',
-      daysInfo: 'Due in 2 days',
-      breakdown: {
-        baseRent: 250000,
-        additionalCharges: 45000
-      },
-      amount: 295000,
-      status: 'sent',
-      delivery: {
-        email: 'accounts@amanitech.co.ke',
-        emailStatus: 'delivered',
-        sms: '+254 733 *** 789',
-        smsStatus: 'ok'
-      },
-      billingCycle: 'October Billing Cycle',
-      issueDate: '01 Oct 2026'
-    },
-    {
-      id: '4',
-      invoiceNumber: '#INV-2026-0894',
-      tenant: 'Brian Kimani',
-      tenantInitials: 'BK',
-      avatarVariant: 'tertiary',
-      propertyUnit: 'Studio 09 • Eden Valley',
-      dueDate: 'Oct 12, 2026',
-      daysInfo: 'Staged Draft',
-      breakdown: {
-        baseRent: 42000,
-        additionalCharges: 2000
-      },
-      amount: 44000,
-      status: 'draft',
-      delivery: {
-        email: 'brian.k@email.com',
-        emailStatus: 'pending'
-      },
-      billingCycle: 'October Billing Cycle',
-      issueDate: '01 Oct 2026'
-    }
-  ]);
+
+  private readonly invoices = signal<Invoice[]>([]);
+  private readonly pagination = signal<InvoicePagination | null>(null);
+
+  readonly getInvoices = this.invoices.asReadonly();
+  readonly getPagination = this.pagination.asReadonly();
 
   readonly summaryData = signal<InvoiceSummaryData[]>([
     {
@@ -129,8 +56,143 @@ export class InvoiceService {
     }
   ]);
 
-  getInvoices = this.invoices.asReadonly();
-  getSummaryData = this.summaryData.asReadonly();
+  readonly getSummaryData = this.summaryData.asReadonly();
+
+  getInvoiceList(params: InvoiceQueryParams): Observable<InvoiceListResponse> {
+    let httpParams = new HttpParams();
+
+    if (params.status) httpParams = httpParams.set('status', params.status);
+    if (params.propertyId) httpParams = httpParams.set('propertyId', params.propertyId);
+    if (params.tenantId) httpParams = httpParams.set('tenantId', params.tenantId);
+    if (params.fromDate) httpParams = httpParams.set('fromDate', params.fromDate);
+    if (params.toDate) httpParams = httpParams.set('toDate', params.toDate);
+    if (params.page != null) httpParams = httpParams.set('page', params.page);
+    if (params.limit != null) httpParams = httpParams.set('limit', params.limit);
+
+    return this.http.get<InvoiceListResponse>(
+      `${environment.apiUrl}/invoices`,
+      { params: httpParams },
+    ).pipe(
+      shareReplay(1),
+    );
+  }
+
+  loadInvoices(params: InvoiceQueryParams): void {
+    this.getInvoiceList(params).subscribe({
+      next: (response) => {
+        this.invoices.set(response.data.map((item, index) => this.mapApiInvoice(item, index)));
+        this.pagination.set(response.pagination);
+      },
+      error: (error) => {
+        console.error('Failed to load invoices', error);
+        this.invoices.set([]);
+        this.pagination.set(null);
+      },
+    });
+  }
+
+  private mapApiInvoice(item: InvoiceApiItem, index: number): Invoice {
+    const subtotal = Number(item.subtotal);
+    const totalAmount = Number(item.totalAmount);
+    const tenantName = [item.tenant?.firstName, item.tenant?.lastName]
+      .filter(Boolean)
+      .join(' ') || 'Unknown Tenant';
+    const propertyUnit = [
+      item.propertyUnit?.unitNumber,
+      item.property?.name,
+    ].filter(Boolean).join(' • ') || '—';
+
+    return {
+      id: item.id,
+      invoiceNumber: `#${item.invoiceNumber}`,
+      tenant: tenantName,
+      tenantInitials: tenantName
+        .split(' ')
+        .map((part) => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase() || '—',
+      avatarVariant: AVATAR_VARIANTS[index % AVATAR_VARIANTS.length],
+      propertyUnit,
+      dueDate: this.formatDate(item.dueDate),
+      daysInfo: this.buildDaysInfo(item),
+      breakdown: {
+        baseRent: subtotal,
+        additionalCharges: totalAmount - subtotal,
+      },
+      amount: totalAmount,
+      status: this.mapStatus(item.status),
+      delivery: {
+        email: item.tenant?.email,
+        emailStatus: item.emailSend ? 'delivered' : 'pending',
+        sms: item.smsSent ? item.tenant?.phone : undefined,
+        smsStatus: item.smsSent ? 'ok' : 'pending',
+      },
+      billingCycle: this.formatBillingCycle(item.issueDate),
+      issueDate: this.formatDate(item.issueDate),
+    };
+  }
+
+  private mapStatus(status: string): InvoiceStatus {
+    switch (status?.toUpperCase()) {
+      case 'PAID':
+        return 'paid';
+      case 'OVERDUE':
+        return 'overdue';
+      case 'ISSUED':
+        return 'issued';
+      case 'PARTIALLY_PAID':
+        return 'partially_paid';
+      case 'CANCELLED':
+        return 'cancelled';
+      case 'DRAFT':
+        return 'draft';
+      default:
+        return 'pending';
+    }
+  }
+
+  private buildDaysInfo(item: InvoiceApiItem): string {
+    const status = item.status?.toUpperCase();
+    if (status === 'PAID' && item.paidDate) {
+      return `Paid on ${this.formatDate(item.paidDate)}`;
+    }
+
+    const due = new Date(item.dueDate);
+    if (Number.isNaN(due.getTime())) return '';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffDays = Math.round((due.getTime() - today.getTime()) / 86_400_000);
+
+    if (status === 'OVERDUE' || diffDays < 0) {
+      return `${Math.abs(diffDays)} days overdue`;
+    }
+    if (diffDays === 0) {
+      return 'Due today';
+    }
+    return `Due in ${diffDays} days`;
+  }
+
+  private formatDate(value?: string): string {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return new Intl.DateTimeFormat('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }).format(date);
+  }
+
+  private formatBillingCycle(issueDate: string): string {
+    const date = new Date(issueDate);
+    if (Number.isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'long',
+      year: 'numeric',
+    }).format(date) + ' Billing Cycle';
+  }
 
   getInvoiceSummary(fromDate: Date, toDate: Date): Observable<InvoiceSummaryResponse> {
     const formatDate = (date: Date): string => {
@@ -156,18 +218,20 @@ export class InvoiceService {
     const invoice = this.invoices().find(inv => inv.id === id);
     if (!invoice) return undefined;
 
+    const additional = invoice.breakdown.additionalCharges;
+
     return {
       ...invoice,
       monthlyBaseRent: invoice.breakdown.baseRent,
-      waterAndCommon: invoice.breakdown.additionalCharges,
-      amenities: invoice.breakdown.additionalCharges,
+      waterAndCommon: additional,
+      amenities: 0,
       garbageAndWater: 0,
       totalPayable: invoice.amount,
       deliveryVerificationTrace: {
         email: invoice.delivery.email || '',
         emailStatus: invoice.delivery.emailStatus || 'pending',
         phone: invoice.delivery.sms || '',
-        phoneStatus: invoice.delivery.smsStatus || 'pending'
+        phoneStatus: invoice.delivery.smsStatus === 'ok' ? 'ok' : 'pending'
       }
     } as InvoiceDetails;
   }

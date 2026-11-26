@@ -87,7 +87,7 @@
         <div class="filter-section">
           <mat-form-field appearance="outline" class="filter-field">
             <mat-icon matPrefix>filter_list</mat-icon>
-            <mat-select [value]="selectedFilter()" (selectionChange)="selectedFilter.set($event.value)">
+            <mat-select [value]="selectedFilter()" (selectionChange)="onFilterChange($event.value)">
               @for (option of filterOptions; track option) {
                 <mat-option [value]="option.value">{{ option.label }}</mat-option>
               }
@@ -205,12 +205,25 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"
               (click)="selectInvoice(row)"
               [class.selected-row]="selectedInvoice()?.id === row.id"></tr>
+          <tr mat-row *matNoDataRow class="empty-row">
+            <td class="empty-cell" [attr.colspan]="displayedColumns.length">
+              <mat-icon class="empty-icon">receipt_long</mat-icon>
+              <span class="empty-text">No invoices found</span>
+            </td>
+          </tr>
         </table>
       </div>
 
       <!-- Pagination -->
       <div class="pagination-section">
-        <mat-paginator [length]="160" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 50]" [showFirstLastButtons]="true"></mat-paginator>
+        <mat-paginator
+          [length]="pagination()?.total ?? 0"
+          [pageIndex]="page() - 1"
+          [pageSize]="pageSize()"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          [showFirstLastButtons]="true"
+          (page)="onPageChange($event)">
+        </mat-paginator>
       </div>
     </div>
 

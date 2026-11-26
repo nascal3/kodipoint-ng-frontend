@@ -664,6 +664,38 @@
       color: #cbd5e1;
     }
   }
+
+  ::ng-deep .mat-mdc-row.empty-row {
+    height: auto;
+    cursor: default;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+}
+
+.empty-cell {
+  padding: 48px 16px !important;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+
+  .empty-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    font-size: 20px;
+    vertical-align: middle;
+  }
+
+  .empty-text {
+    vertical-align: middle;
+  }
+
+  :host-context(html.dark-theme) & {
+    color: #8492a8;
+  }
 }
 
 .header-invoice-id,
@@ -905,6 +937,18 @@
   background: #E0E7FF;
 }
 
+.ledger-balance.status-partially-paid,
+.status-chip.status-partially-paid {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.ledger-balance.status-cancelled,
+.status-chip.status-cancelled {
+  color: #475569;
+  background: #e2e8f0;
+}
+
 :host-context(html.dark-theme) .ledger-balance.status-overdue,
 :host-context(html.dark-theme) .status-chip.status-overdue {
   color: #fb7185;
@@ -929,6 +973,18 @@
   background: rgba(59, 130, 246, 0.16);
 }
 
+:host-context(html.dark-theme) .ledger-balance.status-partially-paid,
+:host-context(html.dark-theme) .status-chip.status-partially-paid {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.16);
+}
+
+:host-context(html.dark-theme) .ledger-balance.status-cancelled,
+:host-context(html.dark-theme) .status-chip.status-cancelled {
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.16);
+}
+
 .status-chip.status-overdue {
   color: #b91c1c !important;
   background: #fee2e2 !important;
@@ -947,6 +1003,16 @@
 .status-chip.status-draft {
   color: #64748B !important;
   background: #E0E7FF !important;
+}
+
+.status-chip.status-partially-paid {
+  color: #b45309 !important;
+  background: #fef3c7 !important;
+}
+
+.status-chip.status-cancelled {
+  color: #475569 !important;
+  background: #e2e8f0 !important;
 }
 
 :host-context(html.dark-theme) .status-chip {

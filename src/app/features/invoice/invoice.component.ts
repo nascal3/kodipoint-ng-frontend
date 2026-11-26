@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { InvoiceService } from './services/invoice.service';
-import type { Invoice, InvoiceDetails, InvoiceSummaryResponse } from './models/invoice.model';
+import type { Invoice, InvoiceDetails, InvoiceQueryParams, InvoiceSummaryResponse } from './models/invoice.model';
 
 @Component({
   selector: 'app-invoice',
@@ -21,7 +22,11 @@ export class InvoiceComponent {
   private readonly invoiceService = inject(InvoiceService);
 
   readonly invoices = this.invoiceService.getInvoices;
+  readonly pagination = this.invoiceService.getPagination;
   readonly invoiceSummary = signal<InvoiceSummaryResponse['summary'] | null>(null);
+
+  readonly page = signal(1);
+  readonly pageSize = signal(10);
 
   constructor() {
     const now = new Date();
@@ -32,16 +37,56 @@ export class InvoiceComponent {
       next: (response) => this.invoiceSummary.set(response.summary),
       error: (error) => console.error('Failed to load invoice summary', error),
     });
+
+    this.loadInvoices();
+  }
+
+  private formatQueryDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private buildQueryParams(): InvoiceQueryParams {
+    const now = new Date();
+    const fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    const toDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const filter = this.selectedFilter();
+
+    return {
+      status: filter === 'all' ? undefined : filter,
+      fromDate: this.formatQueryDate(fromDate),
+      toDate: this.formatQueryDate(toDate),
+      page: this.page(),
+      limit: this.pageSize(),
+    };
+  }
+
+  loadInvoices(): void {
+    this.invoiceService.loadInvoices(this.buildQueryParams());
+  }
+
+  onFilterChange(value: string): void {
+    this.selectedFilter.set(value);
+    this.page.set(1);
+    this.loadInvoices();
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.page.set(event.pageIndex + 1);
+    this.pageSize.set(event.pageSize);
+    this.loadInvoices();
   }
 
   readonly selectedInvoice = signal<InvoiceDetails | null>(
     this.invoiceService.getInvoiceById(this.invoices()[0]?.id ?? '') ?? null,
   );
-  readonly selectedFilter = signal('All Invoices');
+  readonly selectedFilter = signal('all');
   readonly searchQuery = signal('');
 
   readonly filterOptions = [
-    { label: 'All Invoices', value: 'all' },
+    { label: 'All', value: 'all' },
     { label: 'Draft', value: 'DRAFT' },
     { label: 'Issued', value: 'ISSUED' },
     { label: 'Paid', value: 'PAID' },
@@ -72,9 +117,14 @@ export class InvoiceComponent {
       case 'overdue':
         return 'status-overdue';
       case 'sent':
+      case 'issued':
         return 'status-sent';
       case 'draft':
         return 'status-draft';
+      case 'partially_paid':
+        return 'status-partially-paid';
+      case 'cancelled':
+        return 'status-cancelled';
       default:
         return '';
     }
@@ -88,10 +138,16 @@ export class InvoiceComponent {
         return 'OVERDUE';
       case 'sent':
         return 'SENT';
+      case 'issued':
+        return 'ISSUED';
       case 'draft':
         return 'DRAFT';
+      case 'partially_paid':
+        return 'PARTIALLY PAID';
+      case 'cancelled':
+        return 'CANCELLED';
       default:
-        return status.toUpperCase();
+        return status.toUpperCase().replace(/_/g, ' ');
     }
   }
 
@@ -102,9 +158,14 @@ export class InvoiceComponent {
       case 'overdue':
         return 'priority_high';
       case 'sent':
+      case 'issued':
         return 'send';
       case 'draft':
         return 'edit';
+      case 'partially_paid':
+        return 'payments';
+      case 'cancelled':
+        return 'cancel';
       default:
         return 'help_outline';
     }
@@ -141,8 +202,8 @@ export class InvoiceComponent {
 
     return invoices.filter(invoice => {
       const matchesFilter =
-        filter === 'All Invoices' ||
-        invoice.status === filter.toLowerCase();
+        filter === 'all' ||
+        invoice.status === filter.toLowerCase().replace(/ /g, '_');
 
       const matchesSearch =
         invoice.tenant.toLowerCase().includes(search) ||
@@ -154,7 +215,7 @@ export class InvoiceComponent {
   }
 
   refreshTableData() {
-    // Implementation for refreshing table data
+    this.loadInvoices();
   }
 
   get unpaidPercentage(): number {
