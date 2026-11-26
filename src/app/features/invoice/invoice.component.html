@@ -187,6 +187,7 @@
             </td>
           </ng-container>
 
+          <!-- Status Column -->
           <ng-container matColumnDef="status">
             <th mat-header-cell *matHeaderCellDef class="header-status">STATUS</th>
             <td mat-cell *matCellDef="let invoice" class="cell-status">
@@ -202,6 +203,7 @@
             </td>
           </ng-container>
 
+          <!-- Delivery Column -->
           <ng-container matColumnDef="delivery">
             <th mat-header-cell *matHeaderCellDef class="header-delivery">DELIVERY</th>
             <td mat-cell *matCellDef="let invoice" class="cell-delivery">
@@ -296,21 +298,19 @@
           <mat-divider class="divider"></mat-divider>
 
           <div class="billing-breakdown">
-            <div class="breakdown-row">
-              <span class="label">Monthly Base Rent</span>
-              <span class="amount">{{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(selectedInvoice()!.monthlyBaseRent) }}</span>
-            </div>
-            <div class="breakdown-row">
-              <span class="label">Water & Common Amenities</span>
-              <span class="amount">{{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(selectedInvoice()!.waterAndCommon) }}</span>
-            </div>
-            <div class="breakdown-row">
-              <span class="label">Garbage & Night Security</span>
-              <span class="amount">{{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(selectedInvoice()!.garbageAndWater) }}</span>
-            </div>
+            @for (item of selectedInvoice()!.invoiceItems ?? []; track item.id) {
+              <div class="breakdown-row">
+                <span class="label">{{ item.description }}</span>
+                <span class="amount">
+                  {{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(item.totalAmount) }}
+                </span>
+              </div>
+            }
             <div class="breakdown-row total">
               <span class="label">Total Payable</span>
-              <span class="amount">{{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(selectedInvoice()!.totalPayable) }}</span>
+              <span class="amount">
+                {{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(selectedInvoice()!.totalPayable) }}
+              </span>
             </div>
           </div>
 

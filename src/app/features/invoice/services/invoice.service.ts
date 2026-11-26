@@ -35,31 +35,6 @@ export class InvoiceService {
   readonly getPagination = this.pagination.asReadonly();
   readonly getInvoicesLoading = this.invoicesLoading.asReadonly();
 
-  readonly summaryData = signal<InvoiceSummaryData[]>([
-    {
-      title: 'Total Invoiced (This Month)',
-      value: '16,240,000',
-      subtitle: '',
-      iconClass: 'receipt_long',
-    },
-    {
-      title: 'Collected (This Month)',
-      value: '14,820,000',
-      subtitle: '89.2% Settled  •  142 paid units',
-      progress: 89.2,
-      iconClass: 'check_circle',
-    },
-    {
-      title: 'Unpaid (This Month)',
-      value: '1,420,000',
-      subtitle: '18 tenancies',
-      progress: 10.8,
-      iconClass: 'priority_high',
-    }
-  ]);
-
-  readonly getSummaryData = this.summaryData.asReadonly();
-
   getInvoiceList(params: InvoiceQueryParams): Observable<InvoiceListResponse> {
     let httpParams = new HttpParams();
 
@@ -111,6 +86,13 @@ export class InvoiceService {
     return {
       id: item.id,
       invoiceNumber: `#${item.invoiceNumber}`,
+      invoiceItems: item.invoiceItems?.map((lineItem) => ({
+        id: lineItem.id,
+        description: lineItem.description,
+        quantity: Number(lineItem.quantity) || 0,
+        unitAmount: Number(lineItem.unitAmount) || 0,
+        totalAmount: Number(lineItem.totalAmount) || 0,
+      })),
       tenant: tenantName,
       tenantInitials: tenantName
         .split(' ')
