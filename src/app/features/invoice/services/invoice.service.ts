@@ -120,6 +120,7 @@ export class InvoiceService {
         .toUpperCase() || '—',
       avatarVariant: AVATAR_VARIANTS[index % AVATAR_VARIANTS.length],
       propertyUnit,
+      currency: item.property?.currency || '--',
       dueDate: this.formatDate(item.dueDate),
       daysInfo: this.buildDaysInfo(item),
       breakdown: {

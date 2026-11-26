@@ -18,7 +18,7 @@
           </div>
         } @else {
           <div class="kpi-main-val">
-            <span class="currency-prefix default">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
+            <span class="currency-prefix default">{{ invoiceSummary()?.currency ?? '--' }}</span>
             <span class="amount-val default">{{ formatKpiAmount(invoiceSummary()?.totalInvoiced) }}</span>
           </div>
         }
@@ -183,7 +183,7 @@
           <ng-container matColumnDef="amount">
             <th mat-header-cell *matHeaderCellDef class="header-amount">AMOUNT</th>
             <td mat-cell *matCellDef="let invoice" class="cell-amount">
-              {{ formatCurrency(invoice.amount) }}
+              {{invoice.currency}} &nbsp; {{ formatCurrency(invoice.amount) }}
             </td>
           </ng-container>
 
@@ -298,19 +298,19 @@
           <div class="billing-breakdown">
             <div class="breakdown-row">
               <span class="label">Monthly Base Rent</span>
-              <span class="amount">{{ formatDetailedCurrency(selectedInvoice()!.monthlyBaseRent) }}</span>
+              <span class="amount">{{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(selectedInvoice()!.monthlyBaseRent) }}</span>
             </div>
             <div class="breakdown-row">
               <span class="label">Water & Common Amenities</span>
-              <span class="amount">{{ formatDetailedCurrency(selectedInvoice()!.waterAndCommon) }}</span>
+              <span class="amount">{{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(selectedInvoice()!.waterAndCommon) }}</span>
             </div>
             <div class="breakdown-row">
               <span class="label">Garbage & Night Security</span>
-              <span class="amount">{{ formatDetailedCurrency(selectedInvoice()!.garbageAndWater) }}</span>
+              <span class="amount">{{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(selectedInvoice()!.garbageAndWater) }}</span>
             </div>
             <div class="breakdown-row total">
               <span class="label">Total Payable</span>
-              <span class="amount">{{ formatDetailedCurrency(selectedInvoice()!.totalPayable) }}</span>
+              <span class="amount">{{ selectedInvoice()!.currency }} &nbsp; {{ formatCurrency(selectedInvoice()!.totalPayable) }}</span>
             </div>
           </div>
 

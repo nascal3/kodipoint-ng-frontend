@@ -36,6 +36,7 @@ export interface Invoice {
   tenantInitials: string;
   avatarVariant: 'primary' | 'secondary' | 'tertiary' | 'error' | 'indigo';
   propertyUnit: string;
+  currency: string;
   dueDate: string;
   daysInfo?: string; // e.g., "Paid on Oct 03" or "3 days overdue"
   breakdown: {
@@ -82,6 +83,7 @@ export interface InvoiceTenant {
 export interface InvoiceProperty {
   id: string;
   name: string;
+  currency: string;
 }
 
 export interface InvoicePropertyUnit {
