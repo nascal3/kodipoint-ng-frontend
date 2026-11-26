@@ -89,7 +89,7 @@
             <mat-icon matPrefix>filter_list</mat-icon>
             <mat-select [value]="selectedFilter()" (selectionChange)="selectedFilter.set($event.value)">
               @for (option of filterOptions; track option) {
-                <mat-option [value]="option">{{ option }}</mat-option>
+                <mat-option [value]="option.value">{{ option.label }}</mat-option>
               }
             </mat-select>
           </mat-form-field>

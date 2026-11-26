@@ -41,11 +41,13 @@ export class InvoiceComponent {
   readonly searchQuery = signal('');
 
   readonly filterOptions = [
-    'All Invoices',
-    'Paid',
-    'Overdue',
-    'Sent',
-    'Draft',
+    { label: 'All Invoices', value: 'all' },
+    { label: 'Draft', value: 'DRAFT' },
+    { label: 'Issued', value: 'ISSUED' },
+    { label: 'Paid', value: 'PAID' },
+    { label: 'Partially Paid', value: 'PARTIALLY_PAID' },
+    { label: 'Overdue', value: 'OVERDUE' },
+    { label: 'Cancelled', value: 'CANCELLED' },
   ];
 
   displayedColumns: string[] = [
