@@ -11,8 +11,8 @@
           </div>
         </div>
         <div class="kpi-main-val">
-          <span class="currency-prefix default">KES</span>
-          <span class="amount-val default">16,240,000</span>
+          <span class="currency-prefix default">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
+          <span class="amount-val default">{{ formatKpiAmount(invoiceSummary()?.totalInvoiced) }}</span>
         </div>
       </div>
 
@@ -25,14 +25,14 @@
           </div>
         </div>
         <div class="kpi-main-val">
-          <span class="currency-prefix">KES</span>
-          <span class="amount-val green">14,820,000</span>
+          <span class="currency-prefix">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
+          <span class="amount-val green">{{ formatKpiAmount(invoiceSummary()?.totalCollected) }}</span>
         </div>
         <div class="kpi-progress-track">
-          <div class="kpi-progress-fill fill-green" [style.width.%]="89.2"></div>
+          <div class="kpi-progress-fill fill-green" [style.width.%]="invoiceSummary()?.settledPercentage ?? 0"></div>
         </div>
         <div class="kpi-detail">
-          <span class="green">89.2% Settled</span>  •  142 paid units
+          <span class="green">{{ invoiceSummary()?.settledPercentage ?? 0 }}% Settled</span>  •  {{ invoiceSummary()?.paidUnits ?? 0 }} paid units
         </div>
       </div>
 
@@ -45,14 +45,14 @@
           </div>
         </div>
         <div class="kpi-main-val">
-          <span class="currency-prefix">KES</span>
-          <span class="amount-val red">1,420,000</span>
+          <span class="currency-prefix">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
+          <span class="amount-val red">{{ formatKpiAmount(invoiceSummary()?.totalUnpaid) }}</span>
         </div>
         <div class="kpi-progress-track">
-          <div class="kpi-progress-fill fill-red" [style.width.%]="10.8"></div>
+          <div class="kpi-progress-fill fill-red" [style.width.%]="unpaidPercentage"></div>
         </div>
         <div class="kpi-detail">
-          <span>18 tenancies</span>
+          <span>{{ invoiceSummary()?.unpaidTenancies ?? 0 }} tenancies</span>
         </div>
       </div>
     </section>

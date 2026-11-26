@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { InvoiceService } from './services/invoice.service';
-import type { Invoice, InvoiceDetails } from './models/invoice.model';
+import type { Invoice, InvoiceDetails, InvoiceSummaryResponse } from './models/invoice.model';
 
 @Component({
   selector: 'app-invoice',
@@ -21,6 +21,18 @@ export class InvoiceComponent {
   private readonly invoiceService = inject(InvoiceService);
 
   readonly invoices = this.invoiceService.getInvoices;
+  readonly invoiceSummary = signal<InvoiceSummaryResponse['summary'] | null>(null);
+
+  constructor() {
+    const now = new Date();
+    const fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    const toDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    this.invoiceService.getInvoiceSummary(fromDate, toDate).subscribe({
+      next: (response) => this.invoiceSummary.set(response.summary),
+      error: (error) => console.error('Failed to load invoice summary', error),
+    });
+  }
 
   readonly selectedInvoice = signal<InvoiceDetails | null>(
     this.invoiceService.getInvoiceById(this.invoices()[0]?.id ?? '') ?? null,
@@ -141,6 +153,19 @@ export class InvoiceComponent {
 
   refreshTableData() {
     // Implementation for refreshing table data
+  }
+
+  get unpaidPercentage(): number {
+    const summary = this.invoiceSummary();
+    if (!summary) return 0;
+    const totalInvoiced = Number(summary.totalInvoiced);
+    return totalInvoiced > 0 ? (Number(summary.totalUnpaid) / totalInvoiced) * 100 : 0;
+  }
+
+  formatKpiAmount(amount?: string): string {
+    return new Intl.NumberFormat('en-KE', {
+      maximumFractionDigits: 0,
+    }).format(Number(amount ?? 0));
   }
 
   formatCurrency(amount: number): string {

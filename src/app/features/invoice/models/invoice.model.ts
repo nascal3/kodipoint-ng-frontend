@@ -7,6 +7,18 @@ export interface InvoiceSummaryData {
   iconClass?: string;
 }
 
+export interface InvoiceSummaryResponse {
+  summary: {
+    totalInvoiced: string;
+    totalCollected: string;
+    totalUnpaid: string;
+    settledPercentage: number;
+    paidUnits: number;
+    unpaidTenancies: number;
+    currency: string;
+  };
+}
+
 export interface Invoice {
   id: string;
   invoiceNumber: string;

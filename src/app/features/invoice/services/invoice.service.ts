@@ -1,10 +1,14 @@
-import { Injectable, signal } from '@angular/core';
-import type { Invoice, InvoiceDetails, InvoiceSummaryData } from '../models/invoice.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, shareReplay } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import type { Invoice, InvoiceDetails, InvoiceSummaryData, InvoiceSummaryResponse } from '../models/invoice.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InvoiceService {
+  private readonly http = inject(HttpClient);
   private readonly invoices = signal<Invoice[]>([
     {
       id: '1',
@@ -127,6 +131,26 @@ export class InvoiceService {
 
   getInvoices = this.invoices.asReadonly();
   getSummaryData = this.summaryData.asReadonly();
+
+  getInvoiceSummary(fromDate: Date, toDate: Date): Observable<InvoiceSummaryResponse> {
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const params = new HttpParams()
+      .set('fromDate', formatDate(fromDate))
+      .set('toDate', formatDate(toDate));
+
+    return this.http.get<InvoiceSummaryResponse>(
+      `${environment.apiUrl}/reports/invoice-summary`,
+      { params },
+    ).pipe(
+      shareReplay(1),
+    );
+  }
 
   getInvoiceById(id: string): InvoiceDetails | undefined {
     const invoice = this.invoices().find(inv => inv.id === id);
