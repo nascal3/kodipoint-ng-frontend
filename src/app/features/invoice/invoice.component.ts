@@ -25,7 +25,9 @@ export class InvoiceComponent {
 
   readonly invoices = this.invoiceService.getInvoices;
   readonly pagination = this.invoiceService.getPagination;
+  readonly invoicesLoading = this.invoiceService.getInvoicesLoading;
   readonly invoiceSummary = signal<InvoiceSummaryResponse['summary'] | null>(null);
+  readonly summaryLoading = signal(true);
 
   readonly page = signal(1);
   readonly pageSize = signal(10);
@@ -36,8 +38,14 @@ export class InvoiceComponent {
     const toDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
     this.invoiceService.getInvoiceSummary(fromDate, toDate).subscribe({
-      next: (response) => this.invoiceSummary.set(response.summary),
-      error: (error) => console.error('Failed to load invoice summary', error),
+      next: (response) => {
+        this.invoiceSummary.set(response.summary);
+        this.summaryLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Failed to load invoice summary', error);
+        this.summaryLoading.set(false);
+      },
     });
 
     this.loadInvoices();

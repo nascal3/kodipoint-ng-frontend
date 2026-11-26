@@ -29,9 +29,11 @@ export class InvoiceService {
 
   private readonly invoices = signal<Invoice[]>([]);
   private readonly pagination = signal<InvoicePagination | null>(null);
+  private readonly invoicesLoading = signal(false);
 
   readonly getInvoices = this.invoices.asReadonly();
   readonly getPagination = this.pagination.asReadonly();
+  readonly getInvoicesLoading = this.invoicesLoading.asReadonly();
 
   readonly summaryData = signal<InvoiceSummaryData[]>([
     {
@@ -79,15 +81,18 @@ export class InvoiceService {
   }
 
   loadInvoices(params: InvoiceQueryParams): void {
+    this.invoicesLoading.set(true);
     this.getInvoiceList(params).subscribe({
       next: (response) => {
         this.invoices.set(response.data.map((item, index) => this.mapApiInvoice(item, index)));
         this.pagination.set(response.pagination);
+        this.invoicesLoading.set(false);
       },
       error: (error) => {
         console.error('Failed to load invoices', error);
         this.invoices.set([]);
         this.pagination.set(null);
+        this.invoicesLoading.set(false);
       },
     });
   }

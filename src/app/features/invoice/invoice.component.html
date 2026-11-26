@@ -3,57 +3,83 @@
   <div class="summary-section">
     <section class="summary-cards" aria-label="Invoice Key Performance Indicators">
       <!-- Card 1: Total Invoiced -->
-      <div class="kpi-card">
+      <div class="kpi-card" [attr.aria-busy]="summaryLoading()">
         <div class="kpi-card-header">
           <span class="kpi-title">Total Invoiced (This Month)</span>
           <div class="kpi-icon-bubble bubble-purple">
             <mat-icon class="kpi-icon">receipt_long</mat-icon>
           </div>
         </div>
-        <div class="kpi-main-val">
-          <span class="currency-prefix default">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
-          <span class="amount-val default">{{ formatKpiAmount(invoiceSummary()?.totalInvoiced) }}</span>
-        </div>
+        @if (summaryLoading()) {
+          <div class="kpi-loading-content" role="status" aria-live="polite">
+            <span class="skeleton-placeholder kpi-skeleton kpi-amount-skeleton" aria-hidden="true"></span>
+            <span class="skeleton-placeholder kpi-skeleton kpi-detail-skeleton" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading total invoiced</span>
+          </div>
+        } @else {
+          <div class="kpi-main-val">
+            <span class="currency-prefix default">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
+            <span class="amount-val default">{{ formatKpiAmount(invoiceSummary()?.totalInvoiced) }}</span>
+          </div>
+        }
       </div>
 
       <!-- Card 2: Collected -->
-      <div class="kpi-card">
+      <div class="kpi-card" [attr.aria-busy]="summaryLoading()">
         <div class="kpi-card-header">
           <span class="kpi-title">Collected (This Month)</span>
           <div class="kpi-icon-bubble bubble-green">
             <mat-icon class="kpi-icon">check_circle</mat-icon>
           </div>
         </div>
-        <div class="kpi-main-val">
-          <span class="currency-prefix">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
-          <span class="amount-val green">{{ formatKpiAmount(invoiceSummary()?.totalCollected) }}</span>
-        </div>
-        <div class="kpi-progress-track">
-          <div class="kpi-progress-fill fill-green" [style.width.%]="invoiceSummary()?.settledPercentage ?? 0"></div>
-        </div>
-        <div class="kpi-detail">
-          <span class="green">{{ invoiceSummary()?.settledPercentage ?? 0 }}% Settled</span>  •  {{ invoiceSummary()?.paidUnits ?? 0 }} paid units
-        </div>
+        @if (summaryLoading()) {
+          <div class="kpi-loading-content" role="status" aria-live="polite">
+            <span class="skeleton-placeholder kpi-skeleton kpi-amount-skeleton" aria-hidden="true"></span>
+            <span class="skeleton-placeholder kpi-skeleton kpi-progress-skeleton" aria-hidden="true"></span>
+            <span class="skeleton-placeholder kpi-skeleton kpi-detail-skeleton" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading collected amount</span>
+          </div>
+        } @else {
+          <div class="kpi-main-val">
+            <span class="currency-prefix">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
+            <span class="amount-val green">{{ formatKpiAmount(invoiceSummary()?.totalCollected) }}</span>
+          </div>
+          <div class="kpi-progress-track">
+            <div class="kpi-progress-fill fill-green" [style.width.%]="invoiceSummary()?.settledPercentage ?? 0"></div>
+          </div>
+          <div class="kpi-detail">
+            <span class="green">{{ invoiceSummary()?.settledPercentage ?? 0 }}% Settled</span>  •  {{ invoiceSummary()?.paidUnits ?? 0 }} paid units
+          </div>
+        }
       </div>
 
       <!-- Card 3: Unpaid -->
-      <div class="kpi-card">
+      <div class="kpi-card" [attr.aria-busy]="summaryLoading()">
         <div class="kpi-card-header">
           <span class="kpi-title">Unpaid (This Month)</span>
           <div class="kpi-icon-bubble bubble-red">
             <mat-icon class="kpi-icon">priority_high</mat-icon>
           </div>
         </div>
-        <div class="kpi-main-val">
-          <span class="currency-prefix">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
-          <span class="amount-val red">{{ formatKpiAmount(invoiceSummary()?.totalUnpaid) }}</span>
-        </div>
-        <div class="kpi-progress-track">
-          <div class="kpi-progress-fill fill-red" [style.width.%]="unpaidPercentage"></div>
-        </div>
-        <div class="kpi-detail">
-          <span>{{ invoiceSummary()?.unpaidTenancies ?? 0 }} tenancies</span>
-        </div>
+        @if (summaryLoading()) {
+          <div class="kpi-loading-content" role="status" aria-live="polite">
+            <span class="skeleton-placeholder kpi-skeleton kpi-amount-skeleton" aria-hidden="true"></span>
+            <span class="skeleton-placeholder kpi-skeleton kpi-progress-skeleton" aria-hidden="true"></span>
+            <span class="skeleton-placeholder kpi-skeleton kpi-detail-skeleton" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading unpaid amount</span>
+          </div>
+        } @else {
+          <div class="kpi-main-val">
+            <span class="currency-prefix">{{ invoiceSummary()?.currency ?? 'KES' }}</span>
+            <span class="amount-val red">{{ formatKpiAmount(invoiceSummary()?.totalUnpaid) }}</span>
+          </div>
+          <div class="kpi-progress-track">
+            <div class="kpi-progress-fill fill-red" [style.width.%]="unpaidPercentage"></div>
+          </div>
+          <div class="kpi-detail">
+            <span>{{ invoiceSummary()?.unpaidTenancies ?? 0 }} tenancies</span>
+          </div>
+        }
       </div>
     </section>
 
@@ -106,6 +132,11 @@
 
       <!-- Invoice Table -->
       <div class="invoice-table-container">
+        @if (invoicesLoading()) {
+          <div class="table-loading-overlay">
+            <mat-spinner diameter="40"></mat-spinner>
+          </div>
+        }
         <table mat-table [dataSource]="filteredInvoices" class="invoice-table">
           <!-- Invoice ID Column -->
           <ng-container matColumnDef="invoiceNumber">

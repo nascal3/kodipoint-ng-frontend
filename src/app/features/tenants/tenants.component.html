@@ -2,7 +2,7 @@
   <!-- Top KPI Summary Cards -->
   <section class="kpi-cards-grid" aria-label="Key Performance Indicators">
     <!-- Card 1: Active Leasehold Rate -->
-    <div class="kpi-card kpi-card-secondary">
+    <div class="kpi-card kpi-card-secondary" [attr.aria-busy]="isKpiLoading()">
       <div class="kpi-card-header">
         <span class="kpi-title">Active Leasehold Rate</span>
         <div class="kpi-icon-bubble icon-secondary">
@@ -10,8 +10,12 @@
         </div>
       </div>
       @if (isKpiLoading()) {
-        <div class="kpi-loading" role="status" aria-live="polite">
-          <mat-spinner diameter="24"></mat-spinner>
+        <div class="kpi-loading-content" role="status" aria-live="polite">
+          <div class="kpi-flex-row">
+            <span class="skeleton-placeholder kpi-skeleton kpi-occupancy-skeleton" aria-hidden="true"></span>
+          </div>
+          <span class="skeleton-placeholder kpi-skeleton kpi-detail-skeleton" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading active leasehold rate</span>
         </div>
       } @else {
         <div class="kpi-flex-row">
@@ -25,7 +29,7 @@
     </div>
 
     <!-- Card 2: Tenancies summary-->
-    <div class="kpi-card kpi-card-primary">
+    <div class="kpi-card kpi-card-primary" [attr.aria-busy]="isKpiLoading()">
       <div class="kpi-card-header">
         <span class="kpi-title">New Tenants (This Month)</span>
         <div class="kpi-icon-bubble icon-primary">
@@ -33,8 +37,10 @@
         </div>
       </div>
       @if (isKpiLoading()) {
-        <div class="kpi-loading" role="status" aria-live="polite">
-          <mat-spinner diameter="24"></mat-spinner>
+        <div class="kpi-loading-content" role="status" aria-live="polite">
+          <span class="skeleton-placeholder kpi-skeleton kpi-amount-skeleton" aria-hidden="true"></span>
+          <span class="skeleton-placeholder kpi-skeleton kpi-detail-skeleton" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading new tenants count</span>
         </div>
       } @else {
         <div class="kpi-main-val">
@@ -48,7 +54,7 @@
     </div>
 
     <!-- Card 3: Expiring in 30 Days -->
-    <div class="kpi-card kpi-card-error">
+    <div class="kpi-card kpi-card-error" [attr.aria-busy]="isKpiLoading()">
       <div class="kpi-card-header">
         <span class="kpi-title">Expiring in 30 Days</span>
         <div class="kpi-icon-bubble icon-error">
@@ -56,8 +62,12 @@
         </div>
       </div>
       @if (isKpiLoading()) {
-        <div class="kpi-loading" role="status" aria-live="polite">
-          <mat-spinner diameter="24"></mat-spinner>
+        <div class="kpi-loading-content" role="status" aria-live="polite">
+          <div class="kpi-flex-row">
+            <span class="skeleton-placeholder kpi-skeleton kpi-occupancy-skeleton" aria-hidden="true"></span>
+          </div>
+          <span class="skeleton-placeholder kpi-skeleton kpi-detail-skeleton" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading expiring leases count</span>
         </div>
       } @else {
         <div class="kpi-flex-row">
@@ -129,6 +139,11 @@
       </div>
 
       <div class="table-scroll">
+        @if (isLoading()) {
+          <div class="table-loading-overlay">
+            <mat-spinner diameter="40" aria-label="Loading tenants"></mat-spinner>
+          </div>
+        }
         <table mat-table [dataSource]="tenants()" class="tenants-table" multiTemplateDataRows>
           <!-- Expand Column -->
           <ng-container matColumnDef="expand">
@@ -306,12 +321,7 @@
           ></tr>
           <tr *matNoDataRow>
             <td class="mat-cell table-message-cell" [attr.colspan]="displayedColumns.length">
-              @if (isLoading()) {
-                <div class="table-message" role="status" aria-live="polite">
-                  <mat-spinner diameter="32" aria-label="Loading tenants"></mat-spinner>
-                  <span>Loading tenants...</span>
-                </div>
-              } @else if (hasLoadError()) {
+              @if (hasLoadError()) {
                 <div class="table-message" role="alert">
                   <span>Unable to load tenants.</span>
                   <button mat-button color="primary" (click)="loadTenants()">Try again</button>
