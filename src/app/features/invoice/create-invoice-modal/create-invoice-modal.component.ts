@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, OnInit, Output, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, OnInit, Output, ViewChild, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, catchError, debounceTime, distinctUntilChanged, startWith, switchMap, tap } from 'rxjs';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
+import { MatDatepicker } from '@angular/material/datepicker';
 import { TenantsService } from '@app/features/tenants/services/tenants.service';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import type { Tenant, TenantSearchResult, Tenancy } from '@app/features/tenants/models/tenants.interface';
@@ -60,8 +61,22 @@ export class CreateInvoiceModalComponent implements OnInit {
   readonly selectedTenancy = signal<Tenancy | null>(null);
   readonly tenantSearchControl = new FormControl('', { nonNullable: true });
   readonly tenantIdControl = new FormControl('', { nonNullable: true });
+  readonly issueDateControl = new FormControl<Date | null>(null, [this.minDateValidator]);
+  readonly dueDateControl = new FormControl<Date | null>(null, [this.minDueDateValidator]);
+  readonly notesControl = new FormControl('', { nonNullable: true });
+  readonly today = new Date();
+
+  @ViewChild('issueDatePicker') issueDatePicker!: MatDatepicker<Date>;
+  @ViewChild('dueDatePicker') dueDatePicker!: MatDatepicker<Date>;
 
   ngOnInit(): void {
+    // Subscribe to issue date changes to revalidate due date
+    this.issueDateControl.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => {
+      this.dueDateControl.updateValueAndValidity();
+    });
+
     this.tenantSearchControl.valueChanges.pipe(
       startWith(this.tenantSearchControl.value),
       tap(() => {
@@ -131,6 +146,11 @@ export class CreateInvoiceModalComponent implements OnInit {
     this.selectedTenancy.set(null);
     this.tenantsError.set('');
 
+    // Reset invoice fields when tenant changes
+    this.issueDateControl.setValue(null);
+    this.dueDateControl.setValue(null);
+    this.notesControl.setValue('');
+
     // Fetch full tenant details with tenancies
     this.tenantsService.getTenantById(tenantId).subscribe({
       next: (fullTenant) => {
@@ -151,6 +171,14 @@ export class CreateInvoiceModalComponent implements OnInit {
 
   selectTenancy(tenancy: Tenancy): void {
     this.selectedTenancy.set(tenancy);
+
+    // Set default dates when tenancy is selected
+    const today = new Date();
+    const dueDate = new Date();
+    dueDate.setDate(today.getDate() + 14);
+
+    this.issueDateControl.setValue(today);
+    this.dueDateControl.setValue(dueDate);
   }
 
   reviewInvoice(): void {
@@ -198,6 +226,35 @@ export class CreateInvoiceModalComponent implements OnInit {
   private formatDate(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  private minDateValidator(control: AbstractControl): { [key: string]: any } | null {
+    const value = control.value as Date | null;
+    if (!value) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const selectedDate = new Date(value);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    return selectedDate < today ? { pastDate: true } : null;
+  }
+
+  private minDueDateValidator(control: AbstractControl): { [key: string]: any } | null {
+    const value = control.value as Date | null;
+    if (!value) return null;
+
+    const issueDate = this.issueDateControl.value;
+    if (!issueDate) return null;
+
+    const selectedDate = new Date(value);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    const issueDateOnly = new Date(issueDate);
+    issueDateOnly.setHours(0, 0, 0, 0);
+
+    return selectedDate < issueDateOnly ? { dueDateBeforeIssueDate: true } : null;
   }
 
   private errorMessage(error: unknown, fallback: string): string {

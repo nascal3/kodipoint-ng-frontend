@@ -147,6 +147,47 @@
           </div>
         </div>
       }
+
+      <!-- Invoice Schedule & Details Section -->
+      @if (selectedTenancy()) {
+        <div class="invoice-schedule-section">
+          <mat-divider class="divider"></mat-divider>
+          <h3 class="section-title">INVOICE SCHEDULE & DETAILS</h3>
+          <div class="schedule-fields-grid">
+            <mat-form-field appearance="outline" class="date-field" subscriptSizing="fixed">
+              <mat-label>Issue Date</mat-label>
+              <input matInput [matDatepicker]="issueDatePicker" [formControl]="issueDateControl" [min]="today" aria-label="Issue Date">
+              <mat-datepicker-toggle matIconSuffix [for]="issueDatePicker">
+                <mat-icon>calendar_today</mat-icon>
+              </mat-datepicker-toggle>
+              <mat-datepicker #issueDatePicker></mat-datepicker>
+              <mat-hint>Date when invoice is posted</mat-hint>
+              @if (issueDateControl.hasError('pastDate')) {
+                <mat-error>Date cannot be in the past</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="date-field" subscriptSizing="fixed">
+              <mat-label>Payment Due Date</mat-label>
+              <input matInput [matDatepicker]="dueDatePicker" [formControl]="dueDateControl" [min]="issueDateControl.value" aria-label="Payment Due Date">
+              <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker">
+                <mat-icon>calendar_today</mat-icon>
+              </mat-datepicker-toggle>
+              <mat-datepicker #dueDatePicker></mat-datepicker>
+              @if (dueDateControl.hasError('dueDateBeforeIssueDate')) {
+                <mat-error>Due date cannot be before issue date</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-field full-width description-field">
+            <mat-form-field appearance="outline" class="auth-input notes-field" subscriptSizing="dynamic">
+              <mat-label>Invoice Notes (Optional)</mat-label>
+              <textarea matInput [formControl]="notesControl" rows="3" placeholder="Add details about this invoice" aria-label="Invoice Notes"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      }
     </div>
 
     <footer class="modal-footer">
@@ -164,7 +205,7 @@
         type="button"
         class="modal-submit-button"
         (click)="reviewInvoice()"
-        [disabled]="!selectedTenant() || !selectedTenancy() || isGenerating()"
+        [disabled]="!selectedTenant() || !selectedTenancy() || issueDateControl.invalid || dueDateControl.invalid || isGenerating()"
       >
         @if (isGenerating()) {
           <mat-spinner diameter="18" aria-label="Generating preview"></mat-spinner>
