@@ -49,6 +49,7 @@ export interface Tenancy {
   startDate: string;
   endDate: string | null;
   status: string;
+  notes?: string;
   assignedAt: string;
   unassignedAt: string | null;
   createdAt: string;
@@ -75,10 +76,10 @@ export interface Tenant {
   phone: string;
   identificationDoc?: 'NATIONAL_ID' | 'PASSPORT';
   identificationDocNumber?: string;
-  address: string;
-  emergencyContactName: string;
-  emergencyContactPhone: string;
-  emergencyContactRelationship: string;
+  address?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  emergencyContactRelationship?: string;
   status: string;
   createdAt: string;
   updatedAt: string;

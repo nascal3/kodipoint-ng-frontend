@@ -465,8 +465,8 @@ export class TenantsComponent implements OnInit {
         endTenure: activeTenancy?.endDate ? this.calculateEndTenure(activeTenancy.endDate) : 'N/A',
         contractRent: activeTenancy?.unit?.marketRent || '0',
         rentPeriod: activeTenancy?.unit?.billingFrequency || 'N/A',
-        emergencyContact: tenant.emergencyContactName,
-        emergencyPhone: tenant.emergencyContactPhone,
+        emergencyContact: tenant.emergencyContactName || 'N/A',
+        emergencyPhone: tenant.emergencyContactPhone || 'N/A',
         tenancyStatus: this.mapTenancyStatus(activeTenancy?.status || tenant.status),
       };
     });

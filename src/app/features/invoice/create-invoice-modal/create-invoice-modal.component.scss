@@ -211,6 +211,57 @@
   text-overflow: ellipsis;
 }
 
+.tenant-id-doc {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.id-label {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.id-number {
+  font-family: 'Courier New', monospace;
+}
+
+.tenant-address {
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.tenant-emergency {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.emergency-label {
+  font-weight: 600;
+}
+
+.emergency-contact {
+  font-weight: 500;
+}
+
+.emergency-phone {
+  font-family: 'Courier New', monospace;
+}
+
+.emergency-relationship {
+  color: #94a3b8;
+}
+
 .change-tenant-button {
   color: #94a3b8;
 }
@@ -452,8 +503,15 @@
 }
 
 :host-context(html.dark-theme) .tenant-contact,
-:host-context(html.dark-theme) .tenant-phone {
+:host-context(html.dark-theme) .tenant-phone,
+:host-context(html.dark-theme) .tenant-id-doc,
+:host-context(html.dark-theme) .tenant-address,
+:host-context(html.dark-theme) .tenant-emergency {
   color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .emergency-relationship {
+  color: #64748b;
 }
 
 :host-context(html.dark-theme) .change-tenant-button {

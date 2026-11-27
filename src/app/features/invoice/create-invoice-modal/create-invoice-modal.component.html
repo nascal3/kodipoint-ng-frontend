@@ -32,13 +32,13 @@
         <h3 class="section-title">Select Tenant</h3>
         <mat-form-field appearance="outline" class="tenant-select-field" subscriptSizing="fixed">
           <mat-select
-            [formControl]="tenantSearchControl"
+            [formControl]="tenantIdControl"
             aria-label="Tenant Profile"
             panelClass="tenant-select-panel"
             (selectionChange)="selectTenant($event.value)"
           >
             <mat-select-trigger>
-              @if (selectedTenant(); as tenant) {
+              @if (selectedTenantForDisplay(); as tenant) {
                 {{ tenantName(tenant) }} &nbsp;  {{ tenant.phone }}
               }
             </mat-select-trigger>
@@ -80,12 +80,29 @@
                 <div class="tenant-name">{{ selectedTenant()!.firstName }} {{ selectedTenant()!.lastName }}</div>
                 <div class="tenant-contact">{{ selectedTenant()!.email }}</div>
                 <div class="tenant-phone">{{ selectedTenant()!.phone }}</div>
+                @if (selectedTenant()!.identificationDoc && selectedTenant()!.identificationDocNumber) {
+                  <div class="tenant-id-doc">
+                    <span class="id-label">{{ selectedTenant()!.identificationDoc }}:</span>
+                    <span class="id-number">{{ selectedTenant()!.identificationDocNumber }}</span>
+                  </div>
+                }
+                @if (selectedTenant()!.address) {
+                  <div class="tenant-address">{{ selectedTenant()!.address }}</div>
+                }
+                @if (selectedTenant()!.emergencyContactName) {
+                  <div class="tenant-emergency">
+                    <span class="emergency-label">Emergency:</span>
+                    <span class="emergency-contact">{{ selectedTenant()!.emergencyContactName }}</span>
+                    <span class="emergency-phone">{{ selectedTenant()!.emergencyContactPhone }}</span>
+                    <span class="emergency-relationship">({{ selectedTenant()!.emergencyContactRelationship }})</span>
+                  </div>
+                }
               </div>
               <button
                 mat-icon-button
                 class="change-tenant-button"
                 aria-label="Change tenant"
-                (click)="selectedTenant.set(null)"
+                (click)="selectedTenant.set(null); tenantIdControl.setValue(''); tenantSearchControl.setValue('')"
               >
                 <mat-icon>close</mat-icon>
               </button>

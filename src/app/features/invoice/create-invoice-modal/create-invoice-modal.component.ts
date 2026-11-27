@@ -59,6 +59,7 @@ export class CreateInvoiceModalComponent implements OnInit {
   readonly isGenerating = signal(false);
   readonly selectedTenancy = signal<Tenancy | null>(null);
   readonly tenantSearchControl = new FormControl('', { nonNullable: true });
+  readonly tenantIdControl = new FormControl('', { nonNullable: true });
 
   ngOnInit(): void {
     this.tenantSearchControl.valueChanges.pipe(
@@ -115,6 +116,12 @@ export class CreateInvoiceModalComponent implements OnInit {
 
   tenantName(tenant: Tenant | TenantSearchResult): string {
     return `${tenant.firstName} ${tenant.lastName}`;
+  }
+
+  selectedTenantForDisplay(): Tenant | TenantSearchResult | null {
+    return this.selectedTenant()
+      ?? this.tenantOptions().find((tenant) => tenant.id === this.tenantIdControl.value)
+      ?? null;
   }
 
   selectTenant(tenantId: string): void {
