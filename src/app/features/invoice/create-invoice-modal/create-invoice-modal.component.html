@@ -163,15 +163,15 @@
         matButton="filled"
         type="button"
         class="modal-submit-button"
-        (click)="generateAndDispatchInvoice()"
+        (click)="reviewInvoice()"
         [disabled]="!selectedTenant() || !selectedTenancy() || isGenerating()"
       >
         @if (isGenerating()) {
-          <mat-spinner diameter="18" aria-label="Generating invoice"></mat-spinner>
+          <mat-spinner diameter="18" aria-label="Generating preview"></mat-spinner>
         } @else {
           <mat-icon>send</mat-icon>
         }
-        <span>{{ isGenerating() ? 'Generating...' : 'Preview Invoice' }}</span>
+        <span>{{ isGenerating() ? 'Generating Preview...' : 'Preview Invoice' }}</span>
       </button>
     </footer>
   </section>

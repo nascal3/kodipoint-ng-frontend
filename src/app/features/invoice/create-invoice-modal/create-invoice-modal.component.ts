@@ -153,24 +153,9 @@ export class CreateInvoiceModalComponent implements OnInit {
     this.selectedTenancy.set(tenancy);
   }
 
-  generateAndDispatchInvoice(): void {
+  reviewInvoice(): void {
     if (this.isGenerating()) return;
-    const tenant = this.selectedTenant();
-    const tenancy = this.selectedTenancy();
 
-    if (!tenant || !tenancy) {
-      this.snackbarService.error('Please select a tenant and tenancy.');
-      return;
-    }
-
-    this.isGenerating.set(true);
-    // Simulate invoice generation
-    setTimeout(() => {
-      this.isGenerating.set(false);
-      this.invoiceCreated.emit({ tenant, tenancy });
-      this.snackbarService.success('Invoice generated and dispatched successfully.');
-      this.close();
-    }, 1500);
   }
 
   getTenantInitials(tenant: Tenant | TenantSearchResult): string {
