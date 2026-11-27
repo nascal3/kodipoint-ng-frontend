@@ -93,7 +93,9 @@
       <!-- Tenancy Selection Section -->
       @if (selectedTenant()) {
         <div class="tenancy-selection-section">
-          <h3 class="section-title">Select Tenancy / Lease</h3>
+          <h3 class="section-title">
+            Select Tenancy / Lease <span>{{getActiveTenancies(selectedTenant()!).length}} found</span>
+          </h3>
           <div class="tenancy-list">
             @if (getActiveTenancies(selectedTenant()!).length === 0) {
               <div class="empty-state">
@@ -111,6 +113,9 @@
                     <div class="tenancy-property">
                       <mat-icon class="property-icon">apartment</mat-icon>
                       <span class="tenancy-label">{{ getTenancyLabel(tenancy) }}</span>
+                      @if (tenancy.status === 'NOTICE') {
+                        <span class="tenancy-status-badge">Notice</span>
+                      }
                     </div>
                     @if (selectedTenancy()?.id === tenancy.id) {
                       <mat-icon class="selected-icon">check_circle</mat-icon>
@@ -128,7 +133,10 @@
                       <span class="info-label">Lease Period:</span>
                       <span class="info-value">{{ getTenancyPeriod(tenancy) }}</span>
                     </div>
-                    <div class="tenancy-info">
+
+                    <mat-divider class="divider"></mat-divider>
+
+                    <div class="tenancy-base-rent">
                       <span class="info-label">Monthly Base Rent:</span>
                       <span class="info-value rent-amount">{{ getRentAmount(tenancy) }}</span>
                     </div>
@@ -163,7 +171,7 @@
         } @else {
           <mat-icon>send</mat-icon>
         }
-        <span>{{ isGenerating() ? 'Generating...' : 'Generate & Dispatch Invoice' }}</span>
+        <span>{{ isGenerating() ? 'Generating...' : 'Preview Invoice' }}</span>
       </button>
     </footer>
   </section>

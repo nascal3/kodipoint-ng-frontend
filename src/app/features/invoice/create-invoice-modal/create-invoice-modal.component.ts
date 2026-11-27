@@ -178,7 +178,7 @@ export class CreateInvoiceModalComponent implements OnInit {
   }
 
   getActiveTenancies(tenant: Tenant): Tenancy[] {
-    return tenant.tenancies?.filter(t => t.status === 'ACTIVE') || [];
+    return tenant.tenancies?.filter(t => t.status === 'ACTIVE' || t.status === 'NOTICE') || [];
   }
 
   getTenancyLabel(tenancy: Tenancy): string {
