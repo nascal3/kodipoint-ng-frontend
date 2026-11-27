@@ -1,0 +1,533 @@
+:host {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+}
+
+.create-invoice-modal-backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(5px);
+}
+
+.create-invoice-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(700px, 100%);
+  max-height: min(90vh, 800px);
+  overflow: hidden;
+  color: #172033;
+  background: #fff;
+  border: 1px solid #e6e5f4;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #faf9ff;
+  padding: 18px 24px;
+  border-bottom: 1px solid #e7e5ff;
+}
+
+.modal-heading-icon {
+  display: flex;
+  flex: 0 0 40px;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #4338ca;
+  background: #e9e7ff;
+  border-radius: 11px;
+}
+
+.modal-heading-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.modal-heading-copy h2 {
+  margin: 0 0 3px;
+  color: #172033;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.modal-heading-copy p {
+  margin: 0;
+  color: #606579;
+  font-size: 13px;
+}
+
+.modal-close-button {
+  color: #55596b;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  padding: 20px 24px;
+  min-height: 0;
+  flex: 1;
+}
+
+.tenant-selection-section,
+.tenancy-selection-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  margin: 0;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tenant-select-field {
+  width: 100%;
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
+}
+
+.tenant-select-field mat-label {
+  color: #535365;
+}
+
+.tenant-select-field input,
+.tenant-select-field mat-select {
+  color: #172033;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+}
+
+.tenant-option {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.tenant-option strong {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+}
+
+.tenant-option small {
+  overflow: hidden;
+  color: #606579;
+  font-size: 11px;
+  text-overflow: ellipsis;
+}
+
+.active-tenant-record {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.active-tenant-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+}
+
+.active-icon {
+  width: 18px;
+  height: 18px;
+  color: #16a34a;
+  font-size: 18px;
+}
+
+.active-tenant-title {
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.selected-tenant-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.tenant-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tenant-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.tenant-name {
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tenant-contact,
+.tenant-phone {
+  color: #64748b;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.change-tenant-button {
+  color: #94a3b8;
+}
+
+.tenancy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.tenancy-card {
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tenancy-card:hover {
+  border-color: #6366f1;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+}
+
+.tenancy-card.selected {
+  background: #f0fdf4;
+  border-color: #22c55e;
+}
+
+.tenancy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.tenancy-property {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.property-icon {
+  width: 20px;
+  height: 20px;
+  color: #6366f1;
+  font-size: 20px;
+}
+
+.tenancy-label {
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.selected-icon {
+  width: 20px;
+  height: 20px;
+  color: #22c55e;
+  font-size: 20px;
+}
+
+.tenancy-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tenancy-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-label {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.info-value {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.rent-amount {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  background: #faf9ff;
+  padding: 16px 24px;
+  border-top: 1px solid #e7e5ff;
+}
+
+.modal-footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.modal-cancel-button {
+  --mat-button-outlined-outline-color: #c9c6e4;
+  --mat-button-outlined-label-text-color: #20243a;
+  --mat-button-outlined-container-shape: 8px;
+}
+
+.modal-submit-button {
+  --mat-button-filled-container-color: #3425d6;
+  --mat-button-filled-container-shape: 8px;
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-label-text-size: 13px;
+  --mat-button-filled-label-text-weight: 600;
+}
+
+.modal-submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.modal-submit-button mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+// Dark theme
+:host-context(html.dark-theme) .create-invoice-modal-backdrop {
+  background: rgba(3, 10, 18, 0.72);
+}
+
+:host-context(html.dark-theme) .create-invoice-modal {
+  color: #e2e8f0;
+  background: #0f2030;
+  border-color: #203447;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.48);
+}
+
+:host-context(html.dark-theme) .modal-header,
+:host-context(html.dark-theme) .modal-footer {
+  background: #0b1b2a;
+  border-color: #203447;
+}
+
+:host-context(html.dark-theme) .modal-heading-icon {
+  color: #93c5fd;
+  background: #14283a;
+}
+
+:host-context(html.dark-theme) .modal-heading-copy h2,
+:host-context(html.dark-theme) .section-title {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .modal-heading-copy p {
+  color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .modal-close-button {
+  color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .tenant-select-field mat-form-field {
+  --mat-form-field-outlined-outline-color: #294056;
+  --mat-form-field-outlined-hover-outline-color: #47627b;
+  --mat-form-field-outlined-focus-outline-color: #60a5fa;
+  --mat-form-field-outlined-input-text-color: #e2e8f0;
+  --mat-form-field-outlined-label-text-color: #94a3b8;
+  --mdc-outlined-text-field-input-text-color: #e2e8f0;
+  --mdc-outlined-text-field-label-text-color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .tenant-select-field ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #0a1928;
+}
+
+:host-context(html.dark-theme) .tenant-select-field ::ng-deep .mdc-notched-outline__leading,
+:host-context(html.dark-theme) .tenant-select-field ::ng-deep .mdc-notched-outline__notch,
+:host-context(html.dark-theme) .tenant-select-field ::ng-deep .mdc-notched-outline__trailing {
+  border-color: #294056;
+}
+
+:host-context(html.dark-theme) .tenant-select-field mat-label {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .tenant-select-field input,
+:host-context(html.dark-theme) .tenant-select-field mat-select {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .tenant-select-field input::placeholder {
+  color: #94a3b8;
+  opacity: 0;
+}
+
+:host-context(html.dark-theme) .tenant-select-field input:focus::placeholder {
+  opacity: 1;
+}
+
+:host-context(html.dark-theme) .tenant-option small {
+  color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .active-tenant-header {
+  background: #0a2e18;
+  border-color: #16a34a;
+}
+
+:host-context(html.dark-theme) .active-icon {
+  color: #4ade80;
+}
+
+:host-context(html.dark-theme) .active-tenant-title {
+  color: #86efac;
+}
+
+:host-context(html.dark-theme) .selected-tenant-card {
+  background: #14283a;
+  border-color: #294056;
+}
+
+:host-context(html.dark-theme) .tenant-name {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .tenant-contact,
+:host-context(html.dark-theme) .tenant-phone {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .change-tenant-button {
+  color: #64748b;
+}
+
+:host-context(html.dark-theme) .tenancy-card {
+  background: #0f2030;
+  border-color: #294056;
+}
+
+:host-context(html.dark-theme) .tenancy-card:hover {
+  border-color: #60a5fa;
+}
+
+:host-context(html.dark-theme) .tenancy-card.selected {
+  background: #0a2e18;
+  border-color: #22c55e;
+}
+
+:host-context(html.dark-theme) .tenancy-label {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .info-label {
+  color: #94a3b8;
+}
+
+:host-context(html.dark-theme) .info-value {
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .rent-amount {
+  color: #e2e8f0;
+}
+
+:host-context(html.dark-theme) .modal-cancel-button {
+  --mat-button-outlined-outline-color: #47627b;
+  --mat-button-outlined-label-text-color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .modal-submit-button {
+  --mat-button-filled-container-color: #3b82f6;
+  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-disabled-container-color: #203447;
+  --mat-button-filled-disabled-label-text-color: #9aabbd;
+}
+
+:host-context(html.dark-theme) .modal-content mat-spinner {
+  --mdc-circular-progress-active-indicator-color: #60a5fa;
+}
+
+// Responsive
+@media (max-width: 600px) {
+  .create-invoice-modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .create-invoice-modal {
+    width: 100%;
+    max-height: 95vh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-content {
+    padding: 16px;
+  }
+
+  .modal-footer {
+    padding: 12px 16px;
+  }
+}

@@ -1,0 +1,171 @@
+<div class="create-invoice-modal-backdrop" (click)="close()" (keydown.escape)="close()">
+  <section
+    class="create-invoice-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="create-invoice-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="modal-header">
+      <div class="modal-heading-icon">
+        <mat-icon>receipt_long</mat-icon>
+      </div>
+      <div class="modal-heading-copy">
+        <h2 id="create-invoice-title">Create Invoice</h2>
+        <p>Select a tenant and their tenancy to generate an invoice</p>
+      </div>
+      <button
+        mat-icon-button
+        type="button"
+        class="modal-close-button"
+        aria-label="Close dialog"
+        (click)="close()"
+        [disabled]="isGenerating()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <div class="modal-content">
+      <!-- Tenant Selection Section -->
+      <div class="tenant-selection-section">
+        <h3 class="section-title">Select Tenant</h3>
+        <mat-form-field appearance="outline" class="tenant-select-field" subscriptSizing="fixed">
+          <mat-select
+            [formControl]="tenantSearchControl"
+            aria-label="Tenant Profile"
+            panelClass="tenant-select-panel"
+            (selectionChange)="selectTenant($event.value)"
+          >
+            <mat-select-trigger>
+              @if (selectedTenant(); as tenant) {
+                {{ tenantName(tenant) }} &nbsp;  {{ tenant.phone }}
+              }
+            </mat-select-trigger>
+            <mat-option>
+              <ngx-mat-select-search
+                [formControl]="tenantSearchControl"
+                [searching]="isLoadingTenants()"
+                [placeholderLabel]="'Search by First / Last Name or Phone Number'"
+                [noEntriesFoundLabel]="tenantSearchMessage()"
+                ariaLabel="Search tenant profiles"
+              ></ngx-mat-select-search>
+            </mat-option>
+            @for (tenant of tenantOptions(); track tenant.id) {
+              <mat-option [value]="tenant.id">
+                <span class="tenant-option">
+                  <strong>{{ tenantName(tenant) }}</strong>
+                  <small>{{ tenant.email }} · {{ tenant.phone }}</small>
+                </span>
+              </mat-option>
+            }
+          </mat-select>
+          @if (tenantsError()) {
+            <mat-error>{{ tenantsError() }}</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Active Tenant Record -->
+        @if (selectedTenant()) {
+          <div class="active-tenant-record">
+            <div class="active-tenant-header">
+              <mat-icon class="active-icon">check_circle</mat-icon>
+              <span class="active-tenant-title">Active tenant record selected</span>
+            </div>
+            <div class="selected-tenant-card">
+              <div class="tenant-avatar">
+                <span>{{ getTenantInitials(selectedTenant()!) }}</span>
+              </div>
+              <div class="tenant-details">
+                <div class="tenant-name">{{ selectedTenant()!.firstName }} {{ selectedTenant()!.lastName }}</div>
+                <div class="tenant-contact">{{ selectedTenant()!.email }}</div>
+                <div class="tenant-phone">{{ selectedTenant()!.phone }}</div>
+              </div>
+              <button
+                mat-icon-button
+                class="change-tenant-button"
+                aria-label="Change tenant"
+                (click)="selectedTenant.set(null)"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Tenancy Selection Section -->
+      @if (selectedTenant()) {
+        <div class="tenancy-selection-section">
+          <h3 class="section-title">Select Tenancy / Lease</h3>
+          <div class="tenancy-list">
+            @if (getActiveTenancies(selectedTenant()!).length === 0) {
+              <div class="empty-state">
+                <mat-icon class="empty-icon">home_work</mat-icon>
+                <span class="empty-text">No active tenancies found</span>
+              </div>
+            } @else {
+              @for (tenancy of getActiveTenancies(selectedTenant()!); track tenancy.id) {
+                <div
+                  class="tenancy-card"
+                  [class.selected]="selectedTenancy()?.id === tenancy.id"
+                  (click)="selectTenancy(tenancy)"
+                >
+                  <div class="tenancy-header">
+                    <div class="tenancy-property">
+                      <mat-icon class="property-icon">apartment</mat-icon>
+                      <span class="tenancy-label">{{ getTenancyLabel(tenancy) }}</span>
+                    </div>
+                    @if (selectedTenancy()?.id === tenancy.id) {
+                      <mat-icon class="selected-icon">check_circle</mat-icon>
+                    }
+                  </div>
+                  <div class="tenancy-details">
+                    <div class="tenancy-info">
+                      <span class="info-label">Type:</span>
+                      <span class="info-value">{{ getTenancyDetails(tenancy) }}</span>
+                    </div>
+                    <div class="tenancy-info">
+                      <span class="info-label">Lease Period:</span>
+                      <span class="info-value">{{ getTenancyPeriod(tenancy) }}</span>
+                    </div>
+                    <div class="tenancy-info">
+                      <span class="info-label">Monthly Base Rent:</span>
+                      <span class="info-value rent-amount">{{ getRentAmount(tenancy) }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <footer class="modal-footer">
+      <button
+        mat-button
+        type="button"
+        class="modal-cancel-button"
+        (click)="close()"
+        [disabled]="isGenerating()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-button
+        type="button"
+        class="modal-submit-button"
+        (click)="generateAndDispatchInvoice()"
+        [disabled]="!selectedTenant() || !selectedTenancy() || isGenerating()"
+      >
+        @if (isGenerating()) {
+          <mat-spinner diameter="18" aria-label="Generating invoice"></mat-spinner>
+        } @else {
+          <mat-icon>send</mat-icon>
+        }
+        <span>{{ isGenerating() ? 'Generating...' : 'Generate & Dispatch Invoice' }}</span>
+      </button>
+    </footer>
+  </section>
+</div>
