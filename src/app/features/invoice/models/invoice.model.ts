@@ -63,15 +63,12 @@ export interface Invoice {
   billingCycle?: string;
   issueDate?: string;
   amenities?: number;
-  garbageAndWater?: number;
+  balanceBroughtForward: string;
+  prepaymentBroughtForward: string;
   totalPayable?: number;
 }
 
 export interface InvoiceDetails extends Invoice {
-  monthlyBaseRent: number;
-  waterAndCommon: number;
-  amenities: number;
-  garbageAndWater: number;
   totalPayable: number;
   deliveryVerificationTrace: {
     email: string;
@@ -171,6 +168,8 @@ export interface InvoiceApiItem {
   property?: InvoiceProperty;
   propertyUnit?: InvoicePropertyUnit;
   invoiceItems?: InvoiceApiInvoiceItem[];
+  balanceBroughtForward: string;
+  prepaymentBroughtForward: string;
 }
 
 export interface InvoicePagination {

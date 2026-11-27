@@ -10,7 +10,6 @@ import type {
   InvoicePagination,
   InvoiceQueryParams,
   InvoiceStatus,
-  InvoiceSummaryData,
   InvoiceSummaryResponse,
 } from '../models/invoice.model';
 
@@ -110,6 +109,8 @@ export class InvoiceService {
         additionalCharges: totalAmount - subtotal,
       },
       amount: totalAmount,
+      balanceBroughtForward: item.balanceBroughtForward,
+      prepaymentBroughtForward: item.prepaymentBroughtForward,
       status: this.mapStatus(item.status),
       delivery: {
         email: item.tenant?.email,
@@ -212,9 +213,6 @@ export class InvoiceService {
     return {
       ...invoice,
       monthlyBaseRent: invoice.breakdown.baseRent,
-      waterAndCommon: additional,
-      amenities: 0,
-      garbageAndWater: 0,
       totalPayable: invoice.amount,
       deliveryVerificationTrace: {
         email: invoice.delivery.email || '',

@@ -306,6 +306,30 @@
                 </span>
               </div>
             }
+
+            @if (selectedInvoice()!.balanceBroughtForward !== "0.00" || selectedInvoice()!.prepaymentBroughtForward !== "0.00") {
+              <mat-divider class="divider"></mat-divider>
+            }
+
+            @if (selectedInvoice()!.balanceBroughtForward !== "0.00") {
+              <div class="breakdown-row">
+                <span class="label">Balance Brought Forward</span>
+                <span class="amount">
+                    {{ selectedInvoice()!.currency }} &nbsp; {{ selectedInvoice()!.balanceBroughtForward }}
+                  </span>
+              </div>
+            }
+            @if (selectedInvoice()!.prepaymentBroughtForward !== "0.00") {
+              <div class="breakdown-row">
+                <span class="label">Prepayment Brought Forward</span>
+                <span class="amount">
+                    {{ selectedInvoice()!.currency }} &nbsp; {{ selectedInvoice()!.prepaymentBroughtForward }}
+                  </span>
+              </div>
+            }
+
+            <mat-divider class="divider"></mat-divider>
+
             <div class="breakdown-row total">
               <span class="label">Total Payable</span>
               <span class="amount">
