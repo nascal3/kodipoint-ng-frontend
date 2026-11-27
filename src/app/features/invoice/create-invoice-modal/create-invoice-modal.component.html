@@ -81,7 +81,7 @@
                 mat-icon-button
                 class="change-tenant-button"
                 aria-label="Change tenant"
-                (click)="selectedTenant.set(null); tenantIdControl.setValue(''); tenantSearchControl.setValue('')"
+                (click)="selectedTenant.set(null); selectedTenancy.set(null); tenantIdControl.setValue(''); tenantSearchControl.setValue('')"
               >
                 <mat-icon>close</mat-icon>
               </button>
@@ -106,8 +106,13 @@
               @for (tenancy of getActiveTenancies(selectedTenant()!); track tenancy.id) {
                 <div
                   class="tenancy-card"
+                  role="button"
+                  tabindex="0"
                   [class.selected]="selectedTenancy()?.id === tenancy.id"
+                  [attr.aria-pressed]="selectedTenancy()?.id === tenancy.id"
                   (click)="selectTenancy(tenancy)"
+                  (keydown.enter)="selectTenancy(tenancy)"
+                  (keydown.space)="selectTenancy(tenancy); $event.preventDefault()"
                 >
                   <div class="tenancy-header">
                     <div class="tenancy-property">

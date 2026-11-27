@@ -62,7 +62,7 @@ export class CreateInvoiceModalComponent implements OnInit {
   readonly tenantSearchControl = new FormControl('', { nonNullable: true });
   readonly tenantIdControl = new FormControl('', { nonNullable: true });
   readonly issueDateControl = new FormControl<Date | null>(null, [this.minDateValidator]);
-  readonly dueDateControl = new FormControl<Date | null>(null, [this.minDueDateValidator]);
+  readonly dueDateControl = new FormControl<Date | null>(null, [this.minDueDateValidator.bind(this)]);
   readonly notesControl = new FormControl('', { nonNullable: true });
   readonly today = new Date();
 
@@ -170,15 +170,14 @@ export class CreateInvoiceModalComponent implements OnInit {
   }
 
   selectTenancy(tenancy: Tenancy): void {
-    this.selectedTenancy.set(tenancy);
-
-    // Set default dates when tenancy is selected
+    // Populate the controls before revealing the section that contains them.
     const today = new Date();
     const dueDate = new Date();
     dueDate.setDate(today.getDate() + 14);
 
     this.issueDateControl.setValue(today);
     this.dueDateControl.setValue(dueDate);
+    this.selectedTenancy.set(tenancy);
   }
 
   reviewInvoice(): void {
