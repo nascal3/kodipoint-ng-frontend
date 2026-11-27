@@ -387,4 +387,12 @@
       </div>
     }
   </div>
+
+  <!-- Create Invoice Modal -->
+  @if (isCreateInvoiceModalOpen()) {
+    <app-create-invoice-modal
+      (closed)="closeCreateInvoiceModal()"
+      (invoiceCreated)="onInvoiceCreated($event)"
+    />
+  }
 </div>

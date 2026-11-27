@@ -35,6 +35,10 @@ export class TenantsService {
     return this.http.get<TenantsResponse>(`${environment.apiUrl}/tenants`, { params });
   }
 
+  getTenantById(id: string): Observable<Tenant> {
+    return this.http.get<Tenant>(`${environment.apiUrl}/tenants/${id}`);
+  }
+
   searchTenants(query: string, page: number = 1, limit: number = 10): Observable<TenantSearchResponse> {
     const params = new HttpParams()
       .set('q', query)

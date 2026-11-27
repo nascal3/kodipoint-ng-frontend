@@ -6,6 +6,8 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { InvoiceService } from './services/invoice.service';
 import type { Invoice, InvoiceDetails, InvoiceQueryParams, InvoiceSummaryResponse } from './models/invoice.model';
+import { CreateInvoiceModalComponent } from './create-invoice-modal/create-invoice-modal.component';
+import type { TenantTenancy } from './create-invoice-modal/create-invoice-modal.component';
 
 @Component({
   selector: 'app-invoice',
@@ -13,6 +15,7 @@ import type { Invoice, InvoiceDetails, InvoiceQueryParams, InvoiceSummaryRespons
   imports: [
     CommonModule,
     FormsModule,
+    CreateInvoiceModalComponent,
     ...MATERIAL_MODULES,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -107,6 +110,7 @@ export class InvoiceComponent {
   );
   readonly selectedFilter = signal('all');
   readonly searchQuery = signal('');
+  readonly isCreateInvoiceModalOpen = signal(false);
 
   readonly filterOptions = [
     { label: 'All', value: 'all' },
@@ -195,7 +199,16 @@ export class InvoiceComponent {
   }
 
   createInvoice(): void {
-    this.invoiceService.createInvoice();
+    this.isCreateInvoiceModalOpen.set(true);
+  }
+
+  closeCreateInvoiceModal(): void {
+    this.isCreateInvoiceModalOpen.set(false);
+  }
+
+  onInvoiceCreated(data: TenantTenancy): void {
+    this.closeCreateInvoiceModal();
+    this.loadInvoices();
   }
 
   batchSend(): void {
