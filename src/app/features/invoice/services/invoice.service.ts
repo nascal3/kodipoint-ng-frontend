@@ -3,11 +3,15 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import type {
+  CreateInvoiceRequest,
+  CreateInvoiceResponse,
   Invoice,
   InvoiceApiItem,
+  InvoiceDeliveryChannel,
   InvoiceDetails,
   InvoiceListResponse,
   InvoicePagination,
+  InvoicePreview,
   InvoiceQueryParams,
   InvoiceStatus,
   InvoiceSummaryResponse,
@@ -223,9 +227,16 @@ export class InvoiceService {
     } as InvoiceDetails;
   }
 
-  createInvoice(): void {
-    // Placeholder for create invoice functionality
-    console.log('Create invoice clicked');
+  previewInvoice(request: CreateInvoiceRequest): Observable<InvoicePreview> {
+    return this.http.post<InvoicePreview>(`${environment.apiUrl}/invoices/preview`, request);
+  }
+
+  createInvoice(request: CreateInvoiceRequest): Observable<CreateInvoiceResponse> {
+    return this.http.post<CreateInvoiceResponse>(`${environment.apiUrl}/invoices`, request);
+  }
+
+  sendInvoice(invoiceId: string, channels: InvoiceDeliveryChannel[]): Observable<unknown> {
+    return this.http.post(`${environment.apiUrl}/invoices/${invoiceId}/send`, { channels });
   }
 
   batchSend(): void {

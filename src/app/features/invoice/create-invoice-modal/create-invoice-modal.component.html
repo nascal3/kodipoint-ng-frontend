@@ -1,9 +1,13 @@
-<div class="create-invoice-modal-backdrop" (click)="close()" (keydown.escape)="close()">
+<div class="create-invoice-modal-backdrop" [class.invoice-review-backdrop]="isReviewing()"
+  (click)="close()" (keydown.escape)="close()">
   <section
     class="create-invoice-modal"
+    [class.invoice-review-modal]="isReviewing()"
     role="dialog"
     aria-modal="true"
     aria-labelledby="create-invoice-title"
+    cdkTrapFocus
+    [cdkTrapFocusAutoCapture]="true"
     (click)="$event.stopPropagation()"
   >
     <header class="modal-header">
@@ -11,8 +15,18 @@
         <mat-icon>receipt_long</mat-icon>
       </div>
       <div class="modal-heading-copy">
-        <h2 id="create-invoice-title">Create Invoice</h2>
-        <p>Select a tenant and their tenancy to generate an invoice</p>
+        <h2 id="create-invoice-title" #dialogTitle tabindex="-1" cdkFocusInitial>
+          {{ isReviewing() ? 'Review & Confirm Invoice' : 'Create Invoice' }}
+        </h2>
+        @if (isReviewing() && selectedTenant(); as tenant) {
+          <p class="review-context">
+            <strong>{{ getTenancyLabel(selectedTenancy()!) }}</strong>
+            <span aria-hidden="true">•</span>
+            <span>{{ tenantName(tenant) }} @if (tenant.phone) { ({{ tenant.phone }}) }</span>
+          </p>
+        } @else {
+          <p>Select a tenant and their tenancy to generate an invoice</p>
+        }
       </div>
       <button
         mat-icon-button
@@ -20,205 +34,478 @@
         class="modal-close-button"
         aria-label="Close dialog"
         (click)="close()"
-        [disabled]="isGenerating()"
+        [disabled]="isSubmitting()"
       >
         <mat-icon>close</mat-icon>
       </button>
     </header>
 
-    <div class="modal-content">
-      <!-- Tenant Selection Section -->
-      <div class="tenant-selection-section">
-        <h3 class="section-title">Select Tenant</h3>
-        <mat-form-field appearance="outline" class="tenant-select-field" subscriptSizing="fixed">
-          <mat-select
-            [formControl]="tenantIdControl"
-            aria-label="Tenant Profile"
-            panelClass="tenant-select-panel"
-            (selectionChange)="selectTenant($event.value)"
-          >
-            <mat-select-trigger>
-              @if (selectedTenantForDisplay(); as tenant) {
-                {{ tenantName(tenant) }} &nbsp;  {{ tenant.phone }}
+    @if (isReviewing()) {
+      <div class="modal-content review-content">
+        <div class="review-card review-fields">
+          <div class="review-field">
+            <span class="review-field-label">Invoice Ref ({{ createdInvoice() ? 'Created' : 'Draft' }})</span>
+            <div class="review-reference">
+              @if (createdInvoice(); as invoice) {
+                <span>#{{ invoice.invoiceNumber }}</span>
+              } @else {
+                <span>Assigned on creation</span>
               }
-            </mat-select-trigger>
-            <mat-option>
-              <ngx-mat-select-search
-                [formControl]="tenantSearchControl"
-                [searching]="isLoadingTenants()"
-                [placeholderLabel]="'Search by First / Last Name or Phone Number'"
-                [noEntriesFoundLabel]="tenantSearchMessage()"
-                ariaLabel="Search tenant profiles"
-              ></ngx-mat-select-search>
-            </mat-option>
-            @for (tenant of tenantOptions(); track tenant.id) {
-              <mat-option [value]="tenant.id">
-                <span class="tenant-option">
-                  <strong>{{ tenantName(tenant) }}</strong>
-                  <small>{{ tenant.email }} · {{ tenant.phone }}</small>
-                </span>
-              </mat-option>
-            }
-          </mat-select>
-          @if (tenantsError()) {
-            <mat-error>{{ tenantsError() }}</mat-error>
-          }
-        </mat-form-field>
+              <mat-icon>lock_outline</mat-icon>
+            </div>
+          </div>
 
-        <!-- Active Tenant Record -->
+          <div class="review-field">
+            <label class="review-field-label" for="review-issue-date">Issue Date*</label>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-icon matIconPrefix class="issue-date-icon">event_note</mat-icon>
+              <input matInput id="review-issue-date" [matDatepicker]="reviewIssuePicker"
+                [formControl]="issueDateControl" [min]="today" required>
+              <mat-datepicker-toggle matIconSuffix [for]="reviewIssuePicker" />
+              <mat-datepicker #reviewIssuePicker />
+              @if (issueDateControl.hasError('pastDate')) {
+                <mat-error>Date cannot be in the past</mat-error>
+              } @else if (issueDateControl.hasError('matDatepickerParse')) {
+                <mat-error>Enter a valid issue date</mat-error>
+              } @else if (issueDateControl.hasError('required')) {
+                <mat-error>Issue date is required</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="review-field">
+            <label class="review-field-label" for="review-due-date">Payment Due Date*</label>
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-icon matIconPrefix class="due-date-icon">event</mat-icon>
+              <input matInput id="review-due-date" [matDatepicker]="reviewDuePicker"
+                [formControl]="dueDateControl" [min]="issueDateControl.value" required>
+              <mat-datepicker-toggle matIconSuffix [for]="reviewDuePicker" />
+              <mat-datepicker #reviewDuePicker />
+              @if (dueDateControl.hasError('dueDateBeforeIssueDate')) {
+                <mat-error>Due date cannot be before issue date</mat-error>
+              } @else if (dueDateControl.hasError('matDatepickerParse')) {
+                <mat-error>Enter a valid due date</mat-error>
+              } @else if (dueDateControl.hasError('required')) {
+                <mat-error>Due date is required</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="review-grid">
+          <div class="review-main">
+            <section class="review-card" aria-labelledby="invoice-charges-title" [attr.aria-busy]="isPreviewLoading()">
+              <div class="review-card-heading">
+                <mat-icon>receipt_long</mat-icon>
+                <h3 id="invoice-charges-title">Itemized Line Charges</h3>
+                @if (preview(); as draft) {
+                  <span class="review-item-count">
+                    {{ draft.invoiceItems.length }} {{ draft.invoiceItems.length === 1 ? 'item' : 'items' }}
+                  </span>
+                }
+              </div>
+              @if (preview(); as draft) {
+                <div class="review-table-scroll">
+                  <table class="review-table" aria-labelledby="invoice-charges-title">
+                    <thead>
+                      <tr>
+                        <th scope="col">Description</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Rate <span>({{ currency() }})</span></th>
+                        <th scope="col">Total <span>({{ currency() }})</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of draft.invoiceItems; track $index; let last = $last) {
+                        @let rollover = last && item.description === 'Balance brought forward';
+                        <tr [class.review-rollover-line]="rollover">
+                          <th scope="row">
+                            {{ item.description }}
+                            @if (rollover) {
+                              @for (balance of draft.balanceCarryForward; track balance.sourceInvoiceId) {
+                                <small class="review-source-ref">{{ balance.sourceInvoiceNumber }}</small>
+                              }
+                            }
+                          </th>
+                          <td>{{ item.quantity | number }}</td>
+                          <td>{{ item.unitAmount | number:'1.2-2' }}</td>
+                          <td>{{ item.totalAmount | number:'1.2-2' }}</td>
+                        </tr>
+                      } @empty {
+                        <tr><td colspan="4" class="review-empty">No line charges for these dates.</td></tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+                <div class="review-subtotal">
+                  <span>Gross Subtotal</span>
+                  <strong>{{ currency() }} {{ draft.calculation.subtotal | number:'1.2-2' }}</strong>
+                </div>
+              }
+              @if (isPreviewLoading()) {
+                <div class="review-feedback" role="status">
+                  <mat-spinner diameter="18" />
+                  {{ preview() ? 'Updating preview…' : 'Loading invoice preview…' }}
+                </div>
+              } @else if (previewError()) {
+                <div class="review-feedback">
+                  <p role="alert">{{ previewError() }}</p>
+                  <button matButton="outlined" type="button" (click)="refreshPreview()">Retry Preview</button>
+                </div>
+              } @else if (!preview()) {
+                <p class="review-feedback">Enter valid invoice dates to see the preview.</p>
+              }
+            </section>
+
+            <section class="review-card review-notes">
+              <label for="review-notes">
+                <mat-icon>edit_note</mat-icon>
+                Invoice Notes
+                <span>Optional</span>
+              </label>
+              <textarea id="review-notes" [formControl]="notesControl" rows="1"
+                placeholder="Add details about this invoice"></textarea>
+            </section>
+          </div>
+
+          @if (preview(); as draft) {
+            @let calculation = draft.calculation;
+            @let fullySettled = calculation.projectedStatus === 'PAID' && +calculation.totalAmount > 0;
+            <section class="review-card review-settlement" aria-labelledby="invoice-settlement-title"
+              [attr.aria-busy]="isPreviewLoading()">
+              <div class="review-card-heading">
+                <mat-icon>account_balance_wallet</mat-icon>
+                <h3 id="invoice-settlement-title">Settlement Reconciliation</h3>
+              </div>
+
+              @if (draft.balanceCarryForward.length) {
+                <div class="review-adjustment review-adjustment--rollover">
+                  <div>
+                    <h4><mat-icon>history</mat-icon> Unpaid Balance Rollover</h4>
+                    <strong>+{{ currency() }} {{ calculation.balanceBroughtForward | number:'1.2-2' }}</strong>
+                  </div>
+                  <ul>
+                    @for (balance of draft.balanceCarryForward; track balance.sourceInvoiceId) {
+                      <li>
+                        Source Invoice <b>#{{ balance.sourceInvoiceNumber }}</b>
+                        @if (draft.balanceCarryForward.length > 1) {
+                          · {{ currency() }} {{ balance.amount | number:'1.2-2' }}
+                        }
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+
+              @if (+calculation.prepaymentCreditApplied > 0) {
+                <div class="review-adjustment review-adjustment--credit">
+                  <div>
+                    <h4><mat-icon>payments</mat-icon> Applied Prepayment Credit</h4>
+                    <strong>−{{ currency() }} {{ calculation.prepaymentCreditApplied | number:'1.2-2' }}</strong>
+                  </div>
+                  <ul>
+                    @for (credit of draft.prepaymentsToApply; track credit.paymentId) {
+                      <li>
+                        Payment ref <b>{{ credit.paymentId }}</b>
+                        @if (credit.paymentDate) { ({{ credit.paymentDate | date:'d MMM y' }}) }
+                        @if (draft.prepaymentsToApply.length > 1) {
+                          · {{ currency() }} {{ credit.amount | number:'1.2-2' }}
+                        }
+                      </li>
+                    }
+                  </ul>
+                  <p>Available {{ currency() }} {{ calculation.availablePrepaymentCredit | number:'1.2-2' }}</p>
+                  <progress aria-label="Applied share of available credit"
+                    [value]="+calculation.prepaymentCreditApplied" [max]="+calculation.availablePrepaymentCredit"></progress>
+                </div>
+              }
+
+              <dl class="review-totals">
+                <div>
+                  <dt>Rent & Service Charges</dt>
+                  <dd>{{ currency() }} {{ (+calculation.rent + +calculation.serviceCharges) | number:'1.2-2' }}</dd>
+                </div>
+                @if (+calculation.balanceBroughtForward > 0) {
+                  <div class="review-total-rollover">
+                    <dt>Balance Brought Forward</dt>
+                    <dd>{{ currency() }} {{ calculation.balanceBroughtForward | number:'1.2-2' }}</dd>
+                  </div>
+                }
+                <div class="review-total-gross">
+                  <dt>Gross Total Payable</dt>
+                  <dd>{{ currency() }} {{ calculation.totalAmount | number:'1.2-2' }}</dd>
+                </div>
+                @if (+calculation.prepaymentCreditApplied > 0) {
+                  <div class="review-total-credit">
+                    <dt>Prepayment Credit Applied</dt>
+                    <dd>−{{ currency() }} {{ calculation.prepaymentCreditApplied | number:'1.2-2' }}</dd>
+                  </div>
+                }
+                <div class="review-net" [class.review-net--settled]="fullySettled">
+                  <dt>
+                    Net Balance Due
+                    @if (fullySettled) {
+                      <span><mat-icon>check_circle_outline</mat-icon> Fully Settled</span>
+                    }
+                  </dt>
+                  <dd>{{ currency() }} {{ calculation.balanceDue | number:'1.2-2' }}</dd>
+                </div>
+                @if (+calculation.availablePrepaymentCredit > 0) {
+                  <div>
+                    <dt>Remaining Prepayment Credit</dt>
+                    <dd>{{ currency() }} {{ remainingCredit() | number:'1.2-2' }}</dd>
+                  </div>
+                }
+              </dl>
+            </section>
+          }
+        </div>
+      </div>
+
+      @if (submitError()) {
+        <p class="review-submit-error" role="alert">{{ submitError() }}</p>
+      }
+      <footer class="modal-footer review-footer">
+        <fieldset>
+          <legend>Dispatch Channels</legend>
+          <label>
+            <input #emailChannel type="checkbox" [checked]="sendEmail()" [disabled]="!selectedTenant()?.email || isSubmitting()"
+              (change)="sendEmail.set(emailChannel.checked)">
+            Email
+          </label>
+          <label>
+            <input #smsChannel type="checkbox" [checked]="sendSms()" [disabled]="!selectedTenant()?.phone || isSubmitting()"
+              (change)="sendSms.set(smsChannel.checked)">
+            SMS
+          </label>
+        </fieldset>
+        <div class="review-actions">
+          @if (createdInvoice()) {
+            <button matButton="outlined" type="button" class="modal-cancel-button"
+              (click)="close()" [disabled]="isSubmitting()">Close</button>
+          } @else {
+            <button matButton="outlined" type="button" class="modal-cancel-button"
+              (click)="backToLeaseSelection()" [disabled]="isSubmitting()">
+              <mat-icon>arrow_back</mat-icon>
+              Back to Lease Selection
+            </button>
+          }
+          <button matButton="filled" type="button" class="modal-submit-button"
+            (click)="generateInvoice()"
+            [disabled]="!preview() || isPreviewLoading() || isSubmitting() || (!!createdInvoice() && !sendEmail() && !sendSms())">
+            @if (isSubmitting()) {
+              <mat-spinner diameter="16" />
+            } @else {
+              <mat-icon>send</mat-icon>
+            }
+            @if (isSubmitting()) {
+              {{ createdInvoice() ? 'Queuing Delivery…' : 'Generating Invoice…' }}
+            } @else if (createdInvoice()) {
+              Retry Dispatch
+            } @else {
+              {{ sendEmail() || sendSms() ? 'Generate & Dispatch Invoice' : 'Generate Invoice' }}
+            }
+          </button>
+        </div>
+      </footer>
+    } @else {
+      <div class="modal-content">
+        <!-- Tenant Selection Section -->
+        <div class="tenant-selection-section">
+          <h3 class="section-title">Select Tenant</h3>
+          <mat-form-field appearance="outline" class="tenant-select-field" subscriptSizing="fixed">
+            <mat-select
+              [formControl]="tenantIdControl"
+              aria-label="Tenant Profile"
+              panelClass="tenant-select-panel"
+              (selectionChange)="selectTenant($event.value)"
+            >
+              <mat-select-trigger>
+                @if (selectedTenantForDisplay(); as tenant) {
+                  {{ tenantName(tenant) }} &nbsp;  {{ tenant.phone }}
+                }
+              </mat-select-trigger>
+              <mat-option>
+                <ngx-mat-select-search
+                  [formControl]="tenantSearchControl"
+                  [searching]="isLoadingTenants()"
+                  [placeholderLabel]="'Search by First / Last Name or Phone Number'"
+                  [noEntriesFoundLabel]="tenantSearchMessage()"
+                  ariaLabel="Search tenant profiles"
+                ></ngx-mat-select-search>
+              </mat-option>
+              @for (tenant of tenantOptions(); track tenant.id) {
+                <mat-option [value]="tenant.id">
+                  <span class="tenant-option">
+                    <strong>{{ tenantName(tenant) }}</strong>
+                    <small>{{ tenant.email }} · {{ tenant.phone }}</small>
+                  </span>
+                </mat-option>
+              }
+            </mat-select>
+            @if (tenantsError()) {
+              <mat-error>{{ tenantsError() }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Active Tenant Record -->
+          @if (selectedTenant()) {
+            <div class="active-tenant-record">
+              <div class="selected-tenant-card">
+                <div class="tenant-avatar">
+                  <span>{{ getTenantInitials(selectedTenant()!) }}</span>
+                </div>
+                <div class="tenant-details">
+                  <div class="tenant-name">{{ selectedTenant()!.firstName }} {{ selectedTenant()!.lastName }}</div>
+                  <div class="tenant-contact">{{ selectedTenant()!.email }}</div>
+                  <div class="tenant-phone">{{ selectedTenant()!.phone }}</div>
+                </div>
+                <button
+                  mat-icon-button
+                  class="change-tenant-button"
+                  aria-label="Change tenant"
+                  (click)="selectedTenant.set(null); selectedTenancy.set(null); tenantIdControl.setValue(''); tenantSearchControl.setValue('')"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Tenancy Selection Section -->
         @if (selectedTenant()) {
-          <div class="active-tenant-record">
-            <div class="selected-tenant-card">
-              <div class="tenant-avatar">
-                <span>{{ getTenantInitials(selectedTenant()!) }}</span>
-              </div>
-              <div class="tenant-details">
-                <div class="tenant-name">{{ selectedTenant()!.firstName }} {{ selectedTenant()!.lastName }}</div>
-                <div class="tenant-contact">{{ selectedTenant()!.email }}</div>
-                <div class="tenant-phone">{{ selectedTenant()!.phone }}</div>
-              </div>
-              <button
-                mat-icon-button
-                class="change-tenant-button"
-                aria-label="Change tenant"
-                (click)="selectedTenant.set(null); selectedTenancy.set(null); tenantIdControl.setValue(''); tenantSearchControl.setValue('')"
-              >
-                <mat-icon>close</mat-icon>
-              </button>
+          <div class="tenancy-selection-section">
+            <h3 class="section-title">
+              Select Tenancy / Lease <span>{{getActiveTenancies(selectedTenant()!).length}} found</span>
+            </h3>
+            <div class="tenancy-list">
+              @if (getActiveTenancies(selectedTenant()!).length === 0) {
+                <div class="empty-state">
+                  <mat-icon class="empty-icon">home_work</mat-icon>
+                  <span class="empty-text">No active tenancies found</span>
+                </div>
+              } @else {
+                @for (tenancy of getActiveTenancies(selectedTenant()!); track tenancy.id) {
+                  <div
+                    class="tenancy-card"
+                    role="button"
+                    tabindex="0"
+                    [class.selected]="selectedTenancy()?.id === tenancy.id"
+                    [attr.aria-pressed]="selectedTenancy()?.id === tenancy.id"
+                    (click)="selectTenancy(tenancy)"
+                    (keydown.enter)="selectTenancy(tenancy)"
+                    (keydown.space)="selectTenancy(tenancy); $event.preventDefault()"
+                  >
+                    <div class="tenancy-header">
+                      <div class="tenancy-property">
+                        <mat-icon class="property-icon">apartment</mat-icon>
+                        <span class="tenancy-label">{{ getTenancyLabel(tenancy) }}</span>
+                        @if (tenancy.status === 'NOTICE') {
+                          <span class="tenancy-status-badge">Notice</span>
+                        }
+                      </div>
+                      @if (selectedTenancy()?.id === tenancy.id) {
+                        <mat-icon class="selected-icon">check_circle</mat-icon>
+                      }
+                    </div>
+                    <div class="tenancy-details">
+                      <div class="tenancy-info">
+                        <span class="info-value">{{ tenancy.unit.propertyUseType }}</span>
+                      </div>
+                      <div class="tenancy-info">
+                        <span class="info-label">Type:</span>
+                        <span class="info-value">{{ getTenancyDetails(tenancy) }}</span>
+                      </div>
+                      <div class="tenancy-info">
+                        <span class="info-label">Lease Period:</span>
+                        <span class="info-value">{{ getTenancyPeriod(tenancy) }}</span>
+                      </div>
+
+                      <mat-divider class="divider"></mat-divider>
+
+                      <div class="tenancy-base-rent">
+                        <span class="info-label">Monthly Base Rent:</span>
+                        <span class="info-value rent-amount">{{ getRentAmount(tenancy) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Invoice Schedule & Details Section -->
+        @if (selectedTenancy()) {
+          <div class="invoice-schedule-section">
+            <mat-divider class="divider"></mat-divider>
+            <h3 class="section-title">INVOICE SCHEDULE & DETAILS</h3>
+            <div class="schedule-fields-grid">
+              <mat-form-field appearance="outline" class="date-field" subscriptSizing="fixed">
+                <mat-label>Issue Date</mat-label>
+                <input matInput [matDatepicker]="issueDatePicker" [formControl]="issueDateControl" [min]="today" aria-label="Issue Date" required>
+                <mat-datepicker-toggle matIconSuffix [for]="issueDatePicker">
+                  <mat-icon>calendar_today</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #issueDatePicker></mat-datepicker>
+                <mat-hint>Date when invoice is posted</mat-hint>
+                @if (issueDateControl.hasError('pastDate')) {
+                  <mat-error>Date cannot be in the past</mat-error>
+                } @else if (issueDateControl.hasError('matDatepickerParse')) {
+                  <mat-error>Enter a valid issue date</mat-error>
+                } @else if (issueDateControl.hasError('required')) {
+                  <mat-error>Issue date is required</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="date-field" subscriptSizing="fixed">
+                <mat-label>Payment Due Date</mat-label>
+                <input matInput [matDatepicker]="dueDatePicker" [formControl]="dueDateControl" [min]="issueDateControl.value" aria-label="Payment Due Date" required>
+                <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker">
+                  <mat-icon>calendar_today</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #dueDatePicker></mat-datepicker>
+                @if (dueDateControl.hasError('dueDateBeforeIssueDate')) {
+                  <mat-error>Due date cannot be before issue date</mat-error>
+                } @else if (dueDateControl.hasError('matDatepickerParse')) {
+                  <mat-error>Enter a valid due date</mat-error>
+                } @else if (dueDateControl.hasError('required')) {
+                  <mat-error>Due date is required</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="form-field full-width description-field">
+              <mat-form-field appearance="outline" class="auth-input notes-field" subscriptSizing="dynamic">
+                <mat-label>Invoice Notes (Optional)</mat-label>
+                <textarea matInput [formControl]="notesControl" rows="3" placeholder="Add details about this invoice" aria-label="Invoice Notes"></textarea>
+              </mat-form-field>
             </div>
           </div>
         }
       </div>
 
-      <!-- Tenancy Selection Section -->
-      @if (selectedTenant()) {
-        <div class="tenancy-selection-section">
-          <h3 class="section-title">
-            Select Tenancy / Lease <span>{{getActiveTenancies(selectedTenant()!).length}} found</span>
-          </h3>
-          <div class="tenancy-list">
-            @if (getActiveTenancies(selectedTenant()!).length === 0) {
-              <div class="empty-state">
-                <mat-icon class="empty-icon">home_work</mat-icon>
-                <span class="empty-text">No active tenancies found</span>
-              </div>
-            } @else {
-              @for (tenancy of getActiveTenancies(selectedTenant()!); track tenancy.id) {
-                <div
-                  class="tenancy-card"
-                  role="button"
-                  tabindex="0"
-                  [class.selected]="selectedTenancy()?.id === tenancy.id"
-                  [attr.aria-pressed]="selectedTenancy()?.id === tenancy.id"
-                  (click)="selectTenancy(tenancy)"
-                  (keydown.enter)="selectTenancy(tenancy)"
-                  (keydown.space)="selectTenancy(tenancy); $event.preventDefault()"
-                >
-                  <div class="tenancy-header">
-                    <div class="tenancy-property">
-                      <mat-icon class="property-icon">apartment</mat-icon>
-                      <span class="tenancy-label">{{ getTenancyLabel(tenancy) }}</span>
-                      @if (tenancy.status === 'NOTICE') {
-                        <span class="tenancy-status-badge">Notice</span>
-                      }
-                    </div>
-                    @if (selectedTenancy()?.id === tenancy.id) {
-                      <mat-icon class="selected-icon">check_circle</mat-icon>
-                    }
-                  </div>
-                  <div class="tenancy-details">
-                    <div class="tenancy-info">
-                      <span class="info-value">{{ tenancy.unit.propertyUseType }}</span>
-                    </div>
-                    <div class="tenancy-info">
-                      <span class="info-label">Type:</span>
-                      <span class="info-value">{{ getTenancyDetails(tenancy) }}</span>
-                    </div>
-                    <div class="tenancy-info">
-                      <span class="info-label">Lease Period:</span>
-                      <span class="info-value">{{ getTenancyPeriod(tenancy) }}</span>
-                    </div>
-
-                    <mat-divider class="divider"></mat-divider>
-
-                    <div class="tenancy-base-rent">
-                      <span class="info-label">Monthly Base Rent:</span>
-                      <span class="info-value rent-amount">{{ getRentAmount(tenancy) }}</span>
-                    </div>
-                  </div>
-                </div>
-              }
-            }
-          </div>
-        </div>
-      }
-
-      <!-- Invoice Schedule & Details Section -->
-      @if (selectedTenancy()) {
-        <div class="invoice-schedule-section">
-          <mat-divider class="divider"></mat-divider>
-          <h3 class="section-title">INVOICE SCHEDULE & DETAILS</h3>
-          <div class="schedule-fields-grid">
-            <mat-form-field appearance="outline" class="date-field" subscriptSizing="fixed">
-              <mat-label>Issue Date</mat-label>
-              <input matInput [matDatepicker]="issueDatePicker" [formControl]="issueDateControl" [min]="today" aria-label="Issue Date">
-              <mat-datepicker-toggle matIconSuffix [for]="issueDatePicker">
-                <mat-icon>calendar_today</mat-icon>
-              </mat-datepicker-toggle>
-              <mat-datepicker #issueDatePicker></mat-datepicker>
-              <mat-hint>Date when invoice is posted</mat-hint>
-              @if (issueDateControl.hasError('pastDate')) {
-                <mat-error>Date cannot be in the past</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="date-field" subscriptSizing="fixed">
-              <mat-label>Payment Due Date</mat-label>
-              <input matInput [matDatepicker]="dueDatePicker" [formControl]="dueDateControl" [min]="issueDateControl.value" aria-label="Payment Due Date">
-              <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker">
-                <mat-icon>calendar_today</mat-icon>
-              </mat-datepicker-toggle>
-              <mat-datepicker #dueDatePicker></mat-datepicker>
-              @if (dueDateControl.hasError('dueDateBeforeIssueDate')) {
-                <mat-error>Due date cannot be before issue date</mat-error>
-              }
-            </mat-form-field>
-          </div>
-
-          <div class="form-field full-width description-field">
-            <mat-form-field appearance="outline" class="auth-input notes-field" subscriptSizing="dynamic">
-              <mat-label>Invoice Notes (Optional)</mat-label>
-              <textarea matInput [formControl]="notesControl" rows="3" placeholder="Add details about this invoice" aria-label="Invoice Notes"></textarea>
-            </mat-form-field>
-          </div>
-        </div>
-      }
-    </div>
-
-    <footer class="modal-footer">
-      <button
-        matButton="outlined"
-        type="button"
-        class="modal-cancel-button"
-        (click)="close()"
-        [disabled]="isGenerating()"
-      >
-        Cancel
-      </button>
-      <button
-        matButton="filled"
-        type="button"
-        class="modal-submit-button"
-        (click)="reviewInvoice()"
-        [disabled]="!selectedTenant() || !selectedTenancy() || issueDateControl.invalid || dueDateControl.invalid || isGenerating()"
-      >
-        @if (isGenerating()) {
-          <mat-spinner diameter="18" aria-label="Generating preview"></mat-spinner>
-        } @else {
-          <mat-icon>send</mat-icon>
-        }
-        <span>{{ isGenerating() ? 'Generating Preview...' : 'Preview Invoice' }}</span>
-      </button>
-    </footer>
+      <footer class="modal-footer">
+        <button
+          matButton="outlined"
+          type="button"
+          class="modal-cancel-button"
+          (click)="close()"
+        >
+          Cancel
+        </button>
+        <button
+          matButton="filled"
+          type="button"
+          class="modal-submit-button"
+          (click)="reviewInvoice()"
+          [disabled]="!selectedTenant() || !selectedTenancy() || issueDateControl.invalid || dueDateControl.invalid"
+        >
+          <mat-icon>visibility</mat-icon>
+          Preview Invoice
+        </button>
+      </footer>
+    }
   </section>
 </div>

@@ -7,7 +7,6 @@ import { MATERIAL_MODULES } from '@app/shared/material.imports';
 import { InvoiceService } from './services/invoice.service';
 import type { Invoice, InvoiceDetails, InvoiceQueryParams, InvoiceSummaryResponse } from './models/invoice.model';
 import { CreateInvoiceModalComponent } from './create-invoice-modal/create-invoice-modal.component';
-import type { TenantTenancy } from './create-invoice-modal/create-invoice-modal.component';
 
 @Component({
   selector: 'app-invoice',
@@ -36,10 +35,23 @@ export class InvoiceComponent {
   readonly pageSize = signal(10);
 
   constructor() {
+    this.loadInvoiceSummary();
+    this.loadInvoices();
+
+    this.searchInput$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(() => {
+        this.page.set(1);
+        this.loadInvoices();
+      });
+  }
+
+  private loadInvoiceSummary(): void {
     const now = new Date();
     const fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
     const toDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
+    this.summaryLoading.set(true);
     this.invoiceService.getInvoiceSummary(fromDate, toDate).subscribe({
       next: (response) => {
         this.invoiceSummary.set(response.summary);
@@ -50,15 +62,6 @@ export class InvoiceComponent {
         this.summaryLoading.set(false);
       },
     });
-
-    this.loadInvoices();
-
-    this.searchInput$
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe(() => {
-        this.page.set(1);
-        this.loadInvoices();
-      });
   }
 
   private formatQueryDate(date: Date): string {
@@ -206,9 +209,10 @@ export class InvoiceComponent {
     this.isCreateInvoiceModalOpen.set(false);
   }
 
-  onInvoiceCreated(data: TenantTenancy): void {
+  onInvoiceCreated(): void {
     this.closeCreateInvoiceModal();
     this.loadInvoices();
+    this.loadInvoiceSummary();
   }
 
   batchSend(): void {

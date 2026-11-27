@@ -1,39 +1,44 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, OnInit, Output, ViewChild, computed, inject, signal } from '@angular/core';
+import { CdkTrapFocus } from '@angular/cdk/a11y';
+import { DatePipe, DecimalPipe, formatDate } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, Injector, OnInit, afterNextRender, computed, inject, output, signal, viewChild } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AbstractControl, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { EMPTY, catchError, debounceTime, distinctUntilChanged, startWith, switchMap, tap } from 'rxjs';
+import { EMPTY, Subject, catchError, debounceTime, distinctUntilChanged, filter, finalize, map, merge, of, startWith, switchMap, tap, timer } from 'rxjs';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MATERIAL_MODULES } from '@app/shared/material.imports';
-import { MatDatepicker } from '@angular/material/datepicker';
 import { TenantsService } from '@app/features/tenants/services/tenants.service';
 import { SnackbarService } from '@app/shared/components/snackbar/snackbar.service';
 import type { Tenant, TenantSearchResult, Tenancy } from '@app/features/tenants/models/tenants.interface';
-
-export interface TenantTenancy {
-  tenant: Tenant;
-  tenancy: Tenancy;
-}
+import type { CreateInvoiceRequest, CreateInvoiceResponse, InvoiceDeliveryChannel, InvoicePreview } from '../models/invoice.model';
+import { InvoiceService } from '../services/invoice.service';
 
 @Component({
   selector: 'app-create-invoice-modal',
   standalone: true,
   imports: [
+    CdkTrapFocus,
+    DatePipe,
+    DecimalPipe,
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
     ...MATERIAL_MODULES,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-invoice-modal.component.html',
-  styleUrl: './create-invoice-modal.component.scss',
+  styleUrls: ['./create-invoice-modal.component.scss', './invoice-review.scss'],
 })
 export class CreateInvoiceModalComponent implements OnInit {
   private readonly tenantsService = inject(TenantsService);
+  private readonly invoiceService = inject(InvoiceService);
   private readonly snackbarService = inject(SnackbarService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
+  private readonly previewRefresh = new Subject<void>();
+  private readonly dialogTitle = viewChild<ElementRef<HTMLElement>>('dialogTitle');
 
-  @Output() readonly closed = new EventEmitter<void>();
-  @Output() readonly invoiceCreated = new EventEmitter<TenantTenancy>();
+  readonly closed = output<void>();
+  readonly invoiceCreated = output<void>();
 
   readonly tenants = signal<TenantSearchResult[]>([]);
   readonly selectedTenant = signal<Tenant | null>(null);
@@ -57,24 +62,37 @@ export class CreateInvoiceModalComponent implements OnInit {
   });
   readonly isLoadingTenants = signal(false);
   readonly tenantsError = signal('');
-  readonly isGenerating = signal(false);
   readonly selectedTenancy = signal<Tenancy | null>(null);
   readonly tenantSearchControl = new FormControl('', { nonNullable: true });
   readonly tenantIdControl = new FormControl('', { nonNullable: true });
-  readonly issueDateControl = new FormControl<Date | null>(null, [this.minDateValidator]);
-  readonly dueDateControl = new FormControl<Date | null>(null, [this.minDueDateValidator.bind(this)]);
+  readonly issueDateControl = new FormControl<Date | null>(null, [Validators.required, this.minDateValidator]);
+  readonly dueDateControl = new FormControl<Date | null>(null, [Validators.required, this.minDueDateValidator.bind(this)]);
   readonly notesControl = new FormControl('', { nonNullable: true });
   readonly today = new Date();
 
-  @ViewChild('issueDatePicker') issueDatePicker!: MatDatepicker<Date>;
-  @ViewChild('dueDatePicker') dueDatePicker!: MatDatepicker<Date>;
+  readonly isReviewing = signal(false);
+  readonly isPreviewLoading = signal(false);
+  readonly preview = signal<InvoicePreview | null>(null);
+  readonly previewError = signal('');
+  readonly isSubmitting = signal(false);
+  readonly submitError = signal('');
+  readonly createdInvoice = signal<CreateInvoiceResponse['invoice'] | null>(null);
+  readonly sendEmail = signal(false);
+  readonly sendSms = signal(false);
+  readonly currency = computed(() => this.selectedTenancy()?.property?.currency || 'KES');
+  readonly remainingCredit = computed(() => {
+    const calculation = this.preview()?.calculation;
+    return calculation
+      ? Math.max(0, Number(calculation.availablePrepaymentCredit) - Number(calculation.prepaymentCreditApplied))
+      : 0;
+  });
 
   ngOnInit(): void {
     // Subscribe to issue date changes to revalidate due date
     this.issueDateControl.valueChanges.pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
-      this.dueDateControl.updateValueAndValidity();
+      this.dueDateControl.updateValueAndValidity({ emitEvent: false });
     });
 
     this.tenantSearchControl.valueChanges.pipe(
@@ -122,11 +140,52 @@ export class CreateInvoiceModalComponent implements OnInit {
       );
       this.isLoadingTenants.set(false);
     });
+
+    this.loadPreviewOnChange();
+  }
+
+  private loadPreviewOnChange(): void {
+    const scheduleChanges = merge(
+      this.issueDateControl.valueChanges,
+      this.dueDateControl.valueChanges,
+      this.notesControl.valueChanges,
+    ).pipe(
+      filter(() => this.isReviewing() && !this.isSubmitting() && !this.createdInvoice()),
+      map(() => 300),
+    );
+
+    merge(this.previewRefresh.pipe(map(() => 0)), scheduleChanges).pipe(
+      switchMap((delay) => {
+        this.previewError.set('');
+        this.submitError.set('');
+        this.isPreviewLoading.set(this.isReviewing());
+        if (!this.isReviewing()) return of(null);
+
+        return (delay ? timer(delay) : of(0)).pipe(
+          switchMap(() => {
+            const request = this.buildInvoiceRequest();
+            return request ? this.invoiceService.previewInvoice(request) : of(null);
+          }),
+          catchError((error: unknown) => {
+            this.previewError.set(this.errorMessage(error, 'Could not load the invoice preview. Please try again.'));
+            return of(null);
+          }),
+        );
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((preview) => {
+      this.preview.set(preview);
+      this.isPreviewLoading.set(false);
+    });
   }
 
   close(): void {
-    if (this.isGenerating()) return;
-    this.closed.emit();
+    if (this.isSubmitting()) return;
+    if (this.createdInvoice()) {
+      this.invoiceCreated.emit();
+    } else {
+      this.closed.emit();
+    }
   }
 
   tenantName(tenant: Tenant | TenantSearchResult): string {
@@ -143,6 +202,7 @@ export class CreateInvoiceModalComponent implements OnInit {
     const tenant = this.tenantOptions().find((option) => option.id === tenantId);
     if (!tenant) return;
 
+    this.selectedTenant.set(null);
     this.selectedTenancy.set(null);
     this.tenantsError.set('');
 
@@ -152,11 +212,12 @@ export class CreateInvoiceModalComponent implements OnInit {
     this.notesControl.setValue('');
 
     // Fetch full tenant details with tenancies
-    this.tenantsService.getTenantById(tenantId).subscribe({
+    this.tenantsService.getTenantById(tenantId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (fullTenant) => {
-        this.selectedTenant.set(fullTenant);
+        if (this.tenantIdControl.value === tenantId) this.selectedTenant.set(fullTenant);
       },
       error: (error) => {
+        if (this.tenantIdControl.value !== tenantId) return;
         console.error('Failed to load tenant details:', error);
         this.snackbarService.error('Failed to load tenant details. Please try again.');
       },
@@ -172,7 +233,7 @@ export class CreateInvoiceModalComponent implements OnInit {
   selectTenancy(tenancy: Tenancy): void {
     // Populate the controls before revealing the section that contains them.
     const today = new Date();
-    const dueDate = new Date();
+    const dueDate = new Date(today);
     dueDate.setDate(today.getDate() + 14);
 
     this.issueDateControl.setValue(today);
@@ -181,8 +242,90 @@ export class CreateInvoiceModalComponent implements OnInit {
   }
 
   reviewInvoice(): void {
-    if (this.isGenerating()) return;
+    const tenant = this.selectedTenant();
+    if (!tenant || !this.buildInvoiceRequest() || this.isReviewing()) return;
 
+    this.sendEmail.set(Boolean(tenant.email));
+    this.sendSms.set(Boolean(tenant.phone));
+    this.isReviewing.set(true);
+    this.refreshPreview();
+    this.focusDialogTitle();
+  }
+
+  refreshPreview(): void {
+    this.previewRefresh.next();
+  }
+
+  backToLeaseSelection(): void {
+    if (this.isSubmitting() || this.createdInvoice()) return;
+    this.isReviewing.set(false);
+    this.refreshPreview();
+    this.focusDialogTitle();
+  }
+
+  private focusDialogTitle(): void {
+    afterNextRender(() => this.dialogTitle()?.nativeElement.focus(), { injector: this.injector });
+  }
+
+  generateInvoice(): void {
+    if (this.isSubmitting() || this.isPreviewLoading() || !this.preview()) return;
+    const request = this.buildInvoiceRequest();
+    const created = this.createdInvoice();
+    if (!request) return;
+
+    const channels: InvoiceDeliveryChannel[] = [];
+    if (this.sendEmail()) channels.push('EMAIL');
+    if (this.sendSms()) channels.push('SMS');
+    if (created && !channels.length) return;
+
+    this.submitError.set('');
+    this.isSubmitting.set(true);
+    const fields = [this.issueDateControl, this.dueDateControl, this.notesControl];
+    fields.forEach((field) => field.disable({ emitEvent: false }));
+
+    const create = created
+      ? of({ invoice: created })
+      : this.invoiceService.createInvoice(request);
+
+    create.pipe(
+      switchMap(({ invoice }) => {
+        this.createdInvoice.set(invoice);
+        return channels.length ? this.invoiceService.sendInvoice(invoice.id, channels) : of(null);
+      }),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.isSubmitting.set(false)),
+    ).subscribe({
+      next: () => {
+        this.snackbarService.success(channels.length ? 'Invoice created and queued for delivery.' : 'Invoice created.');
+        this.invoiceCreated.emit();
+      },
+      error: (error: unknown) => {
+        const invoice = this.createdInvoice();
+        if (invoice) {
+          const reason = this.errorMessage(error, 'Could not queue delivery. Please try again.');
+          this.submitError.set(`Invoice #${invoice.invoiceNumber} was created. ${reason}`);
+        } else {
+          fields.forEach((field) => field.enable({ emitEvent: false }));
+          this.submitError.set(this.errorMessage(error, 'Could not create the invoice. Please try again.'));
+        }
+      },
+    });
+  }
+
+  private buildInvoiceRequest(): CreateInvoiceRequest | null {
+    const tenancy = this.selectedTenancy();
+    const issueDate = this.issueDateControl.value;
+    const dueDate = this.dueDateControl.value;
+    if (!tenancy || !issueDate || !dueDate || this.issueDateControl.invalid || this.dueDateControl.invalid) {
+      return null;
+    }
+
+    return {
+      tenancyId: tenancy.id,
+      issueDate: formatDate(issueDate, 'yyyy-MM-dd', 'en-US'),
+      dueDate: formatDate(dueDate, 'yyyy-MM-dd', 'en-US'),
+      notes: this.notesControl.value,
+    };
   }
 
   getTenantInitials(tenant: Tenant | TenantSearchResult): string {
@@ -227,7 +370,7 @@ export class CreateInvoiceModalComponent implements OnInit {
     return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
-  private minDateValidator(control: AbstractControl): { [key: string]: any } | null {
+  private minDateValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value as Date | null;
     if (!value) return null;
 
@@ -240,7 +383,7 @@ export class CreateInvoiceModalComponent implements OnInit {
     return selectedDate < today ? { pastDate: true } : null;
   }
 
-  private minDueDateValidator(control: AbstractControl): { [key: string]: any } | null {
+  private minDueDateValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value as Date | null;
     if (!value) return null;
 

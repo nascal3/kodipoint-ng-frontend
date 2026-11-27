@@ -144,6 +144,50 @@ export interface InvoiceApiInvoiceItem {
   updatedAt?: string;
 }
 
+export interface CreateInvoiceRequest {
+  tenancyId: string;
+  issueDate: string;
+  dueDate: string;
+  notes: string;
+}
+
+export interface InvoicePreview {
+  tenancyId: string;
+  propertyId: string;
+  tenantId: string;
+  invoiceItems: Pick<
+    InvoiceApiInvoiceItem, 'description' | 'quantity' | 'unitAmount' | 'totalAmount'
+  >[];
+  calculation: {
+    rent: string;
+    serviceCharges: string;
+    balanceBroughtForward: string;
+    subtotal: string;
+    totalAmount: string;
+    availablePrepaymentCredit: string;
+    prepaymentCreditApplied: string;
+    amountPaid: string;
+    balanceDue: string;
+    projectedStatus: 'PAID' | 'PARTIALLY_PAID' | 'ISSUED';
+  };
+  balanceCarryForward: {
+    sourceInvoiceId: string;
+    sourceInvoiceNumber: string;
+    amount: string;
+  }[];
+  prepaymentsToApply: {
+    paymentId: string;
+    paymentDate: string | null;
+    amount: string;
+  }[];
+}
+
+export interface CreateInvoiceResponse {
+  invoice: Pick<InvoiceApiItem, 'id' | 'invoiceNumber'>;
+}
+
+export type InvoiceDeliveryChannel = 'EMAIL' | 'SMS';
+
 export interface InvoiceApiItem {
   id: string;
   managerId?: string;
