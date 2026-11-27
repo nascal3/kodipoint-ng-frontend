@@ -551,11 +551,18 @@
 :host-context(html.dark-theme) .modal-cancel-button {
   --mat-button-outlined-outline-color: #47627b;
   --mat-button-outlined-label-text-color: #cbd5e1;
+  --mat-button-outlined-container-shape: 8px;
 }
 
 :host-context(html.dark-theme) .modal-submit-button {
   --mat-button-filled-container-color: #3b82f6;
-  --mat-button-filled-label-text-color: #fff;
+  --mat-button-filled-label-text-color: #ffffff;
+  --mat-button-filled-container-shape: 8px;
+  --mat-button-filled-label-text-size: 13px;
+  --mat-button-filled-label-text-weight: 600;
+}
+
+:host-context(html.dark-theme) .modal-submit-button:disabled {
   --mat-button-filled-disabled-container-color: #203447;
   --mat-button-filled-disabled-label-text-color: #9aabbd;
 }

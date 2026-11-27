@@ -80,23 +80,6 @@
                 <div class="tenant-name">{{ selectedTenant()!.firstName }} {{ selectedTenant()!.lastName }}</div>
                 <div class="tenant-contact">{{ selectedTenant()!.email }}</div>
                 <div class="tenant-phone">{{ selectedTenant()!.phone }}</div>
-                @if (selectedTenant()!.identificationDoc && selectedTenant()!.identificationDocNumber) {
-                  <div class="tenant-id-doc">
-                    <span class="id-label">{{ selectedTenant()!.identificationDoc }}:</span>
-                    <span class="id-number">{{ selectedTenant()!.identificationDocNumber }}</span>
-                  </div>
-                }
-                @if (selectedTenant()!.address) {
-                  <div class="tenant-address">{{ selectedTenant()!.address }}</div>
-                }
-                @if (selectedTenant()!.emergencyContactName) {
-                  <div class="tenant-emergency">
-                    <span class="emergency-label">Emergency:</span>
-                    <span class="emergency-contact">{{ selectedTenant()!.emergencyContactName }}</span>
-                    <span class="emergency-phone">{{ selectedTenant()!.emergencyContactPhone }}</span>
-                    <span class="emergency-relationship">({{ selectedTenant()!.emergencyContactRelationship }})</span>
-                  </div>
-                }
               </div>
               <button
                 mat-icon-button
@@ -161,7 +144,7 @@
 
     <footer class="modal-footer">
       <button
-        mat-button
+        matButton="outlined"
         type="button"
         class="modal-cancel-button"
         (click)="close()"
@@ -170,7 +153,7 @@
         Cancel
       </button>
       <button
-        mat-button
+        matButton="filled"
         type="button"
         class="modal-submit-button"
         (click)="generateAndDispatchInvoice()"
