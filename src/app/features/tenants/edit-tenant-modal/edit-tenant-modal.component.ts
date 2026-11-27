@@ -23,7 +23,6 @@ export class EditTenantModalComponent {
 
   readonly isSubmitting = signal(false);
   readonly submissionError = signal('');
-  readonly statusOptions: TenantStatus[] = ['ACTIVE', 'NOTICE', 'ENDED'];
   readonly tenantForm = new FormGroup({
     firstName: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)]}),
     lastName: new FormControl('', {nonNullable: true, validators: [Validators.required, Validators.pattern(/\S/)]}),
@@ -71,7 +70,6 @@ export class EditTenantModalComponent {
       emergencyContactName: this.tenant.emergencyContactName,
       emergencyContactPhone: this.tenant.emergencyContactPhone,
       emergencyContactRelationship: this.tenant.emergencyContactRelationship,
-      status: this.isTenantStatus(this.tenant.status) ? this.tenant.status : 'ACTIVE',
     });
   }
 
@@ -117,9 +115,5 @@ export class EditTenantModalComponent {
         this.snackbarService.error(error.error?.message || 'Could not update tenant. Please try again.');
       },
     });
-  }
-
-  private isTenantStatus(status: string): status is TenantStatus {
-    return this.statusOptions.includes(status as TenantStatus);
   }
 }

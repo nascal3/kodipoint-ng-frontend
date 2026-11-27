@@ -81,15 +81,6 @@
           <input matInput formControlName="address" autocomplete="street-address"/>
         </mat-form-field>
 
-        <mat-form-field class="full-width" appearance="outline" subscriptSizing="dynamic">
-          <mat-label>Tenancy status</mat-label>
-          <mat-select formControlName="status">
-            @for (status of statusOptions; track status) {
-              <mat-option [value]="status">{{ status }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
         <h3 class="form-section-title emergency-heading">Emergency contact</h3>
 
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
